@@ -5,14 +5,14 @@ They should be at full resonators before linking
   Congregation Beth Israel
   Gen. Alexander Archer Vandegri
   Historic Courthouse Square
-  Historic Jail House
   Jack Jouett's Ride
   Merriweather Lewis Placard
   Paul Goodloe McIntire
   Site of Old Swan Tavern
   Stonewall Jackson Statue
   The Kissing Stone
+  Watering Fountains
 
 These portals' first links are outgoing
 Their resonators can be applied when first agent arrives
-  Watering Fountains
+  Historic Jail House

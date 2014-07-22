@@ -34,6 +34,8 @@ Options:
   -b         Make maps blue instead of green
   -n agents  Number of agents [default: 1]
 
+Original version by jpeterbaker
+22 July 2014 - tvw updates csv file format
 """
 
 import sys

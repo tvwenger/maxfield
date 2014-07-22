@@ -1,3 +1,5 @@
+# 22 July 2014 modified by Trey Wenger
+
 # Introduction
 
 This is for Ingress. If you don't know what that is, you're lost.
@@ -85,12 +87,12 @@ No promises
 
     input_file:  One of two types of files:
         .csv   format:
-            portal name , latE6 , lngE6 [,keys]
+PORTAL NAME, INTEL MAP LINK, (OPTIONAL:) NUMBER OF KEYS AVAILABLE
+
+Example:
+ Catholic Church of the Holy Comforter, https://www.ingress.com/intel?ll=38.031745,-78.478592&z=18&pll=38.031796,-78.479439, 3
 
             portal name should not contain commas
-            latE6 and lngE6 should be the portal's global coordinates
-            E6 means times 10^6 (no decimal)
-                e.g. the Big Ben portal is at 51500775,-124466
             keys (optional parameter) is the number of keys you have for the portal
             If you leave this blank, the program assumes you have no keys
 

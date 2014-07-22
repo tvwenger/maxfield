@@ -77,6 +77,8 @@ def edgeLabelPos(fixed,anchors):
     return labels*scale
 
 if __name__=='__main__':
+    import matplotlib
+    matplotlib.use('Agg')
     import matplotlib.pyplot as plt
 
     portals = np.array([[0.,0],[0,1],[1,0]])

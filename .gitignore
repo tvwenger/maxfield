@@ -1,8 +1,4 @@
-
-*.pyc
-output/
-*.png
-*.pkl
-*.txt
-*.swp
-
+*~
+include/
+tmp_*
+*.php
