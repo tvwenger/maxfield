@@ -63,6 +63,10 @@ class PlanPrinter:
 
         self.maxNameLen = max([len(a.node[i]['name']) for  i in xrange(self.n)])
 
+        self.num_portals = self.n
+        self.num_links = self.m
+        self.num_fields = -1
+
     def keyPrep(self):
         rowFormat = '{0:11d} | {1:6d} | {2}\n'
         with open(self.outputDir+'keyPrep.txt','w') as fout:
@@ -429,6 +433,8 @@ class PlanPrinter:
         ax.axis('off')
         plt.savefig(self.outputDir+'frame_%s.png'%self.m)
         ax.cla()
+
+        self.num_fields = len(patches)
 
     def split3instruct(self):
         portals = np.array([self.a.node[i]['xy'] for i in self.a.nodes_iter()]).T
