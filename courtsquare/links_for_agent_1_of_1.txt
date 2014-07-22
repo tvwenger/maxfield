@@ -1,0 +1,105 @@
+Complete link schedule issued to agent 1 of 1
+
+Total time estimate: 22 minutes
+
+Agent distance:   1559 m
+Agent experience: 43140 AP
+
+Links marked with * can be made EARLY
+
+Link  Agent Map# Link Origin
+                 Link Destination
+-----------------------------------
+   0* ____1   12 Watering Fountains
+               6 Catholic Church of the Holy Comforter
+
+   1* ____1   12 Watering Fountains
+              10 Merriweather Lewis Placard
+
+   2* ____1   12 Watering Fountains
+              11 Albermarle County Courthouse
+
+   3* ____1   12 Watering Fountains
+               8 Historic Courthouse Square
+
+   4* ____1   12 Watering Fountains
+               9 Site of Old Swan Tavern
+
+   5* ____1    9 Site of Old Swan Tavern
+               5 Jack Jouett's Ride
+
+   6  ____1   12 Watering Fountains
+               5 Jack Jouett's Ride
+
+   7* ____1    5 Jack Jouett's Ride
+               1 Historic Jail House
+
+   8* ____1    5 Jack Jouett's Ride
+               0 The Kissing Stone
+
+   9  ____1   12 Watering Fountains
+               0 The Kissing Stone
+
+  10* ____1    0 The Kissing Stone
+               4 Congregation Beth Israel
+
+  11  ____1    0 The Kissing Stone
+               9 Site of Old Swan Tavern
+
+  12  ____1    1 Historic Jail House
+               0 The Kissing Stone
+
+  13  ____1    0 The Kissing Stone
+               8 Historic Courthouse Square
+
+  14  ____1    0 The Kissing Stone
+              11 Albermarle County Courthouse
+
+  15  ____1   11 Albermarle County Courthouse
+               8 Historic Courthouse Square
+
+  16  ____1    0 The Kissing Stone
+              10 Merriweather Lewis Placard
+
+  17* ____1   10 Merriweather Lewis Placard
+               3 Stonewall Jackson Statue
+
+  18* ____1   10 Merriweather Lewis Placard
+               2 Gen. Alexander Archer Vandegri
+
+  19  ____1   10 Merriweather Lewis Placard
+              11 Albermarle County Courthouse
+
+  20  ____1    2 Gen. Alexander Archer Vandegri
+               0 The Kissing Stone
+
+  21  ____1    3 Stonewall Jackson Statue
+               2 Gen. Alexander Archer Vandegri
+
+  22  ____1   10 Merriweather Lewis Placard
+               4 Congregation Beth Israel
+
+  23* ____1    4 Congregation Beth Israel
+               7 Paul Goodloe McIntire
+
+  24  ____1    4 Congregation Beth Israel
+               2 Gen. Alexander Archer Vandegri
+
+  25  ____1    4 Congregation Beth Israel
+               3 Stonewall Jackson Statue
+
+  26  ____1    7 Paul Goodloe McIntire
+              10 Merriweather Lewis Placard
+
+  27  ____1    0 The Kissing Stone
+               6 Catholic Church of the Holy Comforter
+
+  28  ____1    6 Catholic Church of the Holy Comforter
+              10 Merriweather Lewis Placard
+
+  29  ____1    6 Catholic Church of the Holy Comforter
+               4 Congregation Beth Israel
+
+  30  ____1    6 Catholic Church of the Holy Comforter
+               7 Paul Goodloe McIntire
+
