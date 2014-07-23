@@ -9,12 +9,10 @@ Description:
   input_file:
       One of two types of files:
 
-      - .csv formatted as portal name,latE6,lngE6,keys
+      - .csv formatted as portal name,intel_link,keys
 
           portal name should not contain commas
-          latE6 and lngE6 should be the portal's global coordinates
-          E6 means times 10^6 (no decimal)
-              e.g. the Big Ben portal is at 51500775,-124466
+          intel_link is the portal link obtained from the Intel map
           keys is the number of keys you have for the portal
 
       - .pkl an output from a previous run of this program
@@ -90,7 +88,7 @@ def main():
         locs = []
 
         i = 0
-        # each line should be id,name,lat,long,keys
+        # each line should be name,intel_link,keys
         with open(input_file,'r') as fin:
             for line in fin:
                 parts = line.split(',')
