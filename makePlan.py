@@ -101,10 +101,10 @@ def main():
                 a.add_node(i)
                 a.node[i]['name'] = parts[0].strip()
 
-                lon = int(float((parts[2].split('pll='))[1]) * 1.e6)
-                lat = int(float(parts[3]) * 1.e6)
+                lat = int(float((parts[2].split('pll='))[1]) * 1.e6)
+                lon = int(float(parts[3]) * 1.e6)
 
-                locs.append( np.array([lon,lat],dtype=int) )
+                locs.append( np.array([lat,lon],dtype=int) )
 
                 if len(parts) < 5:
                     a.node[i]['keys'] = 0
