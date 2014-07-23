@@ -42,7 +42,7 @@ import sys
 from docopt import docopt
 
 import networkx as nx
-from lib import maxfield,PlanPrinter,geometry,agentOrder
+from lib import maxfield,PlanPrinterMap,geometry,agentOrder
 import pickle
 
 def main():
@@ -101,10 +101,10 @@ def main():
                 a.add_node(i)
                 a.node[i]['name'] = parts[0].strip()
 
-                lon = int(float((parts[2].split('pll='))[1]) * 1.e6)
-                lat = int(float(parts[3]) * 1.e6)
+                lat = int(float((parts[2].split('pll='))[1]) * 1.e6)
+                lon = int(float(parts[3]) * 1.e6)
 
-                locs.append( np.array([lon,lat],dtype=int) )
+                locs.append( np.array([lat,lon],dtype=int) )
 
                 if len(parts) < 5:
                     a.node[i]['keys'] = 0
@@ -206,7 +206,7 @@ def main():
     #    with open(output_directory+output_file,'w') as fout:
     #        pickle.dump(a,fout)
 
-    PP = PlanPrinter.PlanPrinter(a,output_directory,nagents,COLOR)
+    PP = PlanPrinterMap.PlanPrinter(a,output_directory,nagents,COLOR)
     PP.keyPrep()
     PP.agentKeys()
     PP.planMap()

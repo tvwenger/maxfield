@@ -2,15 +2,15 @@ Keys for Agent 1 of 1
 
 Map# Keys Name
   11    2 Albermarle County Courthouse
-   6    3 Catholic Church of the Holy Comforter
-   4    2 Congregation Beth Israel
-   2    5 Gen. Alexander Archer Vandegri
+   6      Catholic Church of the Holy Comforter
+   4    4 Congregation Beth Israel
+   2    2 Gen. Alexander Archer Vandegri
    8    2 Historic Courthouse Square
    1    1 Historic Jail House
    5    1 Jack Jouett's Ride
   10    3 Merriweather Lewis Placard
-   7    3 Paul Goodloe McIntire
-   9    3 Site of Old Swan Tavern
-   3    2 Stonewall Jackson Statue
-   0    1 The Kissing Stone
-  12    3 Watering Fountains
+   7    2 Paul Goodloe McIntire
+   9    2 Site of Old Swan Tavern
+   3    4 Stonewall Jackson Statue
+   0    3 The Kissing Stone
+  12    5 Watering Fountains
