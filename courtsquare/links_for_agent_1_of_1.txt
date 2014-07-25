@@ -1,8 +1,8 @@
 Complete link schedule issued to agent 1 of 1
 
-Total time estimate: 23 minutes
+Total time estimate: 27 minutes
 
-Agent distance:   1725 m
+Agent distance:   2195 m
 Agent experience: 43140 AP
 
 Links marked with * can be made EARLY
@@ -10,96 +10,96 @@ Links marked with * can be made EARLY
 Link  Agent Map# Link Origin
                  Link Destination
 -----------------------------------
-   0* ____1    1 Historic Jail House
-               0 The Kissing Stone
+   0* ____1    6 Catholic Church of the Holy Comforter
+               4 Congregation Beth Israel
 
-   1* ____1    1 Historic Jail House
+   1* ____1    6 Catholic Church of the Holy Comforter
+              12 Watering Fountains
+
+   2* ____1   12 Watering Fountains
                5 Jack Jouett's Ride
 
-   2* ____1    5 Jack Jouett's Ride
-              12 Watering Fountains
+   3* ____1   12 Watering Fountains
+               7 Paul Goodloe McIntire
 
-   3* ____1    5 Jack Jouett's Ride
-               9 Site of Old Swan Tavern
+   4  ____1    6 Catholic Church of the Holy Comforter
+               7 Paul Goodloe McIntire
 
-   4  ____1    1 Historic Jail House
-               9 Site of Old Swan Tavern
-
-   5  ____1    1 Historic Jail House
-              12 Watering Fountains
-
-   6* ____1   12 Watering Fountains
-              11 Albermarle County Courthouse
-
-   7  ____1   12 Watering Fountains
-               9 Site of Old Swan Tavern
-
-   8* ____1   11 Albermarle County Courthouse
+   5* ____1    9 Site of Old Swan Tavern
               10 Merriweather Lewis Placard
 
-   9* ____1   11 Albermarle County Courthouse
-               2 Gen. Alexander Archer Vandegri
+   6* ____1    9 Site of Old Swan Tavern
+              11 Albermarle County Courthouse
 
-  10  ____1   12 Watering Fountains
-               2 Gen. Alexander Archer Vandegri
+   7* ____1   11 Albermarle County Courthouse
+              12 Watering Fountains
 
-  11  ____1   10 Merriweather Lewis Placard
-               2 Gen. Alexander Archer Vandegri
+   8  ____1    9 Site of Old Swan Tavern
+              12 Watering Fountains
 
-  12* ____1    2 Gen. Alexander Archer Vandegri
+   9  ____1   12 Watering Fountains
+              10 Merriweather Lewis Placard
+
+  10  ____1   10 Merriweather Lewis Placard
+              11 Albermarle County Courthouse
+
+  11  ____1    9 Site of Old Swan Tavern
+               7 Paul Goodloe McIntire
+
+  12* ____1    7 Paul Goodloe McIntire
                8 Historic Courthouse Square
 
-  13* ____1    2 Gen. Alexander Archer Vandegri
-               6 Catholic Church of the Holy Comforter
-
-  14* ____1    2 Gen. Alexander Archer Vandegri
-               7 Paul Goodloe McIntire
-
-  15* ____1    2 Gen. Alexander Archer Vandegri
-               3 Stonewall Jackson Statue
-
-  16  ____1    3 Stonewall Jackson Statue
+  13  ____1    7 Paul Goodloe McIntire
               10 Merriweather Lewis Placard
 
-  17  ____1   11 Albermarle County Courthouse
+  14  ____1    8 Historic Courthouse Square
+               9 Site of Old Swan Tavern
+
+  15  ____1    6 Catholic Church of the Holy Comforter
+               5 Jack Jouett's Ride
+
+  16  ____1    5 Jack Jouett's Ride
                7 Paul Goodloe McIntire
 
-  18  ____1    7 Paul Goodloe McIntire
-              10 Merriweather Lewis Placard
+  17  ____1    5 Jack Jouett's Ride
+               9 Site of Old Swan Tavern
 
-  19  ____1    7 Paul Goodloe McIntire
-               3 Stonewall Jackson Statue
+  18  ____1    5 Jack Jouett's Ride
+               8 Historic Courthouse Square
 
-  20  ____1   12 Watering Fountains
-               6 Catholic Church of the Holy Comforter
-
-  21* ____1    6 Catholic Church of the Holy Comforter
-               4 Congregation Beth Israel
-
-  22  ____1    6 Catholic Church of the Holy Comforter
-              11 Albermarle County Courthouse
-
-  23  ____1    6 Catholic Church of the Holy Comforter
-               7 Paul Goodloe McIntire
-
-  24  ____1    8 Historic Courthouse Square
-              12 Watering Fountains
-
-  25  ____1    4 Congregation Beth Israel
-               2 Gen. Alexander Archer Vandegri
-
-  26  ____1    6 Catholic Church of the Holy Comforter
+  19* ____1    0 The Kissing Stone
                1 Historic Jail House
 
-  27  ____1    1 Historic Jail House
+  20* ____1    1 Historic Jail House
+               5 Jack Jouett's Ride
+
+  21  ____1    0 The Kissing Stone
+               5 Jack Jouett's Ride
+
+  22* ____1    2 Gen. Alexander Archer Vandegri
+               3 Stonewall Jackson Statue
+
+  23* ____1    3 Stonewall Jackson Statue
+               5 Jack Jouett's Ride
+
+  24  ____1    2 Gen. Alexander Archer Vandegri
+               5 Jack Jouett's Ride
+
+  25  ____1    2 Gen. Alexander Archer Vandegri
+               6 Catholic Church of the Holy Comforter
+
+  26  ____1    6 Catholic Church of the Holy Comforter
+               3 Stonewall Jackson Statue
+
+  27  ____1    4 Congregation Beth Israel
                2 Gen. Alexander Archer Vandegri
 
-  28  ____1    1 Historic Jail House
-               8 Historic Courthouse Square
+  28  ____1    6 Catholic Church of the Holy Comforter
+               0 The Kissing Stone
 
-  29  ____1    1 Historic Jail House
-               4 Congregation Beth Israel
+  29  ____1    0 The Kissing Stone
+               2 Gen. Alexander Archer Vandegri
 
   30  ____1    0 The Kissing Stone
-               6 Catholic Church of the Holy Comforter
+               4 Congregation Beth Israel
 

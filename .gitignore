@@ -2,3 +2,4 @@
 include/
 tmp_*
 *.php
+*.pyc
