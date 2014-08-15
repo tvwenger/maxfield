@@ -1,0 +1,5 @@
+1. Fixed bug in Optimization criteria
+2. Increased number of optimization attempts
+3. Forced limitation on number of portals
+4. Implemented google maps API on portal map and link map
+5. Put portal names on portal map 
