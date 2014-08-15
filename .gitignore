@@ -3,3 +3,4 @@ include/
 tmp_*
 *.php
 *.pyc
+courtsquare/
