@@ -9,10 +9,17 @@ Description:
   input_file:
       One of two types of files:
 
+<<<<<<< HEAD
       - .csv formatted as portal name,intel_link,keys
 
           portal name should not contain commas
           intel_link is the portal link obtained from the Intel map
+=======
+      - .csv formatted as portal name; link; (optional) keys
+
+          portal name should not contain commas
+          link is the portal link from the Intel map
+>>>>>>> tvw
           keys is the number of keys you have for the portal
 
       - .pkl an output from a previous run of this program
@@ -40,15 +47,17 @@ import sys
 from docopt import docopt
 
 import networkx as nx
-from lib import maxfield,PlanPrinter,geometry,agentOrder
+from lib import maxfield,PlanPrinterMap,geometry,agentOrder
 import pickle
+
+import matplotlib.pyplot as plt
 
 def main():
     args = docopt(__doc__)
 
     # We will take many samples in an attempt to reduce number of keys to farm
     # This is the number of samples to take since the last improvement
-    EXTRA_SAMPLES = 20
+    EXTRA_SAMPLES = 100
 
     np = geometry.np
 
@@ -91,23 +100,30 @@ def main():
         # each line should be name,intel_link,keys
         with open(input_file,'r') as fin:
             for line in fin:
-                parts = line.split(',')
+                parts = line.split(';')
 
-                if len(parts) < 4:
+                if len(parts) < 2:
                     break
 
                 a.add_node(i)
                 a.node[i]['name'] = parts[0].strip()
 
+<<<<<<< HEAD
                 lat = int(float((parts[2].split('pll='))[1]) * 1.e6)
                 lon = int(float(parts[3]) * 1.e6)
+=======
+                coords = (parts[1].split('pll='))[1]
+                coord_parts = coords.split(',')
+                lat = int(float(coord_parts[0]) * 1.e6)
+                lon = int(float(coord_parts[1]) * 1.e6)
+>>>>>>> tvw
 
                 locs.append( np.array([lat,lon],dtype=int) )
 
-                if len(parts) < 5:
+                if len(parts) < 3:
                     a.node[i]['keys'] = 0
                 else:
-                    a.node[i]['keys'] = int(parts[4])
+                    a.node[i]['keys'] = int(parts[3])
 
                 i += 1
 
@@ -134,6 +150,10 @@ def main():
         bestTK = np.inf
         bestMK = np.inf
 
+        allTK = []
+        allMK = []
+        allWeights = []
+
         sinceImprove = 0
 
         while sinceImprove<EXTRA_SAMPLES:
@@ -155,6 +175,10 @@ def main():
             
             weightedlack = TK+2*MK
 
+            allTK.append(TK)
+            allMK.append(MK)
+            allWeights.append(weightedlack)
+
             if weightedlack < bestlack:
                 sinceImprove = 0
                 print 'IMPROVEMENT:\n\ttotal: %s\n\tmax:   %s\n\tweighted: %s'%\
@@ -167,16 +191,16 @@ def main():
                 print 'this time:\n\ttotal: %s\n\tmax:   %s\n\tweighted: %s'%\
                        (TK,MK,weightedlack)
 
-            if weightedlack == 0:
+            if weightedlack <= 0:
                 print 'KEY PERFECTION'
                 bestlack  = weightedlack
                 bestTK  = TK
                 bestMK  = MK
                 break
-
-            if all([ b.node[i]['keys'] <= b.out_degree(i) for i in xrange(n) ]):
-                print 'All keys used. Improvement impossible'
-                break
+            # if num agent keys is zero, this code isn't true...
+            # if all([ b.node[i]['keys'] <= b.out_degree(i) for i in xrange(n) ]):
+            #     print 'All keys used. Improvement impossible'
+            #     break
 
             print '%s tries since improvement'%sinceImprove
 
@@ -186,6 +210,16 @@ def main():
             exit()
 
         print 'Choosing plan requiring %s additional keys, max of %s from single portal'%(bestTK,bestMK)
+
+        plt.clf()
+        plt.scatter(allTK,allMK,c=allWeights,marker='o')
+        plt.xlim(min(allTK)-1,max(allTK)+1)
+        plt.ylim(min(allMK)-1,max(allMK)+1)
+        plt.xlabel('Total keys required')
+        plt.ylabel('Max keys required for a single portal')
+        cbar = plt.colorbar()
+        cbar.set_label('Optimization Weighting (lower=better)')
+        plt.savefig(output_directory+'optimization.png')
 
         a = bestgraph
 
@@ -204,7 +238,7 @@ def main():
     #    with open(output_directory+output_file,'w') as fout:
     #        pickle.dump(a,fout)
 
-    PP = PlanPrinter.PlanPrinter(a,output_directory,nagents,COLOR)
+    PP = PlanPrinterMap.PlanPrinter(a,output_directory,nagents,COLOR)
     PP.keyPrep()
     PP.agentKeys()
     PP.planMap()

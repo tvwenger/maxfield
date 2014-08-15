@@ -4,7 +4,10 @@ They should be at full resonators before linking
   Congregation Beth Israel
   Historic Courthouse Square
   Historic Jail House
+<<<<<<< HEAD
   Jack Jouett's Ride
+=======
+>>>>>>> tvw
   Merriweather Lewis Placard
   Paul Goodloe McIntire
   Stonewall Jackson Statue
@@ -13,6 +16,10 @@ They should be at full resonators before linking
 These portals' first links are outgoing
 Their resonators can be applied when first agent arrives
   Catholic Church of the Holy Comforter
+<<<<<<< HEAD
   Gen. Alexander Archer Vandegri
   Site of Old Swan Tavern
   The Kissing Stone
+=======
+  Jack Jouett's Ride
+>>>>>>> tvw

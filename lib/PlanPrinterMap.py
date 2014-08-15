@@ -6,6 +6,10 @@ np = geometry.np
 import agentOrder
 import networkx as nx
 import electricSpring
+from cStringIO import StringIO
+import Image
+import urllib
+import math
 
 # returns the points in a shrunken toward their centroid
 def shrink(a):
@@ -22,7 +26,15 @@ class PlanPrinter:
         self.a = a
         self.n = a.order() # number of nodes
         self.m = a.size()  # number of links
-
+        
+        self.latmax = max([self.a.node[i]['geo'][0] for i in self.a.node.keys()])*180./3.141592654
+        self.latmin = min([self.a.node[i]['geo'][0] for i in self.a.node.keys()])*180./3.141592654
+        self.lonmax = max([self.a.node[i]['geo'][1] for i in self.a.node.keys()])*180./3.141592654
+        self.lonmin = min([self.a.node[i]['geo'][1] for i in self.a.node.keys()])*180./3.141592654
+        self.loncenter = (self.lonmax-self.lonmin)/2. + self.lonmin
+        self.latcenter = (self.latmax-self.latmin)/2. + self.latmin
+        print "Center",self.latcenter,self.loncenter
+        
         self.nagents = nagents
         self.outputDir = outputDir
         self.color = color
@@ -198,53 +210,97 @@ class PlanPrinter:
 
     def planMap(self):
 
-        xmin = self.xy[:,0].min()
-        xmax = self.xy[:,0].max()
-        ymin = self.xy[:,1].min()
-        ymax = self.xy[:,1].max()
+        xmin = self.xy[:,0].min()*1.1
+        xmax = self.xy[:,0].max()*1.1
+        ymin = self.xy[:,1].min()*1.1
+        ymax = self.xy[:,1].max()*1.1
 
+        # current stats
         xylims = np.array([xmin,xmax,ymin,ymax])
-        xylims *= 1.1
+        print xylims
+        map_ywidth = 640.
+        platescale = (ymax-ymin)/map_ywidth
+        map_xwidth = (xmax-xmin) / platescale
+        zoom = math.log(map_ywidth/(self.latmax-self.latmin),2)
+        print platescale,map_xwidth,map_ywidth,zoom
+        
+        # update stats so zoom is an integer
+        zoom = round(zoom)
+        map_ywidth = (self.latmax-self.latmin) * 2.**zoom
+        platescale = (ymax-ymin)/map_ywidth
+        map_xwidth = (xmax-xmin) / platescale
+        print platescale,map_xwidth,map_ywidth,zoom
 
-        # Plot labels aligned to avoid other portals
-        for j in xrange(self.n):
-            i = self.posOrder[j]
-            plt.plot(self.xy[i,0],self.xy[i,1],'o',color=self.color)
+        # now we need xwidth,ywidth < 640.
+        while map_xwidth > 640. or map_ywidth > 640.:
+            zoom = zoom - 1
+            map_ywidth = (self.latmax-self.latmin) * 2.**zoom
+            platescale = (ymax-ymin)/map_ywidth
+            map_xwidth = (xmax-xmin) / platescale
+            print platescale,map_xwidth,map_ywidth,zoom
 
-            displaces = self.xy[i] - self.xy
-            displaces[i,:] = np.inf
+        # turn things in to integers for maps API
+        map_xwidth = int(map_xwidth)
+        map_ywidth = int(map_ywidth)
+        zoom = int(zoom)
 
-            nearest = np.argmin(np.abs(displaces).sum(1))
+        # google maps API
+        url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false".format(self.latcenter,self.loncenter,map_xwidth,map_ywidth,zoom)
+        print url
+        buffer = StringIO(urllib.urlopen(url).read())
+        image = Image.open(buffer)
+        plt.clf()
 
-            if self.xy[nearest,0] < self.xy[i,0]:
-                ha = 'left'
-            else:
-                ha = 'right'
-            if self.xy[nearest,1] < self.xy[i,1]:
-                va = 'bottom'
-            else:
-                va = 'top'
+        # plot once with map and once without
+        for do_map,filename in zip([True,False],["portalMap_google.png","portalMap.png"]):
+            if do_map:
+                implot = plt.imshow(image,extent=xylims)
+            # Plot labels aligned to avoid other portals
+            for j in xrange(self.n):
+                i = self.posOrder[j]
+                plt.plot(self.xy[i,0],self.xy[i,1],'o',color=self.color,
+                        label="{0} - {1}".format(str(j), self.names[i]))
+
+                displaces = self.xy[i] - self.xy
+                displaces[i,:] = np.inf
+
+                nearest = np.argmin(np.abs(displaces).sum(1))
+
+                if self.xy[nearest,0] < self.xy[i,0]:
+                    ha = 'left'
+                else:
+                    ha = 'right'
+                if self.xy[nearest,1] < self.xy[i,1]:
+                    va = 'bottom'
+                else:
+                    va = 'top'
             
-            plt.text(self.xy[i,0],self.xy[i,1],str(j),ha=ha,va=va)
+                plt.text(self.xy[i,0],self.xy[i,1],str(j),ha=ha,va=va)
+            leg = plt.legend(fancybox=True,loc="best",numpoints=1,
+                         fontsize=6,markerscale=0)
+            leg.get_frame().set_alpha(0.2)
 
+            fig = plt.gcf()
+            #fig.set_size_inches(8.5,11)
+            plt.axis(xylims)
+            plt.axis('off')
+            plt.title('Portals numbered north to south\nNames on key list')
+            plt.savefig(self.outputDir+filename)
+    #        plt.show()
+            plt.clf()
 
-        fig = plt.gcf()
-        fig.set_size_inches(6.5,9)
-        plt.axis(xylims)
-        plt.axis('off')
-        plt.title('Portals numbered north to south\nNames on key list')
-        plt.savefig(self.outputDir+'portalMap.png')
-#        plt.show()
-        plt.clf()
-
-        # Draw the map with all edges in place and labeled
-        self.drawSubgraph()
-#        self.drawBlankMap()
-        plt.axis(xylims)
-        plt.axis('off')
-        plt.title('Portal and Link Map')
-        plt.savefig(self.outputDir+'linkMap.png')
-        plt.clf()
+        # draw one with map and one without
+        for do_map,filename in zip([True,False],["linkMap_google.png","linkMap.png"]):
+            # Draw the map with all edges in place and labeled
+            if do_map:
+                implot = plt.imshow(image,extent=xylims)
+            self.drawSubgraph()
+    #        self.drawBlankMap()
+            plt.axis(xylims)
+            plt.axis('off')
+            plt.title('Portal and Link Map')
+            plt.savefig(self.outputDir+filename)
+            plt.clf()
 
 #        for agent in range(self.nagents):
 #            self.drawSubgraph(self.movements[agent])
