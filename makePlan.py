@@ -9,17 +9,10 @@ Description:
   input_file:
       One of two types of files:
 
-<<<<<<< HEAD
-      - .csv formatted as portal name,intel_link,keys
-
-          portal name should not contain commas
-          intel_link is the portal link obtained from the Intel map
-=======
-      - .csv formatted as portal name; link; (optional) keys
+      - semi-colon delimited file formatted as portal name; link; (optional) keys
 
           portal name should not contain commas
           link is the portal link from the Intel map
->>>>>>> tvw
           keys is the number of keys you have for the portal
 
       - .pkl an output from a previous run of this program
@@ -108,16 +101,10 @@ def main():
                 a.add_node(i)
                 a.node[i]['name'] = parts[0].strip()
 
-<<<<<<< HEAD
-                lat = int(float((parts[2].split('pll='))[1]) * 1.e6)
-                lon = int(float(parts[3]) * 1.e6)
-=======
                 coords = (parts[1].split('pll='))[1]
                 coord_parts = coords.split(',')
                 lat = int(float(coord_parts[0]) * 1.e6)
                 lon = int(float(coord_parts[1]) * 1.e6)
->>>>>>> tvw
-
                 locs.append( np.array([lat,lon],dtype=int) )
 
                 if len(parts) < 3:
