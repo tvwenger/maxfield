@@ -217,19 +217,16 @@ class PlanPrinter:
 
         # current stats
         xylims = np.array([xmin,xmax,ymin,ymax])
-        print xylims
         map_ywidth = 640.
         platescale = (ymax-ymin)/map_ywidth
         map_xwidth = (xmax-xmin) / platescale
         zoom = math.log(map_ywidth/(self.latmax-self.latmin),2)
-        print platescale,map_xwidth,map_ywidth,zoom
         
         # update stats so zoom is an integer
         zoom = round(zoom)
         map_ywidth = (self.latmax-self.latmin) * 2.**zoom
         platescale = (ymax-ymin)/map_ywidth
         map_xwidth = (xmax-xmin) / platescale
-        print platescale,map_xwidth,map_ywidth,zoom
 
         # now we need xwidth,ywidth < 640.
         while map_xwidth > 640. or map_ywidth > 640.:
@@ -237,7 +234,6 @@ class PlanPrinter:
             map_ywidth = (self.latmax-self.latmin) * 2.**zoom
             platescale = (ymax-ymin)/map_ywidth
             map_xwidth = (xmax-xmin) / platescale
-            print platescale,map_xwidth,map_ywidth,zoom
 
         # turn things in to integers for maps API
         map_xwidth = int(map_xwidth)

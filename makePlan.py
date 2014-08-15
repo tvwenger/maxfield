@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 """
 Usage:
-  makePlan.py [-b] [-n <agent_count>] <input_file> [<output_directory>] [<output_file>]
+  makePlan.py [-b] [-n <agent_count>] [-s <extra_samples>] <input_file> [<output_directory>] [<output_file>]
 
 Description:
   This is for Ingress. If you don't know what that is, you're lost.
@@ -31,9 +31,12 @@ Description:
 Options:
   -b         Make maps blue instead of green
   -n agents  Number of agents [default: 1]
+  -s extra_samples Number of iterations to run optimization [default: 50]  [max: 100]
 
 Original version by jpeterbaker
 22 July 2014 - tvw updates csv file format
+15 August 2014 - tvw updates with google API, other things
+                 switchted to ; delimited file
 """
 
 import sys
@@ -50,7 +53,7 @@ def main():
 
     # We will take many samples in an attempt to reduce number of keys to farm
     # This is the number of samples to take since the last improvement
-    EXTRA_SAMPLES = 100
+    EXTRA_SAMPLES = 50
 
     np = geometry.np
 
@@ -79,7 +82,15 @@ def main():
 
     nagents = int(args['-n'])
     if nagents < 0:
-        print 'Numer of agents should be positive'
+        print 'Number of agents should be positive'
+        exit()
+
+    EXTRA_SAMPLES = int(args['-s'])
+    if EXTRA_SAMPLES < 0:
+        print 'Number of extra samples should be positive'
+        exit()
+    elif EXTRA_SAMPLES > 100:
+        print 'Extra samples may not be more than 100'
         exit()
 
     input_file = args['<input_file>']
@@ -114,6 +125,10 @@ def main():
 
                 i += 1
 
+        if i > 65:
+            print 'Limit of 65 portals may be optimized at once'
+            exit()
+        
         n = a.order() # number of nodes
 
         locs = np.array(locs,dtype=float)
