@@ -1,7 +1,10 @@
 #! /usr/bin/env python
 """
-Usage:
-  makePlan.py [-b] [-n <agent_count>] [-s <extra_samples>] <input_file> [<output_directory>] [<output_file>]
+Ingress Maxfield - makePlan.py
+
+Usage: makePlan.py [-h] [-v] [-b] [-n NUM_AGENTS] [-s SAMPLES] [-d OUTPUT_DIR]
+                   [-f OUTPUT_FILE]
+                   input_file
 
 Description:
   This is for Ingress. If you don't know what that is, you're lost.
@@ -9,144 +12,158 @@ Description:
   input_file:
       One of two types of files:
 
-      - semi-colon delimited file formatted as portal name; link; (optional) keys
+      - semi-colon delimited file formatted as
+          portal name; link; (optional) keys
 
-          portal name should not contain commas
+          portal name should not contain semi-colons
           link is the portal link from the Intel map
           keys is the number of keys you have for the portal
 
       - .pkl an output from a previous run of this program
 
-          this can be used to make the same plan with a different number of agents
+          this can be used to make the same plan with a different
+          number of agents
 
   output_directory:
-      directory in which to put all output (default is the working directory)
+      directory in which to put all output (default is the working
+      directory)
 
   output_file:
       name for a .pkl file containing information on the plan
 
-      if you use this for the input file, the same plan will be produced with the
-      number of agents you specify (default: "lastPlan.pkl")
+      if you use this for the input file, the same plan will be
+      produced with the number of agents you specify 
 
 Options:
   -b         Make maps blue instead of green
   -n agents  Number of agents [default: 1]
-  -s extra_samples Number of iterations to run optimization [default: 50]  [max: 100]
+  -s extra_samples Number of iterations to run optimization
+  [default: 50]  [max: 100]
 
 Original version by jpeterbaker
 22 July 2014 - tvw updates csv file format
-15 August 2014 - tvw updates with google API, other things
+15 August 2014 - tvw updates with google API, adds -s,
                  switchted to ; delimited file
+08 Sept 2014 - V2.0 tvw changes to Argparse,
+                    use pandas to read input file
 """
 
 import sys
-from docopt import docopt
+import argparse
 
 import networkx as nx
+import numpy as np
+import pandas as pd
 from lib import maxfield,PlanPrinterMap,geometry,agentOrder
 import pickle
 
 import matplotlib.pyplot as plt
 
+# version number
+_V_ = '2.0'
+# max portals allowed
+_MAX_PORTALS_ = 100
+
 def main():
-    args = docopt(__doc__)
+    description=("Ingress Maxfield - Maximize the number of links "
+                 "and fields, and thus AP, for a collection of "
+                 "portals in the game Ingress.")
+    parser = argparse.ArgumentParser(description=description,
+                                     prog="makePlan.py")
+    parser.add_argument('-v','--version',action='version',
+                        version="Ingress Maxfield v{0}".format(_V_))
+    parser.add_argument('-b','--blue',action='store_true',
+                        help='Make colors blue. Default: green')
+    parser.add_argument('-n','--num_agents',type=int,default='1',
+                        help='Number of agents. Default: 1')
+    parser.add_argument('-s','--samples',type=int,default='50',
+                        help="Number of iterations to "
+                        "perform. More iterations may improve "
+                        "results, but will take longer to process. "
+                        "Default: 50")
+    parser.add_argument('input_file',
+                        help="Input semi-colon delimited portal file")
+    parser.add_argument('-d','--output_dir',default='',
+                        help="Directory for results. Default: "
+                        "this directory")
+    parser.add_argument('-f','--output_file',default='plan.pkl',
+                        help="Filename for pickle object. Default: "
+                        "plan.pkl")
+    args = vars(parser.parse_args())
 
-    # We will take many samples in an attempt to reduce number of keys to farm
-    # This is the number of samples to take since the last improvement
-    EXTRA_SAMPLES = 50
+    # Number of iterations to complete since last improvement
+    EXTRA_SAMPLES = args["samples"]
 
-    np = geometry.np
-
-    #GREEN = 'g'
-    #BLUE  = 'b'
     GREEN = '#3BF256' # Actual faction text colors in the app
     BLUE  = '#2ABBFF'
-    #GREEN = (0.0 , 1.0 , 0.0 , 0.3)
-    #BLUE  = (0.0 , 0.0 , 1.0 , 0.3)
-    COLOR = GREEN
-
-    if args['-b']:
+    # Default color
+    if args['blue']:
         COLOR = BLUE
+    else:
+        COLOR = GREEN
 
-    output_directory = ''
-    if args['<output_directory>'] != None:
-        output_directory = args['<output_directory>']
-        if output_directory[-1] != '/':
-            output_directory += '/'
+    output_directory = args["output_dir"]
+    output_file = args["output_file"]
+    if output_file[-4:] != '.pkl':
+        sys.exit("Error: output file must have extension .pkl")
 
-    output_file = 'lastPlan.pkl'
-    if args['<output_file>'] != None:
-        output_file = args['<output_file>']
-        if not output_file[-3:] == 'pkl':
-            print 'WARNING: output file should end in "pkl" or you cannot use it as input later'
-
-    nagents = int(args['-n'])
+    nagents = args["num_agents"]
     if nagents < 0:
-        print 'Number of agents should be positive'
-        exit()
+        sys.exit("Number of agents should be positive")
 
-    EXTRA_SAMPLES = int(args['-s'])
+    EXTRA_SAMPLES = args["samples"]
     if EXTRA_SAMPLES < 0:
-        print 'Number of extra samples should be positive'
-        exit()
+        sys.exit("Number of extra samples should be positive")
     elif EXTRA_SAMPLES > 100:
-        print 'Extra samples may not be more than 100'
-        exit()
+        sys.exit("Extra samples may not be more than 100")
 
-    input_file = args['<input_file>']
+    input_file = args['input_file']
 
     if input_file[-3:] != 'pkl':
-        a = nx.DiGraph()
+        # If the input file is a portal list, let's set things up
+        a = nx.DiGraph() # network tool
+        locs = [] # portal coordinates
+        # each line should be name;intel_link;keys
+        portals = pd.read_table(input_file,sep=';',
+                                comment='#',index_col=False,
+                                names=['name','link','keys'])
+        portals = np.array(portals)
+        print "Found {0} portals in portal list.".format(len(portals))
+        if len(portals) > _MAX_PORTALS_:
+            sys.exit("Error: Portal limit is {0}".\
+                     format(_MAX_PORTALS_))
+        for num,portal in enumerate(portals):
+            a.add_node(num)
+            a.node[num]['name'] = portal[0]
+            coords = (portal[1].split('pll='))[1]
+            coord_parts = coords.split(',')
+            lat = int(float(coord_parts[0]) * 1.e6)
+            lon = int(float(coord_parts[1]) * 1.e6)
+            locs.append(np.array([lat,lon],dtype=float))
+            if np.isnan(portal[2]):
+                a.node[num]['keys'] = 0
+            else:
+                a.node[num]['keys'] = portal[2]
 
-        locs = []
-
-        i = 0
-        # each line should be name,intel_link,keys
-        with open(input_file,'r') as fin:
-            for line in fin:
-                parts = line.split(';')
-
-                if len(parts) < 2:
-                    break
-
-                a.add_node(i)
-                a.node[i]['name'] = parts[0].strip()
-
-                coords = (parts[1].split('pll='))[1]
-                coord_parts = coords.split(',')
-                lat = int(float(coord_parts[0]) * 1.e6)
-                lon = int(float(coord_parts[1]) * 1.e6)
-                locs.append( np.array([lat,lon],dtype=int) )
-
-                if len(parts) < 3:
-                    a.node[i]['keys'] = 0
-                else:
-                    a.node[i]['keys'] = int(parts[3])
-
-                i += 1
-
-        if i > 65:
-            print 'Limit of 65 portals may be optimized at once'
-            exit()
-        
         n = a.order() # number of nodes
-
         locs = np.array(locs,dtype=float)
 
-        # This part assumes we're working with E6 latitude-longitude data
+        # Convert coords to radians, then to cartesian, then to
+        # gnomonic projection
         locs = geometry.e6LLtoRads(locs)
         xyz  = geometry.radstoxyz(locs)
         xy   = geometry.gnomonicProj(locs,xyz)
 
         for i in xrange(n):
             a.node[i]['geo'] = locs[i]
-            a.node[i]['xyz'] = xyz [i]
-            a.node[i]['xy' ] = xy  [i]
+            a.node[i]['xyz'] = xyz[i]
+            a.node[i]['xy' ] = xy[i]
 
         # EXTRA_SAMPLES attempts to get graph with few missing keys
         # Try to minimuze TK + 2*MK where
-        #   TK is the total number of missing keys
-        #   MK is the maximum number of missing keys for any single portal
+        # TK is the total number of missing keys
+        # MK is the maximum number of missing keys for any single
+        # portal
         bestgraph = None
         bestlack = np.inf
         bestTK = np.inf
@@ -262,4 +279,4 @@ def main():
     print "Total AP: {0}".format(portal_ap+link_ap+field_ap)
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

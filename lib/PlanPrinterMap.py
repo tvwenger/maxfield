@@ -254,8 +254,7 @@ class PlanPrinter:
             # Plot labels aligned to avoid other portals
             for j in xrange(self.n):
                 i = self.posOrder[j]
-                plt.plot(self.xy[i,0],self.xy[i,1],'o',color=self.color,
-                        label="{0} - {1}".format(str(j), self.names[i]))
+                plt.plot(self.xy[i,0],self.xy[i,1],'o',color=self.color)
 
                 displaces = self.xy[i] - self.xy
                 displaces[i,:] = np.inf
@@ -272,9 +271,6 @@ class PlanPrinter:
                     va = 'top'
             
                 plt.text(self.xy[i,0],self.xy[i,1],str(j),ha=ha,va=va)
-            leg = plt.legend(fancybox=True,loc="best",numpoints=1,
-                         fontsize=6,markerscale=0)
-            leg.get_frame().set_alpha(0.2)
 
             fig = plt.gcf()
             #fig.set_size_inches(8.5,11)
