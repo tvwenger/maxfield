@@ -2,14 +2,7 @@
 """
 Ingress Maxfield - makePlan.py
 
-usage: makePlan.py [-h] [-v] [-b] [-n NUM_AGENTS] [-s SAMPLES] [-d OUTPUT_DIR]
-                   [-f OUTPUT_FILE]
-                   input_file
-makePlan.py: error: too few arguments
-
-[22:32:22 twenger@Zeus:~/docs/ingress/maxfield]
-$ python makePlan.py -h
-usage: makePlan.py [-h] [-v] [-b] [-n NUM_AGENTS] [-s SAMPLES] [-d OUTPUT_DIR]
+usage: makePlan.py [-h] [-v] [-g] [-n NUM_AGENTS] [-s SAMPLES] [-d OUTPUT_DIR]
                    [-f OUTPUT_FILE]
                    input_file
 
@@ -22,7 +15,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
-  -g, --google          Also make maps with google maps API
+  -g, --google          Also make maps with google maps API. Default: False
   -n NUM_AGENTS, --num_agents NUM_AGENTS
                         Number of agents. Default: 1
   -s SAMPLES, --samples SAMPLES
@@ -42,6 +35,7 @@ Original version by jpeterbaker
 """
 
 import sys
+import os
 import argparse
 import networkx as nx
 import numpy as np
@@ -52,7 +46,7 @@ import pickle
 import matplotlib.pyplot as plt
 
 # version number
-_V_ = '2.0'
+_V_ = '2.0.1'
 # max portals allowed
 _MAX_PORTALS_ = 100
 
@@ -89,12 +83,18 @@ def main():
     GREEN = '#3BF256' # Actual faction text colors in the app
     BLUE  = '#2ABBFF'
     # Use google?
-    useGoogle = not args['google']
+    useGoogle = args['google']
 
     output_directory = args["output_dir"]
+    # add ending separator
+    if output_directory[-1] != os.sep:
+        output_directory += os.sep
+    # create directory if doesn't exist
+    if not os.path.isdir(output_directory):
+        os.mkdir(output_directory)
     output_file = args["output_file"]
     if output_file[-4:] != '.pkl':
-        sys.exit("Error: output file must have extension .pkl")
+        output_file += ".pkl"
 
     nagents = args["num_agents"]
     if nagents < 0:
@@ -257,6 +257,7 @@ def main():
     PP.animate()
     if useGoogle: PP.animate(useGoogle=True)
     PP.split3instruct()
+    if useGoogle: PP.split3instruct(useGoogle=True)
 
     print "Number of portals: {0}".format(PP.num_portals)
     print "Number of links: {0}".format(PP.num_links)

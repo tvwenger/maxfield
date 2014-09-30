@@ -18,7 +18,7 @@ import agentOrder
 import networkx as nx
 import electricSpring
 from cStringIO import StringIO
-import Image
+from PIL import Image
 import urllib2
 import math
 
@@ -292,7 +292,7 @@ class PlanPrinter:
 
         fig = plt.gcf()
         #fig.set_size_inches(8.5,11)
-        plt.axis(self.xylims)
+        if useGoogle: plt.axis(self.xylims)
         plt.axis('off')
         plt.title('Portals numbered north to south\nNames on key list')
         if useGoogle: plt.savefig(self.outputDir+"portalMap_google.png")
@@ -305,7 +305,7 @@ class PlanPrinter:
             implot = plt.imshow(self.google_image,extent=self.xylims)
         # Draw the map with all edges in place and labeled
         self.drawSubgraph()
-        plt.axis(self.xylims)
+        if useGoogle: plt.axis(self.xylims)
         plt.axis('off')
         plt.title('Portal and Link Map')
         if useGoogle: plt.savefig(self.outputDir+"linkMap_google.png")
@@ -431,18 +431,18 @@ class PlanPrinter:
         dashAllEdges()
 
         plt.title('AP:\n%s'%commaGroup(aptotal),ha='center')
-        plt.axis(self.xylims)
+        if useGoogle: plt.axis(self.xylims)
         plt.axis('off')
         if useGoogle: plt.savefig(self.outputDir+'frame_google_-1.png')
         else: plt.savefig(self.outputDir+'frame_-1.png')
         plt.clf()
 
-        if useGoogle:
-            if self.google_image is None:
-                return
-            implot = plt.imshow(self.google_image,extent=self.xylims)
         # let's plot some stuff
         for i in xrange(self.m):
+            if useGoogle:
+                if self.google_image is None:
+                    return
+                implot = plt.imshow(self.google_image,extent=self.xylims)
             p,q = self.orderedEdges[i]
             plt.plot(portals[0],portals[1],'go')
             # Plot all edges lightly
@@ -472,15 +472,15 @@ class PlanPrinter:
             for patch in patches:
                 ax.add_patch(patch)
             ax.set_title('AP:\n%s'%commaGroup(aptotal),ha='center')
-            plt.axis(self.xylims)
+            if useGoogle: plt.axis(self.xylims)
             ax.axis('off')
-            if useGoogle: plt.savefig(self.outputDir+'frame_google_{0:02d}.png'.format(i))
-            else: plt.savefig(self.outputDir+'frame_{0:02d}.png'.format(i))
+            if useGoogle: plt.savefig(self.outputDir+'frame_google_{0:03d}.png'.format(i))
+            else: plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(i))
             ax.cla()
                 
-        # reset patches to green
-        for patch in newPatches:
-            patch.set_facecolor(GREEN)
+            # reset patches to green
+            for patch in newPatches:
+                patch.set_facecolor(GREEN)
 
         if useGoogle:
             if self.google_image is None:
@@ -493,25 +493,31 @@ class PlanPrinter:
         for patch in patches:
             ax.add_patch(patch)
         ax.set_title('AP:\n%s'%commaGroup(aptotal),ha='center')
-        plt.axis(self.xylims)
+        if useGoogle: plt.axis(self.xylims)
         ax.axis('off')
-        if useGoogle: plt.savefig(self.outputDir+'frame_google_%s.png'%self.m)
-        else: plt.savefig(self.outputDir+'frame_%s.png'%self.m)
+        if useGoogle: plt.savefig(self.outputDir+'frame_google_{0:03d}.png'.format(self.m))
+        else: plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(self.m))
         ax.cla()
 
         self.num_fields = len(patches)
 
-    def split3instruct(self):
+    def split3instruct(self, useGoogle=False):
         portals = np.array([self.a.node[i]['xy'] for i in self.a.nodes_iter()]).T
         
         gen1 = self.a.triangulation
 
         oldedges = []
 
+        plt.clf()
+        if useGoogle:
+            if self.google_image is None:
+                return
+            implot = plt.imshow(self.google_image,extent=self.xylims)
         plt.plot(portals[0],portals[1],'go')
-
+        if useGoogle: plt.axis(self.xylims)
         plt.axis('off')
-        plt.savefig(self.outputDir+'depth_-1.png')
+        if useGoogle: plt.savefig(self.outputDir+'depth_google_-1.png')
+        else: plt.savefig(self.outputDir+'depth_-1.png')
         plt.clf()
 
         depth = 0
@@ -527,7 +533,11 @@ class PlanPrinter:
 
             if len(newedges) == 0:
                 break
-            
+
+            if useGoogle:
+                if self.google_image is None:
+                    return
+                implot = plt.imshow(self.google_image,extent=self.xylims)
             plt.plot(portals[0],portals[1],'go')
 
             for edge in oldedges:
@@ -537,18 +547,24 @@ class PlanPrinter:
                 plt.plot(edge[0],edge[1],'r-')
             
             oldedges += newedges
-
+            if useGoogle: plt.axis(self.xylims)
             plt.axis('off')
-            plt.savefig(self.outputDir+'depth_{0:02d}.png'.format(depth))
+            if useGoogle: plt.savefig(self.outputDir+'depth_google_{0:03d}.png'.format(depth))
+            else: plt.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
             plt.clf()
 
             depth += 1
 
+        if useGoogle:
+            if self.google_image is None:
+                return
+            implot = plt.imshow(self.google_image,extent=self.xylims)
         plt.plot(portals[0],portals[1],'go')
 
         for edge in oldedges:
             plt.plot(edge[0],edge[1],'k-')
-
+        if useGoogle: plt.axis(self.xylims)
         plt.axis('off')
-        plt.savefig(self.outputDir+'depth_%s.png'%depth)
+        if useGoogle: plt.savefig(self.outputDir+'depth_google_{0:03d}.png'.format(depth))
+        else: plt.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
         plt.clf()

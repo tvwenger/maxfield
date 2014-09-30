@@ -33,13 +33,13 @@ def flip(a,p,q,degrees=None,keylacks=None):
     # Give the reversed edge the same properties
     a.add_edge(q,p,a.edge[p][q])
     a.remove_edge(p,q)
-    if degrees != None:
+    if degrees is not None:
         degrees[p,0] += 1
         degrees[p,1] -= 1
         degrees[q,0] -= 1
         degrees[q,1] += 1
 
-    if keylacks != None:
+    if keylacks is not None:
         keylacks[p] += 1
         keylacks[q] -= 1
 

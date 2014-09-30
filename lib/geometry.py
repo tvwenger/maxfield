@@ -160,7 +160,7 @@ def gnomonicProj(pts,ptsxyz=None):
     This is only guaranteed to work if no two points are more than 90 degrees apart (great arcwise)
     This is about 9700 km across the surface of Earth
     '''
-    if ptsxyz == None:
+    if ptsxyz is None:
         ptsxyz = radstoxyz(pts)
 
     # We'll project onto the plane tangent at base
@@ -229,7 +229,7 @@ def getPerim(pts):
 
     while a != hix or aNeverChanged:
         c = between(a,b,pts)
-        if c == None:
+        if c is None:
             # there is no perimeter point between a and b
             # proceed to the next adjacent pair
             perimlist.append(a)
