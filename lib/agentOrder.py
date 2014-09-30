@@ -1,6 +1,13 @@
+"""
+Ingress Maxfield - agentOrder.py
 
+Determine agent order based on distance
+
+Original by jpeterbacker
+29 Sept 2014 - tvw V2.0 major update to new version
+"""
 import geometry
-np = geometry.np
+import numpy as np
 
 import orderedTSP
 

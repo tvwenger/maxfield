@@ -2,55 +2,47 @@
 """
 Ingress Maxfield - makePlan.py
 
-Usage: makePlan.py [-h] [-v] [-b] [-n NUM_AGENTS] [-s SAMPLES] [-d OUTPUT_DIR]
+usage: makePlan.py [-h] [-v] [-b] [-n NUM_AGENTS] [-s SAMPLES] [-d OUTPUT_DIR]
+                   [-f OUTPUT_FILE]
+                   input_file
+makePlan.py: error: too few arguments
+
+[22:32:22 twenger@Zeus:~/docs/ingress/maxfield]
+$ python makePlan.py -h
+usage: makePlan.py [-h] [-v] [-b] [-n NUM_AGENTS] [-s SAMPLES] [-d OUTPUT_DIR]
                    [-f OUTPUT_FILE]
                    input_file
 
-Description:
-  This is for Ingress. If you don't know what that is, you're lost.
+Ingress Maxfield - Maximize the number of links and fields, and thus AP, for a
+collection of portals in the game Ingress.
 
-  input_file:
-      One of two types of files:
+positional arguments:
+  input_file            Input semi-colon delimited portal file
 
-      - semi-colon delimited file formatted as
-          portal name; link; (optional) keys
-
-          portal name should not contain semi-colons
-          link is the portal link from the Intel map
-          keys is the number of keys you have for the portal
-
-      - .pkl an output from a previous run of this program
-
-          this can be used to make the same plan with a different
-          number of agents
-
-  output_directory:
-      directory in which to put all output (default is the working
-      directory)
-
-  output_file:
-      name for a .pkl file containing information on the plan
-
-      if you use this for the input file, the same plan will be
-      produced with the number of agents you specify 
-
-Options:
-  -b         Make maps blue instead of green
-  -n agents  Number of agents [default: 1]
-  -s extra_samples Number of iterations to run optimization
-  [default: 50]  [max: 100]
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  -g, --google          Also make maps with google maps API
+  -n NUM_AGENTS, --num_agents NUM_AGENTS
+                        Number of agents. Default: 1
+  -s SAMPLES, --samples SAMPLES
+                        Number of iterations to perform. More iterations may
+                        improve results, but will take longer to process.
+                        Default: 50
+  -d OUTPUT_DIR, --output_dir OUTPUT_DIR
+                        Directory for results. Default: this directory
+  -f OUTPUT_FILE, --output_file OUTPUT_FILE
+                        Filename for pickle object. Default: plan.pkl
 
 Original version by jpeterbaker
 22 July 2014 - tvw updates csv file format
 15 August 2014 - tvw updates with google API, adds -s,
                  switchted to ; delimited file
-08 Sept 2014 - V2.0 tvw changes to Argparse,
-                    use pandas to read input file
+29 Sept 2014 - tvw V2.0 major update to new version
 """
 
 import sys
 import argparse
-
 import networkx as nx
 import numpy as np
 import pandas as pd
@@ -72,11 +64,11 @@ def main():
                                      prog="makePlan.py")
     parser.add_argument('-v','--version',action='version',
                         version="Ingress Maxfield v{0}".format(_V_))
-    parser.add_argument('-b','--blue',action='store_true',
-                        help='Make colors blue. Default: green')
+    parser.add_argument('-g','--google',action='store_true',
+                        help='Also make maps with google maps API. Default: False')
     parser.add_argument('-n','--num_agents',type=int,default='1',
                         help='Number of agents. Default: 1')
-    parser.add_argument('-s','--samples',type=int,default='50',
+    parser.add_argument('-s','--samples',type=int,default=50,
                         help="Number of iterations to "
                         "perform. More iterations may improve "
                         "results, but will take longer to process. "
@@ -96,11 +88,8 @@ def main():
 
     GREEN = '#3BF256' # Actual faction text colors in the app
     BLUE  = '#2ABBFF'
-    # Default color
-    if args['blue']:
-        COLOR = BLUE
-    else:
-        COLOR = GREEN
+    # Use google?
+    useGoogle = not args['google']
 
     output_directory = args["output_dir"]
     output_file = args["output_file"]
@@ -257,14 +246,16 @@ def main():
     #    with open(output_directory+output_file,'w') as fout:
     #        pickle.dump(a,fout)
 
-    PP = PlanPrinterMap.PlanPrinter(a,output_directory,nagents,COLOR)
+    PP = PlanPrinterMap.PlanPrinter(a,output_directory,nagents,useGoogle=useGoogle)
     PP.keyPrep()
     PP.agentKeys()
     PP.planMap()
+    if useGoogle: PP.planMap(useGoogle=True)
     PP.agentLinks()
 
     # These make step-by-step instructional images
     PP.animate()
+    if useGoogle: PP.animate(useGoogle=True)
     PP.split3instruct()
 
     print "Number of portals: {0}".format(PP.num_portals)

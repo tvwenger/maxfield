@@ -1,9 +1,15 @@
+"""
+Ingress Maxfield - geometry
 
-# Portals, triangles and the like
+Triangles and the like
+
+original version by jpeterbaker
+29 Sept 2014 - tvw V2.0 major updates
+"""
 
 import numpy as np
 
-radPERe6degree = np.pi / (180*10**6)
+radPERe6degree = np.pi / (180.*10**6)
 
 def e6LLtoRads(pts):
     pts = pts.astype(float)
@@ -308,4 +314,3 @@ if __name__ == '__main__':
     print ta/np.pi
     print tb/np.pi
     print tc/np.pi
-

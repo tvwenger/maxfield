@@ -1,14 +1,25 @@
+"""
+Ingress Maxfield - PlanPrinterMap.py
+
+This is a replacement for PlanPrinter.py
+With google maps support
+
+original version by jpeterbaker
+29 Sept 2014 - tvw V2.0 major updates
+"""
+
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import geometry
-np = geometry.np
+from matplotlib.patches import Polygon
+import numpy as np
 import agentOrder
 import networkx as nx
 import electricSpring
 from cStringIO import StringIO
 import Image
-import urllib
+import urllib2
 import math
 
 # returns the points in a shrunken toward their centroid
@@ -22,19 +33,11 @@ def commaGroup(n):
     return ','.join([ s[max(i,0):i+3] for i in range(len(s)-3,-3,-3)][::-1])
 
 class PlanPrinter:
-    def __init__(self,a,outputDir,nagents,color='#FF004D'):
+    def __init__(self,a,outputDir,nagents,color='#FF004D',useGoogle=False):
         self.a = a
         self.n = a.order() # number of nodes
         self.m = a.size()  # number of links
-        
-        self.latmax = max([self.a.node[i]['geo'][0] for i in self.a.node.keys()])*180./3.141592654
-        self.latmin = min([self.a.node[i]['geo'][0] for i in self.a.node.keys()])*180./3.141592654
-        self.lonmax = max([self.a.node[i]['geo'][1] for i in self.a.node.keys()])*180./3.141592654
-        self.lonmin = min([self.a.node[i]['geo'][1] for i in self.a.node.keys()])*180./3.141592654
-        self.loncenter = (self.lonmax-self.lonmin)/2. + self.lonmin
-        self.latcenter = (self.latmax-self.latmin)/2. + self.latmin
-        print "Center",self.latcenter,self.loncenter
-        
+                
         self.nagents = nagents
         self.outputDir = outputDir
         self.color = color
@@ -76,9 +79,62 @@ class PlanPrinter:
 
         self.maxNameLen = max([len(a.node[i]['name']) for  i in xrange(self.n)])
 
+        # total stats for this plan
         self.num_portals = self.n
         self.num_links = self.m
         self.num_fields = -1
+
+        if useGoogle:
+            # coordinates needed for google maps
+            latmax = np.rad2deg(max([self.a.node[i]['geo'][0] for i in self.a.node.keys()]))
+            latmin = np.rad2deg(min([self.a.node[i]['geo'][0] for i in self.a.node.keys()]))
+            lonmax = np.rad2deg(max([self.a.node[i]['geo'][1] for i in self.a.node.keys()]))
+            lonmin = np.rad2deg(min([self.a.node[i]['geo'][1] for i in self.a.node.keys()]))
+            loncenter = (lonmax-lonmin)/2. + lonmin
+            latcenter = (latmax-latmin)/2. + latmin
+            print "Center",latcenter,loncenter
+            xmin = self.xy[:,0].min()*1.1
+            xmax = self.xy[:,0].max()*1.1
+            ymin = self.xy[:,1].min()*1.1
+            ymax = self.xy[:,1].max()*1.1
+    
+            # determine zoom for google maps
+            self.xylims = np.array([xmin,xmax,ymin,ymax])
+            map_ywidth = 640.
+            platescale = (ymax-ymin)/map_ywidth
+            map_xwidth = (xmax-xmin) / platescale
+            zoom = math.log(map_ywidth/(latmax-latmin),2)
+        
+            # update so zoom is an integer
+            zoom = round(zoom)
+            map_ywidth = (latmax-latmin) * 2.**zoom
+            platescale = (ymax-ymin)/map_ywidth
+            map_xwidth = (xmax-xmin)/platescale
+    
+            # now we need xwidth,ywidth < 640.
+            while map_xwidth > 640. or map_ywidth > 640.:
+                zoom = zoom - 1
+                map_ywidth = (latmax-latmin) * 2.**zoom
+                platescale = (ymax-ymin)/map_ywidth
+                map_xwidth = (xmax-xmin)/platescale
+
+            # turn things in to integers for maps API
+            map_xwidth = int(map_xwidth)
+            map_ywidth = int(map_ywidth)
+            zoom = int(zoom)
+
+            # google maps API
+            url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false".format(latcenter,loncenter,map_xwidth,map_ywidth,zoom)
+            print url
+        
+            # determine if we can use google maps
+            self.google_image = None
+            try:
+                buffer = StringIO(urllib2.urlopen(url).read())
+                self.google_image = Image.open(buffer)
+                plt.clf()
+            except urllib2.URLError as err:
+                print("Could not connect to google maps server!")
 
     def keyPrep(self):
         rowFormat = '{0:11d} | {1:6d} | {2}\n'
@@ -208,91 +264,53 @@ class PlanPrinter:
             nx.draw_networkx_edges(b,self.ptmap,edge_color='k')
         plt.axis('off')
 
-    def planMap(self):
+    def planMap(self,useGoogle=False):
+        if useGoogle:
+            if self.google_image is None:
+                return
+            implot = plt.imshow(self.google_image,extent=self.xylims)
+        # Plot labels aligned to avoid other portals
+        for j in xrange(self.n):
+            i = self.posOrder[j]
+            plt.plot(self.xy[i,0],self.xy[i,1],'o',color=self.color)
 
-        xmin = self.xy[:,0].min()*1.1
-        xmax = self.xy[:,0].max()*1.1
-        ymin = self.xy[:,1].min()*1.1
-        ymax = self.xy[:,1].max()*1.1
+            displaces = self.xy[i] - self.xy
+            displaces[i,:] = np.inf
 
-        # current stats
-        xylims = np.array([xmin,xmax,ymin,ymax])
-        map_ywidth = 640.
-        platescale = (ymax-ymin)/map_ywidth
-        map_xwidth = (xmax-xmin) / platescale
-        zoom = math.log(map_ywidth/(self.latmax-self.latmin),2)
-        
-        # update stats so zoom is an integer
-        zoom = round(zoom)
-        map_ywidth = (self.latmax-self.latmin) * 2.**zoom
-        platescale = (ymax-ymin)/map_ywidth
-        map_xwidth = (xmax-xmin) / platescale
+            nearest = np.argmin(np.abs(displaces).sum(1))
 
-        # now we need xwidth,ywidth < 640.
-        while map_xwidth > 640. or map_ywidth > 640.:
-            zoom = zoom - 1
-            map_ywidth = (self.latmax-self.latmin) * 2.**zoom
-            platescale = (ymax-ymin)/map_ywidth
-            map_xwidth = (xmax-xmin) / platescale
+            if self.xy[nearest,0] < self.xy[i,0]:
+                ha = 'left'
+            else:
+                ha = 'right'
+            if self.xy[nearest,1] < self.xy[i,1]:
+                va = 'bottom'
+            else:
+                va = 'top'
+            
+            plt.text(self.xy[i,0],self.xy[i,1],str(j),ha=ha,va=va)
 
-        # turn things in to integers for maps API
-        map_xwidth = int(map_xwidth)
-        map_ywidth = int(map_ywidth)
-        zoom = int(zoom)
-
-        # google maps API
-        url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false".format(self.latcenter,self.loncenter,map_xwidth,map_ywidth,zoom)
-        print url
-        buffer = StringIO(urllib.urlopen(url).read())
-        image = Image.open(buffer)
+        fig = plt.gcf()
+        #fig.set_size_inches(8.5,11)
+        plt.axis(self.xylims)
+        plt.axis('off')
+        plt.title('Portals numbered north to south\nNames on key list')
+        if useGoogle: plt.savefig(self.outputDir+"portalMap_google.png")
+        else: plt.savefig(self.outputDir+"portalMap.png")
         plt.clf()
 
-        # plot once with map and once without
-        for do_map,filename in zip([True,False],["portalMap_google.png","portalMap.png"]):
-            if do_map:
-                implot = plt.imshow(image,extent=xylims)
-            # Plot labels aligned to avoid other portals
-            for j in xrange(self.n):
-                i = self.posOrder[j]
-                plt.plot(self.xy[i,0],self.xy[i,1],'o',color=self.color)
-
-                displaces = self.xy[i] - self.xy
-                displaces[i,:] = np.inf
-
-                nearest = np.argmin(np.abs(displaces).sum(1))
-
-                if self.xy[nearest,0] < self.xy[i,0]:
-                    ha = 'left'
-                else:
-                    ha = 'right'
-                if self.xy[nearest,1] < self.xy[i,1]:
-                    va = 'bottom'
-                else:
-                    va = 'top'
-            
-                plt.text(self.xy[i,0],self.xy[i,1],str(j),ha=ha,va=va)
-
-            fig = plt.gcf()
-            #fig.set_size_inches(8.5,11)
-            plt.axis(xylims)
-            plt.axis('off')
-            plt.title('Portals numbered north to south\nNames on key list')
-            plt.savefig(self.outputDir+filename)
-    #        plt.show()
-            plt.clf()
-
-        # draw one with map and one without
-        for do_map,filename in zip([True,False],["linkMap_google.png","linkMap.png"]):
-            # Draw the map with all edges in place and labeled
-            if do_map:
-                implot = plt.imshow(image,extent=xylims)
-            self.drawSubgraph()
-    #        self.drawBlankMap()
-            plt.axis(xylims)
-            plt.axis('off')
-            plt.title('Portal and Link Map')
-            plt.savefig(self.outputDir+filename)
-            plt.clf()
+        if useGoogle:
+            if self.google_image is None:
+                return
+            implot = plt.imshow(self.google_image,extent=self.xylims)
+        # Draw the map with all edges in place and labeled
+        self.drawSubgraph()
+        plt.axis(self.xylims)
+        plt.axis('off')
+        plt.title('Portal and Link Map')
+        if useGoogle: plt.savefig(self.outputDir+"linkMap_google.png")
+        else: plt.savefig(self.outputDir+"linkMap.png")
+        plt.clf()
 
 #        for agent in range(self.nagents):
 #            self.drawSubgraph(self.movements[agent])
@@ -380,10 +398,11 @@ class PlanPrinter:
                             self.nslabel[q],\
                             self.names[q]\
                         ))
-    def animate(self):
-        # show or save a sequence of images demonstrating how the plan would unfold
-        from matplotlib.patches import Polygon
 
+    def animate(self,useGoogle=False):
+        """
+        Show how the links will unfold
+        """
         fig = plt.figure()
         ax  = fig.add_subplot(111)
 
@@ -392,7 +411,8 @@ class PlanPrinter:
         RED       = ( 1.0 , 0.0 , 0.0 , 0.5)
         INVISIBLE = ( 0.0 , 0.0 , 0.0 , 0.0 )
 
-        portals = np.array([self.a.node[i]['xy'] for i in self.a.nodes_iter()]).T
+        portals = np.array([self.a.node[i]['xy']
+                            for i in self.a.nodes_iter()]).T
         
         # Plot all edges lightly
         def dashAllEdges():
@@ -400,87 +420,83 @@ class PlanPrinter:
                 plt.plot(portals[0,[p,q]],portals[1,[p,q]],'k:')
 
         aptotal = 0
-
         edges   = []
         patches = []
 
+        if useGoogle:
+            if self.google_image is None:
+                return
+            implot = plt.imshow(self.google_image,extent=self.xylims)
         plt.plot(portals[0],portals[1],'go')
-#        plt.plot(portals[0],portals[1],'bo')
-
         dashAllEdges()
 
         plt.title('AP:\n%s'%commaGroup(aptotal),ha='center')
+        plt.axis(self.xylims)
         plt.axis('off')
-        plt.savefig(self.outputDir+'frame_-1.png'.format(i))
+        if useGoogle: plt.savefig(self.outputDir+'frame_google_-1.png')
+        else: plt.savefig(self.outputDir+'frame_-1.png')
         plt.clf()
 
+        if useGoogle:
+            if self.google_image is None:
+                return
+            implot = plt.imshow(self.google_image,extent=self.xylims)
+        # let's plot some stuff
         for i in xrange(self.m):
             p,q = self.orderedEdges[i]
-#            print p,q,self.a.edge[p][q]['fields']
-
             plt.plot(portals[0],portals[1],'go')
-#            plt.plot(portals[0],portals[1],'bo')
-
             # Plot all edges lightly
             dashAllEdges()
-
             for edge in edges:
                 plt.plot(edge[0],edge[1],'g-')
-#                plt.plot(edge[0],edge[1],'b-')
 
             # We'll display the new fields in red
             newPatches = []
             for tri in self.a.edge[p][q]['fields']:
-#                print 'edge has a field'
                 coords = np.array([ self.a.node[v]['xy'] for v in tri ])
                 newPatches.append(Polygon(shrink(coords.T).T,facecolor=RED,\
                                                  edgecolor=INVISIBLE))
-#                newPatches.append(Polygon(shrink(coords.T).T,facecolor=GREEN,\
-#                                                 edgecolor=INVISIBLE))
-#            print '%s new patches'%len(newPatches)
             
             aptotal += 313+1250*len(newPatches)
-
             newEdge = np.array([self.a.node[p]['xy'],self.a.node[q]['xy']]).T
-
             patches += newPatches
-            edges.append(newEdge)
-
-           # plt.arrow( x, y, dx, dy, **kwargs )
-#            plt.arrow(              newEdge[0,0],\
-#                                    newEdge[1,0],\
-#                       newEdge[0,1]-newEdge[0,0],\
-#                       newEdge[1,1]-newEdge[1,0],\
-#                       fc="k", ec="k")#,head_width=0.0005,head_length=0.001 )
-            
+            edges.append(newEdge)            
             plt.plot(newEdge[0],newEdge[1],'k-',lw=2)
-#            plt.plot(newEdge[0],newEdge[1],'g-')
-
+            x0 = newEdge[0][0]
+            x1 = newEdge[0][1]
+            y0 = newEdge[1][0]
+            y1 = newEdge[1][1]
+            plt.plot([x1-0.05*(x1-x0),x1-0.4*(x1-x0)],
+                     [y1-0.05*(y1-y0),y1-0.4*(y1-y0)],'k-',lw=6)
             ax = plt.gca()
-#            print 'adding %s patches'%len(patches)
             for patch in patches:
                 ax.add_patch(patch)
-
             ax.set_title('AP:\n%s'%commaGroup(aptotal),ha='center')
+            plt.axis(self.xylims)
             ax.axis('off')
-            plt.savefig(self.outputDir+'frame_{0:02d}.png'.format(i))
+            if useGoogle: plt.savefig(self.outputDir+'frame_google_{0:02d}.png'.format(i))
+            else: plt.savefig(self.outputDir+'frame_{0:02d}.png'.format(i))
             ax.cla()
+                
+        # reset patches to green
+        for patch in newPatches:
+            patch.set_facecolor(GREEN)
 
-            for patch in newPatches:
-                patch.set_facecolor(GREEN)
-#                patch.set_facecolor(BLUE)
+        if useGoogle:
+            if self.google_image is None:
+                return
+            implot = plt.imshow(self.google_image,extent=self.xylims)
 
         plt.plot(portals[0],portals[1],'go')
-#        plt.plot(portals[0],portals[1],'bo')
         for edge in edges:
             plt.plot(edge[0],edge[1],'g-')
-#            plt.plot(edge[0],edge[1],'b-')
         for patch in patches:
             ax.add_patch(patch)
-
         ax.set_title('AP:\n%s'%commaGroup(aptotal),ha='center')
+        plt.axis(self.xylims)
         ax.axis('off')
-        plt.savefig(self.outputDir+'frame_%s.png'%self.m)
+        if useGoogle: plt.savefig(self.outputDir+'frame_google_%s.png'%self.m)
+        else: plt.savefig(self.outputDir+'frame_%s.png'%self.m)
         ax.cla()
 
         self.num_fields = len(patches)
@@ -536,5 +552,3 @@ class PlanPrinter:
         plt.axis('off')
         plt.savefig(self.outputDir+'depth_%s.png'%depth)
         plt.clf()
-
-

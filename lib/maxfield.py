@@ -1,4 +1,11 @@
+"""
+Ingress Maxfield - maxfield.py
 
+General code to optimize fielding strategy.
+
+Original version by jpeterbaker
+29 Sept 2014 - tvw V2.0 major updates
+"""
 import geometry
 np = geometry.np
 from Triangle import Triangle,Deadend
