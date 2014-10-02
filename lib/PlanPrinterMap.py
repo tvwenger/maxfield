@@ -250,10 +250,12 @@ class PlanPrinter:
                      fontweight='bold',ha='center',va='center')
 
         try:
-            nx.draw_networkx_edge_labels(b,self.ptmap,edgelabels)
+            nx.draw_networkx_edge_labels(b,self.ptmap,edgelabels,font_size=8,
+                                         bbox=dict(boxstyle="round",fc="w"))
         except AttributeError:
             self.ptmap   = dict([(i,self.a.node[i]['xy']) for i in xrange(self.n) ])
-            nx.draw_networkx_edge_labels(b,self.ptmap,edgelabels)
+            nx.draw_networkx_edge_labels(b,self.ptmap,edgelabels,font_size=8,
+                                         bbox=dict(boxstyle="round",fc="w"))
 
         # edge_color does not seem to support arbitrary colors easily
         if self.color == '#3BF256':
@@ -265,6 +267,8 @@ class PlanPrinter:
         plt.axis('off')
 
     def planMap(self,useGoogle=False):
+        fig = plt.figure()
+        ax  = fig.add_subplot(111)
         if useGoogle:
             if self.google_image is None:
                 return

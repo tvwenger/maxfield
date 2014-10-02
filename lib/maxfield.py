@@ -59,17 +59,18 @@ def flipSome(a):
         keylacks[i] = degrees[i,0]-a.node[i]['keys']
 
     # We can never make more than 8 outogoing links. Reducing these is first priority
-#    manyout = (degrees[:,1]>8).nonzero()[0]
-#    for p in manyout:
-#        qs = list(a.edge[p].iterkeys())
-#        for q in qs:
-#            if a.edge[p][q]['reversible'] and canFlip(degrees,keylacks,p,q):
-#                flip(a,p,q,degrees,keylacks)
-#            if degrees[p,1] <= 8:
-#                break
-#        else:
-#            # This runs if the for loop exits without the break
-#            print 'Could not reduce OUT-degree sufficiently for %s'%p
+    manyout = (degrees[:,1]>8).nonzero()[0]
+    for p in manyout:
+        print "Found a portal with more than 8 outgoing links: %s"%p
+        qs = list(a.edge[p].iterkeys())
+        for q in qs:
+            if a.edge[p][q]['reversible'] and canFlip(degrees,keylacks,p,q):
+                flip(a,p,q,degrees,keylacks)
+            if degrees[p,1] <= 8:
+                break
+        else:
+            # This runs if the for loop exits without the break
+            print 'Could not reduce OUT-degree sufficiently for %s'%p
 
     # It is difficult to gather more keys. Reducing key-gathering is next priority
     # We'll process the ones with the greatest need first

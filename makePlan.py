@@ -132,7 +132,7 @@ def main():
             if np.isnan(portal[2]):
                 a.node[num]['keys'] = 0
             else:
-                a.node[num]['keys'] = portal[2]
+                a.node[num]['keys'] = int(portal[2])
 
         n = a.order() # number of nodes
         locs = np.array(locs,dtype=float)
