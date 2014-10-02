@@ -15,7 +15,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
-  -g, --google          Also make maps with google maps API. Default: False
+  -g, --google          Make maps with google maps API. Default: False
   -n NUM_AGENTS, --num_agents NUM_AGENTS
                         Number of agents. Default: 1
   -s SAMPLES, --samples SAMPLES
@@ -46,7 +46,7 @@ import pickle
 import matplotlib.pyplot as plt
 
 # version number
-_V_ = '2.0.1'
+_V_ = '2.0.2'
 # max portals allowed
 _MAX_PORTALS_ = 100
 
@@ -59,7 +59,7 @@ def main():
     parser.add_argument('-v','--version',action='version',
                         version="Ingress Maxfield v{0}".format(_V_))
     parser.add_argument('-g','--google',action='store_true',
-                        help='Also make maps with google maps API. Default: False')
+                        help='Make maps with google maps API. Default: False')
     parser.add_argument('-n','--num_agents',type=int,default='1',
                         help='Number of agents. Default: 1')
     parser.add_argument('-s','--samples',type=int,default=50,
@@ -249,15 +249,12 @@ def main():
     PP = PlanPrinterMap.PlanPrinter(a,output_directory,nagents,useGoogle=useGoogle)
     PP.keyPrep()
     PP.agentKeys()
-    PP.planMap()
-    if useGoogle: PP.planMap(useGoogle=True)
+    PP.planMap(useGoogle=useGoogle)
     PP.agentLinks()
 
     # These make step-by-step instructional images
-    PP.animate()
-    if useGoogle: PP.animate(useGoogle=True)
-    PP.split3instruct()
-    if useGoogle: PP.split3instruct(useGoogle=True)
+    PP.animate(useGoogle=useGoogle)
+    PP.split3instruct(useGoogle=useGoogle)
 
     print "Number of portals: {0}".format(PP.num_portals)
     print "Number of links: {0}".format(PP.num_links)
