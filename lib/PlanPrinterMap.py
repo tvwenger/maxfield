@@ -437,8 +437,7 @@ class PlanPrinter:
         plt.title('AP:\n%s'%commaGroup(aptotal),ha='center')
         if useGoogle: plt.axis(self.xylims)
         plt.axis('off')
-        if useGoogle: plt.savefig(self.outputDir+'frame_google_-1.png')
-        else: plt.savefig(self.outputDir+'frame_-1.png')
+        plt.savefig(self.outputDir+'frame_-1.png')
         plt.clf()
 
         # let's plot some stuff
@@ -478,8 +477,7 @@ class PlanPrinter:
             ax.set_title('AP:\n%s'%commaGroup(aptotal),ha='center')
             if useGoogle: plt.axis(self.xylims)
             ax.axis('off')
-            if useGoogle: plt.savefig(self.outputDir+'frame_google_{0:03d}.png'.format(i))
-            else: plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(i))
+            plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(i))
             ax.cla()
                 
             # reset patches to green
@@ -499,8 +497,7 @@ class PlanPrinter:
         ax.set_title('AP:\n%s'%commaGroup(aptotal),ha='center')
         if useGoogle: plt.axis(self.xylims)
         ax.axis('off')
-        if useGoogle: plt.savefig(self.outputDir+'frame_google_{0:03d}.png'.format(self.m))
-        else: plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(self.m))
+        plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(self.m))
         ax.cla()
 
         self.num_fields = len(patches)
@@ -520,8 +517,7 @@ class PlanPrinter:
         plt.plot(portals[0],portals[1],'go')
         if useGoogle: plt.axis(self.xylims)
         plt.axis('off')
-        if useGoogle: plt.savefig(self.outputDir+'depth_google_-1.png')
-        else: plt.savefig(self.outputDir+'depth_-1.png')
+        plt.savefig(self.outputDir+'depth_-1.png')
         plt.clf()
 
         depth = 0
@@ -553,8 +549,7 @@ class PlanPrinter:
             oldedges += newedges
             if useGoogle: plt.axis(self.xylims)
             plt.axis('off')
-            if useGoogle: plt.savefig(self.outputDir+'depth_google_{0:03d}.png'.format(depth))
-            else: plt.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
+            plt.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
             plt.clf()
 
             depth += 1
@@ -569,6 +564,5 @@ class PlanPrinter:
             plt.plot(edge[0],edge[1],'k-')
         if useGoogle: plt.axis(self.xylims)
         plt.axis('off')
-        if useGoogle: plt.savefig(self.outputDir+'depth_google_{0:03d}.png'.format(depth))
-        else: plt.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
+        plt.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
         plt.clf()
