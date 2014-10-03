@@ -118,8 +118,9 @@ def main():
                                 comment='#',index_col=False,
                                 names=['name','link','keys'])
         portals = np.array(portals)
-        portals = np.array([portal for portal in portals if isinstance(portal[0], basestring)])
+        portals = np.array([portal for portal in portals if (isinstance(portal[0], basestring) and isinstance(portal[1], basestring))])
         print "Found {0} portals in portal list.".format(len(portals))
+        if len(portals) == 0: sys.exit()
         if len(portals) > _MAX_PORTALS_:
             sys.exit("Error: Portal limit is {0}".\
                      format(_MAX_PORTALS_))
