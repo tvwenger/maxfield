@@ -49,7 +49,7 @@ import matplotlib.pyplot as plt
 # version number
 _V_ = '2.0.2'
 # max portals allowed
-_MAX_PORTALS_ = 100
+_MAX_PORTALS_ = 50
 
 def main():
     description=("Ingress Maxfield - Maximize the number of links "
