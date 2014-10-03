@@ -4,5 +4,7 @@ Changes: 15 August -
 2. Increased number of optimization attempts
 3. Forced limitation on number of portals
 4. Implemented google maps API on portal map and link map
-5. Put portal names on portal map 
-Merged: 
+5. Re-added check for >8 outgoing links.
+6. Updated some plot colors to look nicer.
+7. Added UTF-8 support.
+Merged: 2 October 2014

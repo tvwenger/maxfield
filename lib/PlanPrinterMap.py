@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 Ingress Maxfield - PlanPrinterMap.py
 
@@ -92,7 +94,7 @@ class PlanPrinter:
             lonmin = np.rad2deg(min([self.a.node[i]['geo'][1] for i in self.a.node.keys()]))
             loncenter = (lonmax-lonmin)/2. + lonmin
             latcenter = (latmax-latmin)/2. + latmin
-            print "Center Coordinates (lat, lon):",latcenter,loncenter
+            print "Center Coordinates (lat,lon): ",latcenter,loncenter
             xmin = self.xy[:,0].min()*1.1
             xmax = self.xy[:,0].max()*1.1
             ymin = self.xy[:,1].min()*1.1
@@ -125,7 +127,7 @@ class PlanPrinter:
 
             # google maps API
             url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false".format(latcenter,loncenter,map_xwidth,map_ywidth,zoom)
-            print "Google maps URL: ",url
+            print "Google Maps URL: ",url
         
             # determine if we can use google maps
             self.google_image = None
