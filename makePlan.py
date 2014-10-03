@@ -116,7 +116,9 @@ def main():
         # each line should be name;intel_link;keys
         portals = pd.read_table(input_file,sep=';',
                                 comment='#',index_col=False,
-                                names=['name','link','keys'])
+                                names=['name','link','keys'],
+                                encoding='utf-8',
+                                skip_blank_lines=True)
         portals = np.array(portals)
         print "Found {0} portals in portal list.".format(len(portals))
         if len(portals) > _MAX_PORTALS_:
