@@ -117,9 +117,8 @@ def main():
         portals = pd.read_table(input_file,sep=';',
                                 comment='#',index_col=False,
                                 names=['name','link','keys'],
-                                encoding='utf-8',
-                                skip_blank_lines=True)
-        portals = np.array(portals)
+                                encoding='utf-8')
+        portals = np.array([portal for portal in portals if not np.isnan(portal[0])])
         print "Found {0} portals in portal list.".format(len(portals))
         if len(portals) > _MAX_PORTALS_:
             sys.exit("Error: Portal limit is {0}".\
