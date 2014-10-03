@@ -125,10 +125,16 @@ def main():
             sys.exit("Error: Portal limit is {0}".\
                      format(_MAX_PORTALS_))
         for num,portal in enumerate(portals):
+            if len(portal) < 3:
+                print "Error! Portal ",portal[0]," has a formatting problem."
+                sys.exit()
             a.add_node(num)
             a.node[num]['name'] = portal[0]
-            coords = (portal[1].split('pll='))[1]
-            coord_parts = coords.split(',')
+            coords = (portal[1].split('pll='))
+            if len(coords) < 2:
+                print "Error! Portal ",portal[0]," has a formatting problem."
+                sys.exit()
+            coord_parts = coords[1].split(',')
             lat = int(float(coord_parts[0]) * 1.e6)
             lon = int(float(coord_parts[1]) * 1.e6)
             locs.append(np.array([lat,lon],dtype=float))
