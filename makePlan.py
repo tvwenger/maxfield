@@ -118,12 +118,12 @@ def main():
                                 comment='#',index_col=False,
                                 names=['name','link','keys'],
                                 encoding='utf-8')
-        portals = np.array([portal for portal in portals if isinstance(portal[0], basestring)])
         print "Found {0} portals in portal list.".format(len(portals))
         if len(portals) > _MAX_PORTALS_:
             sys.exit("Error: Portal limit is {0}".\
                      format(_MAX_PORTALS_))
         for num,portal in enumerate(portals):
+            if not isinstance(portal[0], basestring): continue
             a.add_node(num)
             a.node[num]['name'] = portal[0]
             coords = (portal[1].split('pll='))[1]
