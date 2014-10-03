@@ -123,7 +123,7 @@ def main():
             sys.exit("Error: Portal limit is {0}".\
                      format(_MAX_PORTALS_))
         for num,portal in enumerate(portals):
-            if not isinstance(portal[0], basestring): continue
+            if not isinstance(portal[0], basestring) or portal[0] == "": continue
             a.add_node(num)
             a.node[num]['name'] = portal[0]
             coords = (portal[1].split('pll='))[1]
