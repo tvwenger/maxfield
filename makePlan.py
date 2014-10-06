@@ -17,6 +17,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
   -g, --google          Make maps with google maps API. Default: False
+  -a, --api_key         Google API key for google maps. Default: None
   -n NUM_AGENTS, --num_agents NUM_AGENTS
                         Number of agents. Default: 1
   -s SAMPLES, --samples SAMPLES
@@ -61,6 +62,8 @@ def main():
                         version="Ingress Maxfield v{0}".format(_V_))
     parser.add_argument('-g','--google',action='store_true',
                         help='Make maps with google maps API. Default: False')
+    parser.add_argument('-a','--api_key',default=None,
+                        help='Google API key for Google maps. Default: None')
     parser.add_argument('-n','--num_agents',type=int,default='1',
                         help='Number of agents. Default: 1')
     parser.add_argument('-s','--samples',type=int,default=50,
@@ -85,6 +88,7 @@ def main():
     BLUE  = '#2ABBFF'
     # Use google?
     useGoogle = args['google']
+    api_key = args['api_key']
 
     output_directory = args["output_dir"]
     # add ending separator
@@ -255,7 +259,8 @@ def main():
     #    with open(output_directory+output_file,'w') as fout:
     #        pickle.dump(a,fout)
 
-    PP = PlanPrinterMap.PlanPrinter(a,output_directory,nagents,useGoogle=useGoogle)
+    PP = PlanPrinterMap.PlanPrinter(a,output_directory,nagents,useGoogle=useGoogle,
+                                    api_key=api_key)
     PP.keyPrep()
     PP.agentKeys()
     PP.planMap(useGoogle=useGoogle)

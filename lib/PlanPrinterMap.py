@@ -10,6 +10,7 @@ original version by jpeterbaker
 29 Sept 2014 - tvw V2.0 major updates
 """
 
+import os
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -35,7 +36,7 @@ def commaGroup(n):
     return ','.join([ s[max(i,0):i+3] for i in range(len(s)-3,-3,-3)][::-1])
 
 class PlanPrinter:
-    def __init__(self,a,outputDir,nagents,color='#FF004D',useGoogle=False):
+    def __init__(self,a,outputDir,nagents,color='#FF004D',useGoogle=False,api_key=None):
         self.a = a
         self.n = a.order() # number of nodes
         self.m = a.size()  # number of links
@@ -126,8 +127,11 @@ class PlanPrinter:
             zoom = int(zoom)
 
             # google maps API
-            url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false".format(latcenter,loncenter,map_xwidth,map_ywidth,zoom)
-            print "Google Maps URL: ",url
+            # get API key
+            if api_key is not None:
+                url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false&key={5}".format(latcenter,loncenter,map_xwidth,map_ywidth,zoom,api_key)
+            else:
+                url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false".format(latcenter,loncenter,map_xwidth,map_ywidth,zoom)
         
             # determine if we can use google maps
             self.google_image = None
