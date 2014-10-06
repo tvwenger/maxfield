@@ -183,7 +183,7 @@ def main():
             sinceImprove += 1
 
             if not maxfield.maxFields(b):
-                print 'Randomization failure\nThe program may work if you try again. It is more likely to work if you remove some protals.'
+                print 'Randomization failure\nThe program may work if you try again. It is more likely to work if you remove some portals.'
                 continue
 
             TK = 0
