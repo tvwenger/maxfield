@@ -124,7 +124,8 @@ def main():
         portals = np.array(portals)
         portals = np.array([portal for portal in portals if (isinstance(portal[0], basestring) and isinstance(portal[1], basestring))])
         print "Found {0} portals in portal list.".format(len(portals))
-        if len(portals) == 0: sys.exit()
+        if len(portals) < 3:
+            sys.exit("Error: Must have more than 2 portals!")
         if len(portals) > _MAX_PORTALS_:
             sys.exit("Error: Portal limit is {0}".\
                      format(_MAX_PORTALS_))
@@ -245,8 +246,12 @@ def main():
         a = bestgraph
 
         # Attach to each edge a list of fields that it completes
-        for t in a.triangulation:
-            t.markEdgesWithFields()
+        # catch no triangulation (bad portal file?)
+        try:
+            for t in a.triangulation:
+                t.markEdgesWithFields()
+        except AttributeError:
+            print "Error: problem with bestgraph... no triangulation...?"
 
         agentOrder.improveEdgeOrder(a)
 
