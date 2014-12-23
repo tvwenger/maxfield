@@ -143,10 +143,11 @@ def main():
             lat = int(float(coord_parts[0]) * 1.e6)
             lon = int(float(coord_parts[1]) * 1.e6)
             locs.append(np.array([lat,lon],dtype=float))
-            if np.isnan(portal[2]):
+            try:
+                keys = int(portal[2])
+                a.node[num]['keys'] = keys
+            except ValueError:
                 a.node[num]['keys'] = 0
-            else:
-                a.node[num]['keys'] = int(portal[2])
 
         n = a.order() # number of nodes
         locs = np.array(locs,dtype=float)
