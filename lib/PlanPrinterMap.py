@@ -184,7 +184,7 @@ class PlanPrinter:
     def agentKeys(self):
         rowFormat = '%4s %4s %s\n'
         csv_file = open(self.outputDir+'keys_for_agents.csv','w')
-        csv_file.write('agent,mapNum,name,keys\n')
+        csv_file.write('agent, mapNum, name, keys\n')
         for agent in range(self.nagents):
             with open(self.outputDir+'keys_for_agent_%s_of_%s.txt'\
                     %(agent+1,self.nagents),'w') as fout:
@@ -202,7 +202,7 @@ class PlanPrinter:
                         keys,\
                         self.names[portal]\
                     ))
-                    csv_file.write('{0},{1},{2},{3}\n'.\
+                    csv_file.write('{0}, {1}, {2}, {3}\n'.\
                                    format(agent,self.nslabel[portal],
                                           self.names[portal],keys))
         csv_file.close()
@@ -377,7 +377,7 @@ class PlanPrinter:
                 fout.write('                 Link Destination\n')
                 fout.write('-----------------------------------\n')
                 #             1234112345612345 name
-                csv_file.write('Link,Agent,MapNumOrigin,OriginName,MapNumDestination,DestinationName\n')
+                csv_file.write('Link, Agent, MapNumOrigin, OriginName, MapNumDestination, DestinationName\n')
                 
                 for i in xrange(self.m):
                     p,q = self.orderedEdges[i]
@@ -415,7 +415,7 @@ class PlanPrinter:
                             self.nslabel[q],\
                             self.names[q]\
                         ))
-                    csv_file.write("{0}{1},{2},{3},{4},{5},{6}\n".\
+                    csv_file.write("{0}{1}, {2}, {3}, {4}, {5}, {6}\n".\
                                    format(i,star,linkagent+1,
                                           self.nslabel[p],self.names[p],
                                           self.nslabel[q],self.names[q]))
