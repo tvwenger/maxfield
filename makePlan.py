@@ -120,7 +120,7 @@ def main():
         # each line should be name;intel_link;keys
         portals = pd.read_table(input_file,sep=';',
                                 comment='#',index_col=False,
-                                names=['name','link','keys'])
+                                names=['name','link','keys'],dtype=str)
         portals = np.array(portals)
         portals = np.array([portal for portal in portals if (isinstance(portal[0], basestring) and isinstance(portal[1], basestring))])
         print "Found {0} portals in portal list.".format(len(portals))
