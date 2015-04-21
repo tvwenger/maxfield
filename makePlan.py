@@ -34,6 +34,7 @@ Original version by jpeterbaker
 15 August 2014 - tvw updates with google API, adds -s,
                  switchted to ; delimited file
 29 Sept 2014 - tvw V2.0 major update to new version
+21 April 2015 - tvw V2.1 force data read to be string
 """
 
 import sys
