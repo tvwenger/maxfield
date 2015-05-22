@@ -91,32 +91,34 @@ class PlanPrinter:
             # convert xy coordinates to web mercator
             x_merc = np.array([128./np.pi * (self.a.node[i]['geo'][1] + np.pi) for i in self.a.node.keys()])
             min_x_merc = np.min(x_merc)
-            print "min_x_merc",min_x_merc
+            #print "min_x_merc",min_x_merc
             x_merc = x_merc - min_x_merc
-            print "Xmin, Xmax",np.min(x_merc),np.max(x_merc)
+            #print "Xmin, Xmax",np.min(x_merc),np.max(x_merc)
             y_merc = np.array([128./np.pi * (np.pi - np.log(np.tan(np.pi/4. + self.a.node[i]['geo'][0]/2.))) for i in self.a.node.keys()])
             min_y_merc = np.min(y_merc)
-            print "min_y_merc",min_y_merc
+            #print "min_y_merc",min_y_merc
             y_merc = y_merc - min_y_merc
-            print "Ymin, Ymax",np.min(y_merc),np.max(y_merc)
+            #print "Ymin, Ymax",np.min(y_merc),np.max(y_merc)
             # determine proper zoom such that the map is smaller than 640 on both sides
             zooms = np.arange(0,20,1)
             largest_x_zoom = 0
             largest_y_zoom = 0
             for zm in zooms:
-                print "X max",np.max(x_merc * 2.**zm + 20.)
-                print "Y max",np.max(y_merc * 2.**zm + 20.)
+                #print "X max",np.max(x_merc * 2.**zm + 20.)
+                #print "Y max",np.max(y_merc * 2.**zm + 20.)
                 if np.max(x_merc * 2.**zm) < 256.:
                     largest_x_zoom = zm
-                    print "X",largest_x_zoom
+                    #print "X",largest_x_zoom
                 if np.max(y_merc * 2.**zm) < 256.:
                     largest_y_zoom = zm
-                    print "Y",largest_y_zoom
+                    #print "Y",largest_y_zoom
             zoom = np.min([largest_x_zoom,largest_y_zoom])
             min_x_merc = min_x_merc*2.**(1+zoom)
             min_y_merc = min_y_merc*2.**(1+zoom)
             self.xy[:,0] = x_merc*2.**(1+zoom)
             self.xy[:,1] = y_merc*2.**(1+zoom)
+            for i in xrange(self.n):
+                self.a.node[i]['xy'] = self.xy[i]
             xsize = np.max(self.xy[:,0])+20
             ysize = np.max(self.xy[:,1])+20
             self.xylims = [-10,xsize-10,ysize-10,-10]
@@ -142,7 +144,7 @@ class PlanPrinter:
                 url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false&key={5}".format(latcenter,loncenter,map_xwidth,map_ywidth,zoom,api_key)
             else:
                 url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false".format(latcenter,loncenter,map_xwidth,map_ywidth,zoom)
-            print url
+            #print url
         
             # determine if we can use google maps
             self.google_image = None
