@@ -88,43 +88,53 @@ class PlanPrinter:
         self.num_fields = -1
 
         if useGoogle:
+            # convert xy coordinates to web mercator
+            x_merc = np.array([128./np.pi * (self.a.node[i]['geo'][1] + np.pi) for i in self.a.node.keys()])
+            min_x_merc = np.min(x_merc)
+            print "min_x_merc",min_x_merc
+            x_merc = x_merc - min_x_merc
+            print "Xmin, Xmax",np.min(x_merc),np.max(x_merc)
+            y_merc = np.array([128./np.pi * (np.pi - np.log(np.tan(np.pi/4. + self.a.node[i]['geo'][0]/2.))) for i in self.a.node.keys()])
+            min_y_merc = np.min(y_merc)
+            print "min_y_merc",min_y_merc
+            y_merc = y_merc - min_y_merc
+            print "Ymin, Ymax",np.min(y_merc),np.max(y_merc)
+            # determine proper zoom such that the map is smaller than 640 on both sides
+            zooms = np.arange(0,20,1)
+            largest_x_zoom = 0
+            largest_y_zoom = 0
+            for zm in zooms:
+                print "X max",np.max(x_merc * 2.**zm + 20.)
+                print "Y max",np.max(y_merc * 2.**zm + 20.)
+                if np.max(x_merc * 2.**zm) < 256.:
+                    largest_x_zoom = zm
+                    print "X",largest_x_zoom
+                if np.max(y_merc * 2.**zm) < 256.:
+                    largest_y_zoom = zm
+                    print "Y",largest_y_zoom
+            zoom = np.min([largest_x_zoom,largest_y_zoom])
+            min_x_merc = min_x_merc*2.**(1+zoom)
+            min_y_merc = min_y_merc*2.**(1+zoom)
+            self.xy[:,0] = x_merc*2.**(1+zoom)
+            self.xy[:,1] = y_merc*2.**(1+zoom)
+            xsize = np.max(self.xy[:,0])+20
+            ysize = np.max(self.xy[:,1])+20
+            self.xylims = [-10,xsize-10,ysize-10,-10]
             # coordinates needed for google maps
-            latmax = np.rad2deg(max([self.a.node[i]['geo'][0] for i in self.a.node.keys()]))
-            latmin = np.rad2deg(min([self.a.node[i]['geo'][0] for i in self.a.node.keys()]))
-            lonmax = np.rad2deg(max([self.a.node[i]['geo'][1] for i in self.a.node.keys()]))
-            lonmin = np.rad2deg(min([self.a.node[i]['geo'][1] for i in self.a.node.keys()]))
-            loncenter = (lonmax-lonmin)/2. + lonmin
-            latcenter = (latmax-latmin)/2. + latmin
+            loncenter = np.rad2deg((min_x_merc+xsize/2.-10.)*np.pi/(128.*2.**(zoom+1)) - np.pi)
+            latcenter = np.rad2deg(2.*np.arctan(np.exp(-1.*((min_y_merc+ysize/2.-10.)*np.pi/(128.*2.**(zoom+1)) - np.pi))) - np.pi/2.)
+            #latmax = np.rad2deg(max([self.a.node[i]['geo'][0] for i in self.a.node.keys()]))
+            #latmin = np.rad2deg(min([self.a.node[i]['geo'][0] for i in self.a.node.keys()]))
+            #lonmax = np.rad2deg(max([self.a.node[i]['geo'][1] for i in self.a.node.keys()]))
+            #lonmin = np.rad2deg(min([self.a.node[i]['geo'][1] for i in self.a.node.keys()]))
+            #loncenter = (lonmax-lonmin)/2. + lonmin
+            #latcenter = (latmax-latmin)/2. + latmin
             print "Center Coordinates (lat,lon): ",latcenter,loncenter
-            xmin = self.xy[:,0].min()*1.1
-            xmax = self.xy[:,0].max()*1.1
-            ymin = self.xy[:,1].min()*1.1
-            ymax = self.xy[:,1].max()*1.1
-    
-            # determine zoom for google maps
-            self.xylims = np.array([xmin,xmax,ymin,ymax])
-            map_ywidth = 640.
-            platescale = (ymax-ymin)/map_ywidth
-            map_xwidth = (xmax-xmin) / platescale
-            zoom = math.log(map_ywidth/(latmax-latmin),2)
-        
-            # update so zoom is an integer
-            zoom = round(zoom)
-            map_ywidth = (latmax-latmin) * 2.**zoom
-            platescale = (ymax-ymin)/map_ywidth
-            map_xwidth = (xmax-xmin)/platescale
-    
-            # now we need xwidth,ywidth < 640.
-            while map_xwidth > 640. or map_ywidth > 640.:
-                zoom = zoom - 1
-                map_ywidth = (latmax-latmin) * 2.**zoom
-                platescale = (ymax-ymin)/map_ywidth
-                map_xwidth = (xmax-xmin)/platescale
 
             # turn things in to integers for maps API
-            map_xwidth = int(map_xwidth)
-            map_ywidth = int(map_ywidth)
-            zoom = int(zoom)
+            map_xwidth = int(xsize)
+            map_ywidth = int(ysize)
+            zoom = int(zoom)+1
 
             # google maps API
             # get API key
@@ -132,6 +142,7 @@ class PlanPrinter:
                 url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false&key={5}".format(latcenter,loncenter,map_xwidth,map_ywidth,zoom,api_key)
             else:
                 url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false".format(latcenter,loncenter,map_xwidth,map_ywidth,zoom)
+            print url
         
             # determine if we can use google maps
             self.google_image = None
@@ -284,7 +295,7 @@ class PlanPrinter:
         if useGoogle:
             if self.google_image is None:
                 return
-            implot = plt.imshow(self.google_image,extent=self.xylims)
+            implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
         # Plot labels aligned to avoid other portals
         for j in xrange(self.n):
             i = self.posOrder[j]
@@ -317,7 +328,7 @@ class PlanPrinter:
         if useGoogle:
             if self.google_image is None:
                 return
-            implot = plt.imshow(self.google_image,extent=self.xylims)
+            implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
         # Draw the map with all edges in place and labeled
         self.drawSubgraph()
         if useGoogle: plt.axis(self.xylims)
@@ -448,7 +459,7 @@ class PlanPrinter:
         if useGoogle:
             if self.google_image is None:
                 return
-            implot = plt.imshow(self.google_image,extent=self.xylims)
+            implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
         plt.plot(portals[0],portals[1],'go')
         dashAllEdges()
 
@@ -463,7 +474,7 @@ class PlanPrinter:
             if useGoogle:
                 if self.google_image is None:
                     return
-                implot = plt.imshow(self.google_image,extent=self.xylims)
+                implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
             p,q = self.orderedEdges[i]
             plt.plot(portals[0],portals[1],'go')
             # Plot all edges lightly
@@ -505,7 +516,7 @@ class PlanPrinter:
         if useGoogle:
             if self.google_image is None:
                 return
-            implot = plt.imshow(self.google_image,extent=self.xylims)
+            implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
 
         plt.plot(portals[0],portals[1],'go')
         for edge in edges:
@@ -531,7 +542,7 @@ class PlanPrinter:
         if useGoogle:
             if self.google_image is None:
                 return
-            implot = plt.imshow(self.google_image,extent=self.xylims)
+            implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
         plt.plot(portals[0],portals[1],'go')
         if useGoogle: plt.axis(self.xylims)
         plt.axis('off')
@@ -555,7 +566,7 @@ class PlanPrinter:
             if useGoogle:
                 if self.google_image is None:
                     return
-                implot = plt.imshow(self.google_image,extent=self.xylims)
+                implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
             plt.plot(portals[0],portals[1],'go')
 
             for edge in oldedges:
@@ -575,7 +586,7 @@ class PlanPrinter:
         if useGoogle:
             if self.google_image is None:
                 return
-            implot = plt.imshow(self.google_image,extent=self.xylims)
+            implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
         plt.plot(portals[0],portals[1],'go')
 
         for edge in oldedges:
