@@ -238,48 +238,109 @@ def getAgentOrder(a,nagents,orderedEdges):
 #
 def improveEdgeOrder(a):
     '''
-    Edges that do not complete any fields can be made earlier
-    This method alters the graph a such that
-        The relative order of edges that complete fields is unchanged
-        Edges that do not complete fields may only be completed earlier
-        Where possible, non-completing edges are made immediately before another edge with same origin
+    A greedy algorithm to reduce the path length.
+    Moves edges earlier or later, if they can be moved (dependencies are
+    done in the proper order) and the move reduces the total length of the
+    path.
+    The algorithm tries to move 1 to 5 edges at the same time as a block
+    to improve upon certain types of local optima.
     '''
+
     m = a.size()
     # If link i is e then orderedEdges[i]=e
     orderedEdges = [-1]*m
 
+    geo = np.array([ a.node[i]['geo'] for i in xrange(a.order())])
+    d = geometry.sphereDist(geo,geo)
+
+    def pathLength(d, edges):
+        return sum([d[edges[i][0]][edges[i+1][0]] for i in xrange(len(edges)-1)])
+
+    def dependsOn(subjects, objects):
+        '''
+        Returns True, if an edge inside 'objects' should be made before
+        one (or more) of the edges inside 'subjects'
+        '''
+        for p,q in subjects:
+            depends = a.edge[p][q]['depends']
+            for u,v in objects:
+                if depends.count((u,v,)) + depends.count(u) > 0:
+                    return True
+
+        return False
+
+
+    def possiblePlaces(j, block):
+        '''
+        A generator returning the possible places of the given
+        block of edges within the complete edge sequence.
+        The current position (j) is not returned.
+        '''
+        pos = j
+        # smaller index means made earlier
+        while pos > 0 and not dependsOn(block, [orderedEdges[pos-1]]):
+            pos -= 1
+            yield pos
+
+        pos = j
+        bsize = len(block)
+        n = len(orderedEdges) - bsize + 1
+        # bigger index means made later
+        while pos < n-1 and not dependsOn([orderedEdges[pos+bsize]], block):
+            pos += 1
+            yield pos
+
+
     for p,q in a.edges_iter():
         orderedEdges[a.edge[p][q]['order']] = (p,q)
 
-    for j in xrange(1,m):
-        p,q = orderedEdges[j]
-        # Only move those that don't complete fields
-        if len(a.edge[p][q]['fields']) > 0:
-            continue
+    origLength = pathLength(d, orderedEdges)
+    bestLength = origLength
 
-#        print j,p,q,a.edge[p][q]['fields']
+    cont = True
+    while cont:
+        cont = False
+        for j in xrange(m):
+            best = j
+            bestPath = orderedEdges
 
-        origin = orderedEdges[j][0]
-        # The first time this portal is used as an origin
-        i = 0
-        while orderedEdges[i][0]!=origin:
-            i+=1
+            # max block size is 5 (6-1); chosen arbitrarily
+            for block in xrange(1, 6):
+                moving = orderedEdges[j:j+block]
+                for possible in possiblePlaces(j, moving):
+                    if possible < j:
+                        # Move the links to be at an earlier index
+                        path = orderedEdges[   :possible] +\
+                                    moving +\
+                                    orderedEdges[possible  :j] +\
+                                    orderedEdges[j+block: ]
+                    else:
+                        # Move to a later position
+                        path = orderedEdges[   :j] +\
+                                    orderedEdges[j+block: possible+block] +\
+                                    moving +\
+                                    orderedEdges[possible+block  :]
 
-        if i<j:
-#            print 'moving %s before %s'%(orderedEdges[j],orderedEdges[i])
-            # Move link j to be just before link i
-            orderedEdges =  orderedEdges[   :i] +\
-                           [orderedEdges[  j  ]]+\
-                            orderedEdges[i  :j] +\
-                            orderedEdges[j+1: ]
-        #TODO else: choose the closest earlier portal
-    
-#    print 
+                    length = pathLength(d,path)
+
+                    if length < bestLength:
+                        #print("Improved by %f meters in index %d (from %d, block %d)" % (bestLength-length, possible, best, block))
+                        best = possible
+                        bestLength = length
+                        bestPath = path
+
+            if best != j:
+                #print("New order (%d -> %d): %s" % (j, best, bestPath))
+                orderedEdges = bestPath
+                cont = True
+
+    length = pathLength(d, orderedEdges)
+    print("Length reduction: original = %d, improved = %d, change = %d meters" % (origLength, length, length-origLength))
+
     for i in xrange(m):
         p,q = orderedEdges[i]
-#        print p,q,a.edge[p][q]['fields']
         a.edge[p][q]['order'] = i
-#    print
+
 
 if __name__=='__main__':
     order = [0,5,5,5,2,2,1,0]
