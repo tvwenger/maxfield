@@ -257,6 +257,15 @@ def main():
 
         agentOrder.improveEdgeOrder(a)
 
+        # Fix the stars of edges that can be done early
+        try:
+            n = 0
+            for t in a.triangulation:
+                t.markEdgesWithFields(clean = n==0)
+                n += 1
+        except AttributeError:
+            print "Error: problem with bestgraph... no triangulation...?"
+
         with open(output_directory+output_file,'w') as fout:
             pickle.dump(a,fout)
     else:
