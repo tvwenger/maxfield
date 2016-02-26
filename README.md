@@ -89,7 +89,9 @@ No promises
   the portal. For example, each of the following are allowed:
 
  Catholic Church of the Holy Comforter; https://www.ingress.com/intel?ll=38.031745,-78.478592&z=18&pll=38.031796,-78.479439; 3; SBLA
+
  Catholic Church of the Holy Comforter; SBLA; https://www.ingress.com/intel?ll=38.031745,-78.478592&z=18&pll=38.031796,-78.479439; 3
+
  Catholic Church of the Holy Comforter; 3; SBLA; https://www.ingress.com/intel?ll=38.031745,-78.478592&z=18&pll=38.031796,-78.479439
 
 # Notes
