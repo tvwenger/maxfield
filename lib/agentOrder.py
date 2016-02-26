@@ -3,21 +3,30 @@
 """
 Ingress Maxfield - agentOrder.py
 
+GNU Public License
+http://www.gnu.org/licenses/
+Copyright(C) 2016 by
+Jonathan Baker; babamots@gmail.com
+Trey Wenger; tvwenger@gmail.com
+
 Determine agent order based on distance
 
-Original by jpeterbacker
+Original by jpeterbaker
 29 Sept 2014 - tvw V2.0 major update to new version
+26 Feb 2016 - tvw v3.0
+              merged some new stuff from jpeterbaker's new version
 """
 import geometry
 import numpy as np
-
 import orderedTSP
 
 # Walking speed in m/s
 WALKSPEED = 2
+
 # Seconds it takes to communicate link completion
 # Agents should report their consecutive links simultaneously
 COMMTIME = 60
+
 # Seconds to create a link
 LINKTIME = 15
 
@@ -165,13 +174,14 @@ def getAgentOrder(a,nagents,orderedEdges):
     '''
     geo = np.array([ a.node[i]['geo'] for i in xrange(a.order())])
     d = geometry.sphereDist(geo,geo)
-#    print d
+    # print d
     order = [e[0] for e in orderedEdges]
 
     # Reduce sequences of links made from same portal to single entry
     condensed , mult = condenseOrder(order)
 
     link2agent , times = orderedTSP.getVisits(d,condensed,nagents)
+    # print
 
     # Expand links made from same portal to original count
     link2agent = expandOrder(link2agent,mult)
@@ -198,44 +208,45 @@ def getAgentOrder(a,nagents,orderedEdges):
 
     return movements
 
-#    m = a.size()
-#
-#    # link2agent[j] is the agent who makes link j
-#    link2agent = [-1]*m
-#    for i in range(nagents):
-#        for j in movements[i]:
-#            link2agent[j] = i
-#
-#    bestT = completionTime(a,movements)
-#
-#    sinceImprove = 0
-#    i=0
-#    while sinceImprove < m:
-#        agent = link2agent[i]
-#        
-#        # for each of the other agents
-#        for alt in range(agent-nagents+1,agent):
-#
-#            alt %= nagents
-#            # see what happens if agent 'alt' makes the link
-#            link2agent[i] = alt
-#
-#            T = completionTime(a,link2agent)
-#
-#            if T < bestT:
-#                bestT = T
-#                sinceImprove = 0
-#                break
-#        else:
-#            # The loop exited normally, so no improvement was found
-#            link2agent[i] = agent # restore the original plan
-#            sinceImprove += 1
-#
-#        i = (i+1)%m
-#
-#    return movements
-#
-#
+"""
+   m = a.size()
+
+   # link2agent[j] is the agent who makes link j
+   link2agent = [-1]*m
+   for i in range(nagents):
+       for j in movements[i]:
+           link2agent[j] = i
+
+   bestT = completionTime(a,movements)
+
+   sinceImprove = 0
+   i=0
+   while sinceImprove < m:
+       agent = link2agent[i]
+       
+       # for each of the other agents
+       for alt in range(agent-nagents+1,agent):
+
+           alt %= nagents
+           # see what happens if agent 'alt' makes the link
+           link2agent[i] = alt
+
+           T = completionTime(a,link2agent)
+
+           if T < bestT:
+               bestT = T
+               sinceImprove = 0
+               break
+       else:
+           # The loop exited normally, so no improvement was found
+           link2agent[i] = agent # restore the original plan
+           sinceImprove += 1
+
+       i = (i+1)%m
+
+   return movements
+"""
+
 def improveEdgeOrder(a):
     '''
     Edges that do not complete any fields can be made earlier
@@ -257,7 +268,7 @@ def improveEdgeOrder(a):
         if len(a.edge[p][q]['fields']) > 0:
             continue
 
-#        print j,p,q,a.edge[p][q]['fields']
+        # print j,p,q,a.edge[p][q]['fields']
 
         origin = orderedEdges[j][0]
         # The first time this portal is used as an origin
@@ -266,24 +277,24 @@ def improveEdgeOrder(a):
             i+=1
 
         if i<j:
-#            print 'moving %s before %s'%(orderedEdges[j],orderedEdges[i])
+            # print 'moving %s before %s'%(orderedEdges[j],orderedEdges[i])
             # Move link j to be just before link i
             orderedEdges =  orderedEdges[   :i] +\
                            [orderedEdges[  j  ]]+\
                             orderedEdges[i  :j] +\
                             orderedEdges[j+1: ]
-        #TODO else: choose the closest earlier portal
+        # TODO else: choose the closest earlier portal
     
-#    print 
+    # print 
     for i in xrange(m):
         p,q = orderedEdges[i]
-#        print p,q,a.edge[p][q]['fields']
+        # print p,q,a.edge[p][q]['fields']
         a.edge[p][q]['order'] = i
-#    print
+        # print
 
 if __name__=='__main__':
     order = [0,5,5,5,2,2,1,0]
-#    order = [5]*5
+    # order = [5]*5
     s,mult = condenseOrder(order)
     print s
     print mult

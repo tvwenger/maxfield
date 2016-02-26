@@ -1,10 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Ingress Maxfield - geometry
 
+GNU Public License
+http://www.gnu.org/licenses/
+Copyright(C) 2016 by
+Jonathan Baker; babamots@gmail.com
+Trey Wenger; tvwenger@gmail.com
+
+Setup order of portal visits
+
+original version by jpeterbaker
+29 Sept 2014 - tvw V2.0 major updates
+26 Feb 2016 - tvw v3.0
+              merged some new stuff from jpeterbaker's new version
+"""
+
+import sys
 import branch_bound
 np = branch_bound.np
 
-MAX_BRANCHES = 10000
+MAX_BRANCHES = 15000
 
 # This could be used if more splits are wanted than are possible
 infState = branch_bound.InfState()
@@ -50,10 +67,10 @@ class OTSPstate:
         # The index of the last visit this agent made
         lastvisit = self.lastat[-1][agent]
 
-#        print len(self.time)
-#        print self.d.shape
-#        print 'agent',agent
-#        print '  lastvisit',lastvisit
+        # print len(self.time)
+        # print self.d.shape
+        # print 'agent',agent
+        # print '  lastvisit',lastvisit
 
         # Assume agent's initial deployment is instantaneous
         if lastvisit == None:
@@ -66,16 +83,17 @@ class OTSPstate:
         # The node that needs to be visited next
         nextpos = self.order[self.m]
 
-#        print '  lastat',self.lastat
-#        print '  lastpos',lastpos
-#        print '  lasttime',lasttime
-#        print '  nextpos',nextpos
+        # print '  lastat',self.lastat
+        # print '  lastpos',lastpos
+        # print '  lasttime',lasttime
+        # print '  nextpos',nextpos
 
         t = max( self.time[-1] , lasttime + self.d[nextpos,lastpos] )
-#        print '  t',t
+        # print '  t',t
         return t
 
-        # He makes it either at the same time as the previous visit or as soon as he arrives at nextpos
+        # He makes it either at the same time as the previous visit
+        # or as soon as he arrives at nextpos
         return max( self.time[-1] , lasttime + self.d[nextpos,lastpos] )
 
     def split(self,num):
@@ -83,12 +101,13 @@ class OTSPstate:
         num: number of child states to produce
             (in the easiest case, this is the same as nagents)
 
-        produces self.children states
+        returns list of possible next states
         '''
+        # print self.m,len(self.order)
         if self.m >= len(self.order):
             raise branch_bound.CantSplit()
 
-        self.children = []
+        children = []
         for agent in range(self.nagents):
             newtime = self.agentsNewTime(agent)
             
@@ -96,15 +115,23 @@ class OTSPstate:
             newlast = list(self.lastat[-1])
             newlast[agent] = self.m
 
-            self.children.append(OTSPstate(self.d,self.order,self.nagents,\
-                                 self.visit2agent+[agent],\
-                                 self.time+[newtime],\
-                                 self.lastat+[newlast],\
-                                ))
+            try:
+
+                children.append(OTSPstate(self.d,self.order,self.nagents,\
+                                     self.visit2agent+[agent],\
+                                     self.time+[newtime],\
+                                     self.lastat+[newlast],\
+                                    ))
+            except TypeError as e:
+                print self.visit2agent
+                exit()
+                
         if num < self.nagents:
-            childorder = np.argsort([ child.value for child in self.children ])
-            self.children = np.array(self.children)
-            self.children = self.children[childorder[:num]]
+            childorder = np.argsort([ child.value for child in children ])
+            children = np.array(children)
+            children = children[childorder[:num]]
+
+        return children
 
     def calcTimes(self):
         '''
@@ -135,7 +162,6 @@ class OTSPstate:
             self.lastat.append(list(self.lastat[-1]))
             self.lastat[-1][agent] = i
             
-        self.children = []
         self.value = self.time[-1]
         return self.value
 
@@ -151,24 +177,34 @@ def getVisits(dists,order,nagents):
               visits[i] = j means the ith visit should be performed by agent j
               time[i] is the number of meters a person could have walked walk since the start when visit i is made 
     '''
+    # This callback prints the number of iterations
+    # print 'Planning',len(order),'agent movements:'
+    c = [0]
+    def cb():
+        c[0] += 1
+        # print c[0],
+        sys.stdout.flush()
+
     root = OTSPstate(dists,order,nagents)
     LO = MAX_BRANCHES // nagents
-    state,value = branch_bound.branch_bound(root, LO , LO*nagents)
+    state,value = branch_bound.branch_bound(root, LO , LO*nagents, cb)
 
     return state.visit2agent,state.time
 
 if __name__=='__main__':
     import geometry
-#    pts = np.array([[0,0],\
-#                    [0,1],\
-#                    [0,5]])
-#    order = [0,2,1]
-#    pts = np.array([[0,0],\
-#                    [0,1],\
-#                    [0,2],\
-#                    [0,3],\
-#                    [0,5]])
-#    order = [0,4,1,2,3]
+    """
+    pts = np.array([[0,0],\
+                    [0,1],\
+                    [0,5]])
+    order = [0,2,1]
+    pts = np.array([[0,0],\
+                    [0,1],\
+                    [0,2],\
+                    [0,3],\
+                    [0,5]])
+    order = [0,4,1,2,3]
+    """
     pts = np.array([[0,0],\
                     [3,0],\
                     [4,0],\
@@ -178,7 +214,7 @@ if __name__=='__main__':
 
     d = geometry.planeDist(pts,pts)
 
-#    print getVisits(d,order,2)
+    # print getVisits(d,order,2)
 
     state = OTSPstate(d,order,2,visit2agent)
     print state.calcTimes()

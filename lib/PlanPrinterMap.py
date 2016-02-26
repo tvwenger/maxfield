@@ -3,11 +3,19 @@
 """
 Ingress Maxfield - PlanPrinterMap.py
 
+GNU Public License
+http://www.gnu.org/licenses/
+Copyright(C) 2016 by
+Jonathan Baker; babamots@gmail.com
+Trey Wenger; tvwenger@gmail.com
+
 This is a replacement for PlanPrinter.py
 With google maps support
 
 original version by jpeterbaker
 29 Sept 2014 - tvw V2.0 major updates
+26 Feb 2016 - tvw v3.0
+              merged some new stuff from jpeterbaker's new version
 """
 
 import os
@@ -68,9 +76,11 @@ class PlanPrinter:
 
         self.names = np.array([a.node[i]['name'] for i in xrange(self.n)])
         # The alphabetical order
-        self.nameOrder = np.argsort(self.names)
+        makeLowerCase = np.vectorize(lambda s: s.lower())
+        self.nameOrder = np.argsort(makeLowerCase(self.names))
 
         self.xy = np.array([self.a.node[i]['xy'] for i in xrange(self.n)])
+        # print self.xy
 
         # The order from north to south (for easy-to-find labels)
         self.posOrder = np.argsort(self.xy,axis=0)[::-1,1]
@@ -158,7 +168,7 @@ class PlanPrinter:
     def keyPrep(self):
         rowFormat = '{0:11d} | {1:6d} | {2}\n'
         with open(self.outputDir+'keyPrep.txt','w') as fout:
-            fout.write( 'Keys Needed | Lacked |\n')
+            fout.write('Keys Needed | Lacked\n')
             for i in self.nameOrder:
                 keylack = max(self.a.in_degree(i)-self.a.node[i]['keys'],0)
                 fout.write(rowFormat.format(\
@@ -348,8 +358,11 @@ class PlanPrinter:
     def agentLinks(self):
         # Total distance traveled by each agent
         agentdists = np.zeros(self.nagents)
-        # Total experience for each agent
-        agentexps  = np.zeros(self.nagents,dtype=int)
+        # Total number of links, fields for each agent
+        agentlinkcount  = [0]*self.nagents
+        agentfieldcount = [0]*self.nagents
+        totalAP         = 0
+        totalDist       = 0
 
         for i in range(self.nagents):
             movie = self.movements[i]
@@ -359,54 +372,67 @@ class PlanPrinter:
                 p,q = self.orderedEdges[e]
                 newpos = self.a.node[p]['geo']
                 dist = geometry.sphereDist(curpos,newpos)
+                # print 'Agent %s walks %s to %s'%(i,dist,self.nslabel[p])
                 agentdists[i] += dist
                 curpos = newpos
 
-                agentexps[i] += 313 + 1250*len(self.a.edge[p][q]['fields'])
+                agentlinkcount[i] += 1
+                agentfieldcount[i] += len(self.a.edge[p][q]['fields'])
+                totalAP += 313
+                totalAP += 1250 * len(self.a.edge[p][q]['fields'])
+                totalDist += dist
 
         # Different formatting for the agent's own links
-        plainStr = '{0:4d}{1:1s} {2: 5d}{3:5d} {4:s}\n            {5:4d} {6:s}\n\n'
+        plainStr = '{0:4d}{1:1s} {2: 5d}{3:5d} {4:s} -> {5:d} {6:s}\n'
         hilitStr = '{0:4d}{1:1s} {2:_>5d}{3:5d} {4:s}\n            {5:4d} {6:s}\n\n'
+
+        totalTime = self.a.walktime+self.a.linktime+self.a.commtime
 
         csv_file = open(self.outputDir+'links_for_agents.csv','w')
         
         for agent in range(self.nagents):
             with open(self.outputDir+'links_for_agent_%s_of_%s.txt'\
                     %(agent+1,self.nagents),'w') as fout:
-
-                fout.write('Complete link schedule issued to agent %s of %s\n'\
+                fout.write('Complete link schedule issued to agent %s of %s\n\n'\
                     %(agent+1,self.nagents))
-                
-                totalTime = self.a.walktime+self.a.linktime+self.a.commtime
-
-                fout.write('\nTotal time estimate: %s minutes\n\n'%int(totalTime/60+.5))
-
-                fout.write('Agent distance:   %s m\n'%int(agentdists[agent]))
-                fout.write('Agent experience: %s AP\n'%(agentexps[agent]))
-
                 fout.write('\nLinks marked with * can be made EARLY\n')
-
-                fout.write('\nLink  Agent Map# Link Origin\n')
+                fout.write('----------- PLAN DATA ------------\n')
+                fout.write('Minutes:                 %s minutes\n'%int(totalTime/60+.5))
+                fout.write('Total Distance:          %s meter\n'%int(totalDist))
+                fout.write('Total AP:                %s\n'%totalAP)
+                fout.write('AP per Agent per minute: %0.2f AP/Agent/min\n'%float(totalAP/self.nagents/(totalTime/60+.5)))
+                fout.write('AP per Agent per meter:  %0.2f AP/Agent/m\n'%float(totalAP/self.nagents/totalDist))
+                
+                agentAP = 313*agentlinkcount[agent] + 1250*agentfieldcount[agent]
+                
+                fout.write('----------- AGENT DATA -----------\n')
+                fout.write('Distance traveled: %s m (%s %%)\n'%(int(agentdists[agent]),int(100*agentdists[agent]/totalDist)))
+                fout.write('Links made:        %s\n'%(agentlinkcount[agent]))
+                fout.write('Fields completed:  %s\n'%(agentfieldcount[agent]))
+                fout.write('Total experience:  %s AP (%s %%)\n'%(agentAP,int(100*agentAP/totalAP)))
+                fout.write('----------------------------------\n')
+                fout.write('Link  Agent Map# Link Origin\n')
                 fout.write('                 Link Destination\n')
-                fout.write('-----------------------------------\n')
+                fout.write('----------------------------------\n')
                 #             1234112345612345 name
                 csv_file.write('Link, Agent, MapNumOrigin, OriginName, MapNumDestination, DestinationName\n')
                 
+                last_link_from_other_agent = 0
                 for i in xrange(self.m):
                     p,q = self.orderedEdges[i]
                     
                     linkagent = self.link2agent[i]
-
+    
                     # Put a star by links that can be completed early since they complete no fields
                     numfields = len(self.a.edge[p][q]['fields'])
                     if numfields == 0:
                         star = '*'
-#                        print '%s %s completes nothing'%(p,q)
+                        # print '%s %s completes nothing'%(p,q)
                     else:
                         star = ''
-#                        print '%s %s completes'%(p,q)
-#                        for t in self.a.edge[p][q]['fields']:
-#                            print '   ',t
+                        # print '%s %s completes'%(p,q)
+                        # for t in self.a.edge[p][q]['fields']:
+                        #     print '   ',t
 
                     if linkagent != agent:
                         fout.write(plainStr.format(\
@@ -418,7 +444,11 @@ class PlanPrinter:
                             self.nslabel[q],\
                             self.names[q]\
                         ))
+                        last_link_from_other_agent = 1
                     else:
+                        if last_link_from_other_agent:
+                            fout.write('\n')
+                        last_link_from_other_agent = 0
                         fout.write(hilitStr.format(\
                             i,\
                             star,\

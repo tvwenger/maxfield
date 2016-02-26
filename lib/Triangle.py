@@ -1,26 +1,66 @@
 #!/usr/env python
 # -*- coding: utf-8 -*-
+"""
+Ingress Maxfield - PlanPrinterMap.py
+
+GNU Public License
+http://www.gnu.org/licenses/
+Copyright(C) 2016 by
+Jonathan Baker; babamots@gmail.com
+Trey Wenger; tvwenger@gmail.com
+
+Builds valid fields
+
+original version by jpeterbaker
+29 Sept 2014 - tvw V2.0 major updates
+26 Feb 2016 - tvw v3.0
+              merged some new stuff from jpeterbaker's new version
+              Added SBLA support
+"""
 import geometry
-np = geometry.np
+import numpy as np
+
+# Set to False if only perfectly optimal plans should be produced
+_ALLOW_SUBOPTIMAL = True
 
 class Deadend(Exception):
     def __init__(self,s):
         self.explain = s
 
+def try_reduce_out_degree(a,p):
+    # Reverse as many edges out-edges of p as possible
+    # now with SBLA support!
+    toremove = []
+    for q in a.edge[p]:
+        if ((a.node[q]['sbla'] and a.out_degree(q) < 40) or (a.out_degree(q) < 8)):
+            a.add_edge(q,p)
+            a.edge[q][p] = a.edge[p][q]
+            toremove.append(q)
+
+    for q in toremove:
+        a.remove_edge(p,q)
+
 def try_ordered_edge(a,p,q,reversible):
+    # now with SBLA support
     if a.has_edge(p,q) or a.has_edge(q,p):
         return
 
-#    if reversible and a.out_degree(p) > a.out_degree(q):
-#        p,q = q,p
+    # if reversible and a.out_degree(p) > a.out_degree(q):
+        # p,q = q,p
 
-    if a.out_degree(p) >= 8:
-        if not reversible:
-#            print '%s already has 8 outgoing'%p
-            raise(Deadend('%s already has 8 outgoing'%p))
-        if a.out_degree(q) >= 8:
-#            print '%s and %s already have 8 outgoing'%(p,q)
-            raise(Deadend('%s and %s already have 8 outgoing'%(p,q)))
+    if ((a.node[p]['sbla'] and a.out_degree(p) >= 40) or (a.out_degree(p) >= 8)):
+        try_reduce_out_degree(a,p)
+
+    if ((a.node[p]['sbla'] and a.out_degree(p) >= 40) or (a.out_degree(p) >= 8)):
+    # We tried but failed to reduce the out-degree of p
+        if not reversible and not allow_suboptimal:
+            # print '%s already has 8 outgoing'%p
+            raise(Deadend('%s already has max outgoing'%p))
+        if ((a.node[q]['sbla'] and a.out_degree(q) >= 40) or (a.out_degree(q) >= 8)):
+            try_reduce_out_degree(a,q)
+        if (((a.node[q]['sbla'] and a.out_degree(q) > 40) or (a.out_degree(q) >= 8)) and not allow_suboptimal):
+            # print '%s and %s already have 8 outgoing'%(p,q)
+            raise(Deadend('%s and %s already have max outgoing'%(p,q)))
         p,q = q,p
     
     m = a.size()
@@ -30,11 +70,11 @@ def try_ordered_edge(a,p,q,reversible):
         a.edgeStack.append( (p,q) )
     except AttributeError:
         a.edgeStack = [ (p,q) ]
-#    print 'adding',p,q
-#    print a.edgeStack
+        # print 'adding',p,q
+        # print a.edgeStack
 
 class Triangle:
-    def __init__(self,verts,a,exterior=False):
+    def __init__(self,verts,a,exterior=False,allow_suboptimal=_ALLOW_SUBOPTIMAL):
         '''
         verts should be a 3-list of Portals
         verts[0] should be the final one used in linking
@@ -46,13 +86,18 @@ class Triangle:
         self.a = a
         self.exterior = exterior
 
+        # This randomizes the Portal used for the jet link. I am
+        # experimenting with having maxfield.triangulate and
+        # Triangle.split choose this portal carefully, so don't
+        # randomize
+        """
         if exterior:
             # Randomizing should help prevent perimeter nodes from getting too many links
             final = np.random.randint(3)
             tmp = self.verts[final]
             self.verts[final] = self.verts[0]
             self.verts[0] = tmp
-
+        """
         self.pts = np.array([a.node[p]['xyz'] for p in verts])
         self.children = []
         self.contents = []
@@ -82,8 +127,8 @@ class Triangle:
         # Split on the node closest to final
         if len(self.contents) == 0:
             return
-        contentPts = np.array([self.a.node[p]['pos'] for p in self.contents])
-        displaces = contentPts - self.a.node[self.verts[0]]['pos']
+        contentPts = np.array([self.a.node[p]['xyz'] for p in self.contents])
+        displaces = contentPts - self.a.node[self.verts[0]]['xyz']
         dists = np.sum(displaces**2,1)
         closest = np.argmin(dists)
 
@@ -93,9 +138,14 @@ class Triangle:
             child.nearSplit()
 
     def splitOn(self,p):
+        # Splits this Triangle to produce 3 children using portal p
+        # p is passed as the first vertex parameter in the
+        # construction of 'opposite', so it will be opposite's
+        # 'final vertex' unless randomization is used
         # 'opposite' is the child that does not share the final vertex
-        # Because of the build order, it's safe for this triangle to believe it is exterior
-        opposite  =  Triangle([self.verts[1],p,\
+        # Because of the build order, it's safe for this triangle to
+        # believe it is exterior
+        opposite  =  Triangle([p,self.verts[1],
                                self.verts[2]],self.a,True)
         # The other two children must also use my final as their final
         adjacents = [\
@@ -116,16 +166,16 @@ class Triangle:
         return str([self.a.node[self.verts[i]]['name'] for i in range(3)])
 
     def buildFinal(self):
-#        print 'building final',self.tostr()
+        # print 'building final',self.tostr()
         if self.exterior:
             # Avoid making the final the link origin when possible
-#            print self.tostr(),'is exterior'
+            # print self.tostr(),'is exterior'
             try_ordered_edge(self.a,self.verts[1],\
                                self.verts[0],self.exterior)
             try_ordered_edge(self.a,self.verts[2],\
                                self.verts[0],self.exterior)
         else:
-#            print self.tostr(),'is NOT exterior'
+            # print self.tostr(),'is NOT exterior'
             try_ordered_edge(self.a,self.verts[0],\
                                self.verts[1],self.exterior)
             try_ordered_edge(self.a,self.verts[0],\
@@ -136,9 +186,9 @@ class Triangle:
                 self.children[i].buildFinal()
 
     def buildExceptFinal(self):
-#        print 'building EXCEPT final',self.tostr()
+        # print 'building EXCEPT final',self.tostr()
         if len(self.children) == 0:
-#            print 'no children'
+            # print 'no children'
             p,q = self.verts[2] , self.verts[1]
             try_ordered_edge(self.a,p,q,True)
             return
@@ -150,8 +200,18 @@ class Triangle:
             child.buildExceptFinal()
 
     def buildGraph(self):
-#        print 'building',self.tostr()
-        # A first generation triangle could have its final vertex's edges already completed by neighbors. This will cause the first generation to be completed when the opposite edge is added which complicates  completing inside descendents. This could be solved by choosing a new final vertex (or carefully choosing the order of completion of first generation triangles).
+        # print 'building',self.tostr()
+        '''
+        TODO
+        A first generation triangle could have its final vertex's
+        edges already completed by neighbors.
+        This will cause the first generation to be completed when
+        the opposite edge is added which complicates completing inside
+        descendants.
+        This could be solved by choosing a new final vertex (or
+        carefully choosing the order of completion of first generation
+        triangles).
+        '''
         if (                                                \
             self.a.has_edge(self.verts[0],self.verts[1]) or \
             self.a.has_edge(self.verts[1],self.verts[0])    \
@@ -160,7 +220,7 @@ class Triangle:
             self.a.has_edge(self.verts[0],self.verts[2]) or \
             self.a.has_edge(self.verts[2],self.verts[0])    \
            ):
-#            print 'Final vertex completed!!!'
+            # print 'Final vertex completed!!!'
             raise Deadend('Final vertex completed by neighbors')
         self.buildExceptFinal()
         self.buildFinal()
@@ -213,7 +273,3 @@ class Triangle:
             return [ (self.verts[i],self.center) for i in range(3) ]
         return [e for child in self.children\
                   for e in child.edgesByDepth(depth-1)]
-
-
-
-

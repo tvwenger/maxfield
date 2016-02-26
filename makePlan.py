@@ -3,31 +3,24 @@
 """
 Ingress Maxfield - makePlan.py
 
-usage: makePlan.py [-h] [-v] [-g] [-n NUM_AGENTS] [-s SAMPLES] [-d OUTPUT_DIR]
-                   [-f OUTPUT_FILE]
-                   input_file
+GNU Public License
+http://www.gnu.org/licenses/
+Copyright(C) 2016 by
+Jonathan Baker; babamots@gmail.com
+Trey Wenger; tvwenger@gmail.com
 
-Ingress Maxfield - Maximize the number of links and fields, and thus AP, for a
-collection of portals in the game Ingress.
+Maxfield is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-positional arguments:
-  input_file            Input semi-colon delimited portal file
+Maxfield is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -v, --version         show program's version number and exit
-  -g, --google          Make maps with google maps API. Default: False
-  -a, --api_key         Google API key for google maps. Default: None
-  -n NUM_AGENTS, --num_agents NUM_AGENTS
-                        Number of agents. Default: 1
-  -s SAMPLES, --samples SAMPLES
-                        Number of iterations to perform. More iterations may
-                        improve results, but will take longer to process.
-                        Default: 50
-  -d OUTPUT_DIR, --output_dir OUTPUT_DIR
-                        Directory for results. Default: this directory
-  -f OUTPUT_FILE, --output_file OUTPUT_FILE
-                        Filename for pickle object. Default: plan.pkl
+You should have received a copy of the GNU General Public License
+along with Maxfield.  If not, see <http://www.gnu.org/licenses/>.
 
 Original version by jpeterbaker
 22 July 2014 - tvw updates csv file format
@@ -35,6 +28,8 @@ Original version by jpeterbaker
                  switchted to ; delimited file
 29 Sept 2014 - tvw V2.0 major update to new version
 21 April 2015 - tvw V2.1 force data read to be string
+26 Feb 2016 - tvw v3.0
+              merged some new stuff from jpeterbaker's new version
 """
 
 import sys
@@ -45,48 +40,26 @@ import numpy as np
 import pandas as pd
 from lib import maxfield,PlanPrinterMap,geometry,agentOrder
 import pickle
+import copy
+import time
 
 import matplotlib.pyplot as plt
 
 # version number
-_V_ = '2.0.2'
+_V_ = '3.0.0'
 # max portals allowed
-_MAX_PORTALS_ = 50
+_MAX_PORTALS_ = 500
+# number of attempts to try to get best plan
+_NUM_ATTEMPTS = 100
 
-def main():
-    description=("Ingress Maxfield - Maximize the number of links "
-                 "and fields, and thus AP, for a collection of "
-                 "portals in the game Ingress.")
-    parser = argparse.ArgumentParser(description=description,
-                                     prog="makePlan.py")
-    parser.add_argument('-v','--version',action='version',
-                        version="Ingress Maxfield v{0}".format(_V_))
-    parser.add_argument('-g','--google',action='store_true',
-                        help='Make maps with google maps API. Default: False')
-    parser.add_argument('-a','--api_key',default=None,
-                        help='Google API key for Google maps. Default: None')
-    parser.add_argument('-n','--num_agents',type=int,default='1',
-                        help='Number of agents. Default: 1')
-    parser.add_argument('-s','--samples',type=int,default=50,
-                        help="Number of iterations to "
-                        "perform. More iterations may improve "
-                        "results, but will take longer to process. "
-                        "Default: 50")
-    parser.add_argument('input_file',
-                        help="Input semi-colon delimited portal file")
-    parser.add_argument('-d','--output_dir',default='',
-                        help="Directory for results. Default: "
-                        "this directory")
-    parser.add_argument('-f','--output_file',default='plan.pkl',
-                        help="Filename for pickle object. Default: "
-                        "plan.pkl")
-    args = vars(parser.parse_args())
-
-    # Number of iterations to complete since last improvement
-    EXTRA_SAMPLES = args["samples"]
-
+def main(**args):
+    start_time = time.time()
     GREEN = '#3BF256' # Actual faction text colors in the app
     BLUE  = '#2ABBFF'
+    if args['res']:
+        color=BLUE
+    else:
+        color=GREEN
     # Use google?
     useGoogle = args['google']
     api_key = args['api_key']
@@ -103,14 +76,8 @@ def main():
         output_file += ".pkl"
 
     nagents = args["num_agents"]
-    if nagents < 0:
-        sys.exit("Number of agents should be positive")
-
-    EXTRA_SAMPLES = args["samples"]
-    if EXTRA_SAMPLES < 0:
-        sys.exit("Number of extra samples should be positive")
-    elif EXTRA_SAMPLES > 100:
-        sys.exit("Extra samples may not be more than 100")
+    if nagents <= 0:
+        sys.exit("Number of agents should be greater than zero")
 
     input_file = args['input_file']
 
@@ -121,7 +88,8 @@ def main():
         # each line should be name;intel_link;keys
         portals = pd.read_table(input_file,sep=';',
                                 comment='#',index_col=False,
-                                names=['name','link','keys'],dtype=str)
+                                names=['name','link','keys','sbla'],
+                                dtype=str)
         portals = np.array(portals)
         portals = np.array([portal for portal in portals if (isinstance(portal[0], basestring) and isinstance(portal[1], basestring))])
         print "Found {0} portals in portal list.".format(len(portals))
@@ -134,28 +102,60 @@ def main():
             if len(portal) < 3:
                 print "Error! Portal ",portal[0]," has a formatting problem."
                 sys.exit()
-            a.add_node(num)
-            a.node[num]['name'] = portal[0]
-            coords = (portal[1].split('pll='))
-            if len(coords) < 2:
-                print "Error! Portal ",portal[0]," has a formatting problem."
+            # loop over columns. Four possibilities:
+            # 0. First entry is always portal name
+            # 1. contains "pll=" it is the Intel URL
+            # 2. contains an intenger, it is the number of keys
+            # 3. contains "sbla", it is an SBLA portal
+            loc = None
+            keys = 0
+            sbla = False
+            for pind,pfoobar in enumerate(portal):
+                if str(pfoobar) == 'nan':
+                    continue
+                if pind == 0: # This is the name
+                    a.add_node(num)
+                    a.node[num]['name'] = pfoobar.strip()
+                    continue
+                if 'pll=' in pfoobar: # this is the URL
+                    if loc is not None:
+                        print "Error! Already found URL for this portal: {0}".format(portal[0])
+                        sys.exit()
+                    coords = (pfoobar.strip().split('pll='))
+                    if len(coords) < 2:
+                        print "Error! Portal ",portal[0]," has a formatting problem."
+                        sys.exit()
+                    coord_parts = coords[1].split(',')
+                    lat = int(float(coord_parts[0]) * 1.e6)
+                    lon = int(float(coord_parts[1]) * 1.e6)
+                    loc = np.array([lat,lon],dtype=float)
+                    continue
+                try: # this is the number of keys
+                    keys = int(pfoobar.strip())
+                    continue
+                except ValueError:
+                    pass
+                try: # this is SBLA
+                    sbla = pfoobar.strip()
+                    sbla = (sbla.lower() == 'sbla')
+                    continue
+                except ValueError:
+                    pass
+                # we should never get here unless there was a bad column
+                print "Error: bad data value here:"
+                print portal
+                print pfoobar
                 sys.exit()
-            coord_parts = coords[1].split(',')
-            lat = int(float(coord_parts[0]) * 1.e6)
-            lon = int(float(coord_parts[1]) * 1.e6)
-            locs.append(np.array([lat,lon],dtype=float))
-            try:
-                keys = int(portal[2])
-                a.node[num]['keys'] = keys
-            except ValueError:
-                a.node[num]['keys'] = 0
+            locs.append(loc)
+            a.node[num]['keys'] = keys
+            a.node[num]['sbla'] = sbla
 
         n = a.order() # number of nodes
         locs = np.array(locs,dtype=float)
 
         # Convert coords to radians, then to cartesian, then to
         # gnomonic projection
-        locs = geometry.e6LLtoRads(locs)
+        locs = geometry.LLtoRads(locs)
         xyz  = geometry.radstoxyz(locs)
         xy   = geometry.gnomonicProj(locs,xyz)
 
@@ -164,6 +164,8 @@ def main():
             a.node[i]['xyz'] = xyz[i]
             a.node[i]['xy' ] = xy[i]
 
+        # Below is remnants from "random optimization" technique
+        """
         # EXTRA_SAMPLES attempts to get graph with few missing keys
         # Try to minimuze TK + 2*MK where
         # TK is the total number of missing keys
@@ -246,47 +248,111 @@ def main():
         plt.savefig(output_directory+'optimization.png')
 
         a = bestgraph
-
-        # Attach to each edge a list of fields that it completes
-        # catch no triangulation (bad portal file?)
-        try:
-            for t in a.triangulation:
-                t.markEdgesWithFields()
-        except AttributeError:
-            print "Error: problem with bestgraph... no triangulation...?"
-
-        agentOrder.improveEdgeOrder(a)
-
+        """
         with open(output_directory+output_file,'w') as fout:
             pickle.dump(a,fout)
     else:
         with open(input_file,'r') as fin:
             a = pickle.load(fin)
-    #    agentOrder.improveEdgeOrder(a)
-    #    with open(output_directory+output_file,'w') as fout:
-    #        pickle.dump(a,fout)
 
-    PP = PlanPrinterMap.PlanPrinter(a,output_directory,nagents,useGoogle=useGoogle,
-                                    api_key=api_key)
-    PP.keyPrep()
-    PP.agentKeys()
-    PP.planMap(useGoogle=useGoogle)
-    PP.agentLinks()
+    # Optimize the plan to get shortest walking distance
+    best_plan = None
+    best_PP = None
+    best_time = 1.e9
+    for foobar in xrange(args['attempts']):
+        tdiff = time.time() - start_time
+        hrs = int(tdiff/3600.)
+        mins = int((tdiff-3600.*hrs)/60.)
+        secs = tdiff-3600.*hrs-60.*mins
+        sys.stdout.write("\r[{0:20s}] {1}% ({2}/{3} iterations) : {4:02}h {5:02}m {6:05.2f}s".\
+                         format('#'*(20*foobar/(args['attempts']-1)),
+                                100*foobar/args['attempts'],
+                                foobar,args['attempts'],
+                                hrs,mins,secs))
+        b = copy.deepcopy(a)
+        maxfield.maxFields(b,allow_suboptimal=(not args['optimal']))
+        # Attach to each edge a list of fields that it completes
+        # catch no triangulation (bad portal file?)
+        try:
+            for t in b.triangulation:
+                t.markEdgesWithFields()
+        except AttributeError:
+            print "Error: problem with bestgraph... no triangulation...?"
+        agentOrder.improveEdgeOrder(b)
+        PP = PlanPrinterMap.PlanPrinter(b,output_directory,nagents,useGoogle=useGoogle,
+                                        api_key=api_key,color=color)
+        totalTime = b.walktime+b.linktime+b.commtime
+        if totalTime < best_time:
+            best_plan = b
+            best_PP = copy.deepcopy(PP)
+            best_time = totalTime
+    tdiff = time.time() - start_time
+    hrs = int(tdiff/3600.)
+    mins = int((tdiff-3600.*hrs)/60.)
+    secs = tdiff-3600.*hrs-60.*mins
+    sys.stdout.write("\r[{0:20s}] {1}% ({2}/{3} iterations) : {4:02}h {5:02}m {6:05.2f}s".\
+                         format('#'*(20),
+                                100,args['attempts'],args['attempts'],
+                                hrs,mins,secs))
+    print
+
+    # generate plan details and map
+    best_PP.keyPrep()
+    best_PP.agentKeys()
+    best_PP.planMap(useGoogle=useGoogle)
+    best_PP.agentLinks()
 
     # These make step-by-step instructional images
-    PP.animate(useGoogle=useGoogle)
-    PP.split3instruct(useGoogle=useGoogle)
+    best_PP.animate(useGoogle=useGoogle)
+    best_PP.split3instruct(useGoogle=useGoogle)
 
-    print "Number of portals: {0}".format(PP.num_portals)
-    print "Number of links: {0}".format(PP.num_links)
-    print "Number of fields: {0}".format(PP.num_fields)
-    portal_ap = (125*8 + 500 + 250)*PP.num_portals
-    link_ap = 313 * PP.num_links
-    field_ap = 1250 * PP.num_fields
+    totalTime = best_plan.walktime+best_plan.linktime+best_plan.commtime
+    print "Total time: {0} minutes".format(int(totalTime/60. + 0.5))
+    print "Number of portals: {0}".format(best_PP.num_portals)
+    print "Number of links: {0}".format(best_PP.num_links)
+    print "Number of fields: {0}".format(best_PP.num_fields)
+    portal_ap = (125*8 + 500 + 250)*best_PP.num_portals
+    link_ap = 313 * best_PP.num_links
+    field_ap = 1250 * best_PP.num_fields
     print "AP from portals capture: {0}".format(portal_ap)
     print "AP from link creation: {0}".format(link_ap)
     print "AP from field creation: {0}".format(field_ap)
     print "Total AP: {0}".format(portal_ap+link_ap+field_ap)
 
+    tdiff = time.time() - start_time
+    hrs = int(tdiff/3600.)
+    mins = int((tdiff-3600.*hrs)/60.)
+    secs = tdiff-3600.*hrs-60.*mins
+    print "Runtime: {0:02}h {1:02}m {2:05.2f}s".format(hrs,mins,secs)
+
 if __name__ == "__main__":
-    main()
+    description=("Ingress Maxfield - Maximize the number of links "
+                 "and fields, and thus AP, for a collection of "
+                 "portals in the game Ingress.")
+    parser = argparse.ArgumentParser(description=description,
+                                     prog="makePlan.py")
+    parser.add_argument('-v','--version',action='version',
+                        version="Ingress Maxfield v{0}".format(_V_))
+    parser.add_argument('-g','--google',action='store_true',
+                        help='Make maps with google maps API. Default: False')
+    parser.add_argument('-a','--api_key',default=None,type=str,
+                        help='Google API key for Google maps. Default: None')
+    parser.add_argument('-n','--num_agents',type=int,default='1',
+                        help='Number of agents. Default: 1')
+    parser.add_argument('input_file',type=str,
+                        help="Input semi-colon delimited portal file")
+    parser.add_argument('-d','--output_dir',default='',type=str,
+                        help="Directory for results. Default: "
+                        "this directory")
+    parser.add_argument('-f','--output_file',default='plan.pkl',
+                        type=str,
+                        help="Filename for pickle object. Default: "
+                        "plan.pkl")
+    parser.add_argument('-o','--optimal',action='store_true',
+                        help='Force optimal solution. Default: False')
+    parser.add_argument('-r','--res',action='store_true',
+                        help='Use resistance colors. Default: False')
+    parser.add_argument('--attempts',type=int,default=_NUM_ATTEMPTS,
+                        help='Number of iterations to try new plans. Default: 100')    
+    args = vars(parser.parse_args())
+    main(**args)

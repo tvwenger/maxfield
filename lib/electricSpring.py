@@ -1,7 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Ingress Maxfield - electricSpring.py
+
+GNU Public License
+http://www.gnu.org/licenses/
+Copyright(C) 2016 by
+Jonathan Baker; babamots@gmail.com
+Trey Wenger; tvwenger@gmail.com
+
+Finds best label positions
+
+original version by jpeterbaker
+29 Sept 2014 - tvw V2.0 major updates
+26 Feb 2016 - tvw v3.0
+              merged some new stuff from jpeterbaker's new version
+"""
 import geometry
-np = geometry.np
+import numpy as np
 
 def edgeLabelPos(fixed,anchors):
     '''
