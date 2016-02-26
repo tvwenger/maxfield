@@ -1,4 +1,4 @@
-# 22 July 2014 modified by Trey Wenger
+# 26 Feb 2016 modified by Trey Wenger
 
 # Introduction
 
@@ -9,16 +9,16 @@ way (and the order) that creates the most fields. This is harder than it sounds.
 If you're working on more than a dozen portals, learning to use this code may
 be faster than planning by hand.
 
-This code follows the procedure in my [YouTube video][0].
+This code is used on the website http://www.ingress-maxfield.com
 
 
 # Prerequisites
 
-You'll need [Python][2] (I've got 2.7) as well as networkx, numpy, and matplotlib.
+You'll need Python (I've got 2.7) as well as networkx, numpy, and matplotlib.
 
-You can get these setup easily with the [Enthought Python Distribution][1].
+You can get these setup easily with the Enthought Python Distribution.
 
-You can use [pip][3] to install the dependencies via:
+You can use pip to install the dependencies via:
 
     pip install -r requirements.txt
 
@@ -26,15 +26,9 @@ You can use [pip][3] to install the dependencies via:
 
 I'll be distributing this code with a file EXAMPLE.csv. Try running
 
-    python makePlan.py 4 EXAMPLE.csv out/ output.pkl
+    python makePlan.py -n 4 EXAMPLE.portals -d out/ -f output.pkl
 
 This will put a bunch of files into the "out/" directory (see OUTPUT FILE LIST)
-
-Now try running
-
-    python makePlan.py 3 out/output.pkl
-
-This uses the plan stored in output.pkl instead of calculating a new one. It will create files for 3 agents instead of 4.
 
 ### OUTPUT FILE LIST
 
@@ -79,44 +73,30 @@ No promises
 
 # Usage
 
-    python makePlan.py [-b] agent_count input_file [output_directory] [output_file]
+    See
 
-    -b:          Include this option if you like your maps blue instead of green for any reason
+    python makePlay.py --help
 
-    agent_count: Number of agents for which to make a plan
+# Portal list file format
 
-    input_file:  One of two types of files:
-        .csv   format:
-PORTAL NAME, INTEL MAP LINK, (OPTIONAL:) NUMBER OF KEYS AVAILABLE
+  This file must be semi-colon delimited. Portal names must not
+  contain a semi-colon. The first entry on the line must be the portal
+  name. The next entries can be, in no particular order, the Intel map
+  URL of the portal, the number of keys you or your team has for that
+  portal, and the word SBLA if the portal holds a SoftBank Link
+  Amp. If the number of keys are not included, I assume you have no
+  keys. If you do not include SBLA, I assume there is not a SBLA on
+  the portal. For example, each of the following are allowed:
 
-Example:
- Catholic Church of the Holy Comforter, https://www.ingress.com/intel?ll=38.031745,-78.478592&z=18&pll=38.031796,-78.479439, 3
-
-            portal name should not contain commas
-            keys (optional parameter) is the number of keys you have for the portal
-            If you leave this blank, the program assumes you have no keys
-
-        .pkl   an output from a previous run of this program
-            this can be used to make the same plan with a different number of agents
-
-    output_directory: directory in which to put all output
-        default is the working directory
-
-    output_file: name for a .pkl file containing information on the plan
-        if you later use this for the input file, the same plan will be
-        produced with the number of agents you specify (default: "lastPlan.pkl")
+ Catholic Church of the Holy Comforter; https://www.ingress.com/intel?ll=38.031745,-78.478592&z=18&pll=38.031796,-78.479439; 3; SBLA
+ Catholic Church of the Holy Comforter; SBLA; https://www.ingress.com/intel?ll=38.031745,-78.478592&z=18&pll=38.031796,-78.479439; 3
+ Catholic Church of the Holy Comforter; 3; SBLA; https://www.ingress.com/intel?ll=38.031745,-78.478592&z=18&pll=38.031796,-78.479439
 
 # Notes
 
 The space of possible max-field plans is large. Rather than trying every
 possibility, this program randomly tries some plans and presents you with one
-that doesn't require you to obtain too many more keys.
+that doesn't require you to walk too much.
 
 If you don't like the plan you got, run it again. You'll probably get a
 different plan.
-
-
-[0]: https://www.youtube.com/watch?v=priezq6Dm4Y
-[1]: https://www.enthought.com/downloads/
-[2]: https://www.python.org/download/releases/2.7
-[3]: https://pypi.python.org/pypi/pip
