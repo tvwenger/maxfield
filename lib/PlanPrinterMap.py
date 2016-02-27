@@ -389,6 +389,7 @@ class PlanPrinter:
         totalTime = self.a.walktime+self.a.linktime+self.a.commtime
 
         csv_file = open(self.outputDir+'links_for_agents.csv','w')
+        csv_file.write('Link, Agent, MapNumOrigin, OriginName, MapNumDestination, DestinationName\n')
         
         for agent in range(self.nagents):
             with open(self.outputDir+'links_for_agent_%s_of_%s.txt'\
@@ -415,7 +416,6 @@ class PlanPrinter:
                 fout.write('                 Link Destination\n')
                 fout.write('----------------------------------\n')
                 #             1234112345612345 name
-                csv_file.write('Link, Agent, MapNumOrigin, OriginName, MapNumDestination, DestinationName\n')
                 
                 last_link_from_other_agent = 0
                 for i in xrange(self.m):
@@ -458,7 +458,7 @@ class PlanPrinter:
                             self.nslabel[q],\
                             self.names[q]\
                         ))
-                    csv_file.write("{0}{1}, {2}, {3}, {4}, {5}, {6}\n".\
+                        csv_file.write("{0}{1}, {2}, {3}, {4}, {5}, {6}\n".\
                                    format(i,star,linkagent+1,
                                           self.nslabel[p],self.names[p],
                                           self.nslabel[q],self.names[q]))
