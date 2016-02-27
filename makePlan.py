@@ -310,6 +310,7 @@ def main(**args):
     best_PP.animate(useGoogle=useGoogle)
     best_PP.split3instruct(useGoogle=useGoogle)
 
+    print "Found best plan after {0} iterations.".format(args['attempts'])
     totalTime = best_plan.walktime+best_plan.linktime+best_plan.commtime
     print "Total time: {0} minutes".format(int(totalTime/60. + 0.5))
     print "Number of portals: {0}".format(best_PP.num_portals)
