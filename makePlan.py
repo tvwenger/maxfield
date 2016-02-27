@@ -149,6 +149,8 @@ def main(**args):
             locs.append(loc)
             a.node[num]['keys'] = keys
             a.node[num]['sbla'] = sbla
+            if sbla:
+                print "{0} has SBLA".format(portal[0])
 
         n = a.order() # number of nodes
         locs = np.array(locs,dtype=float)
@@ -260,11 +262,12 @@ def main(**args):
     best_PP = None
     best_time = 1.e9
     for foobar in xrange(args['attempts']):
-        tdiff = time.time() - start_time
-        hrs = int(tdiff/3600.)
-        mins = int((tdiff-3600.*hrs)/60.)
-        secs = tdiff-3600.*hrs-60.*mins
-        sys.stdout.write("\r[{0:20s}] {1}% ({2}/{3} iterations) : {4:02}h {5:02}m {6:05.2f}s".\
+        if not args['quiet']:
+            tdiff = time.time() - start_time
+            hrs = int(tdiff/3600.)
+            mins = int((tdiff-3600.*hrs)/60.)
+            secs = tdiff-3600.*hrs-60.*mins
+            sys.stdout.write("\r[{0:20s}] {1}% ({2}/{3} iterations) : {4:02}h {5:02}m {6:05.2f}s".\
                          format('#'*(20*foobar/(args['attempts']-1)),
                                 100*foobar/args['attempts'],
                                 foobar,args['attempts'],
@@ -286,15 +289,16 @@ def main(**args):
             best_plan = b
             best_PP = copy.deepcopy(PP)
             best_time = totalTime
-    tdiff = time.time() - start_time
-    hrs = int(tdiff/3600.)
-    mins = int((tdiff-3600.*hrs)/60.)
-    secs = tdiff-3600.*hrs-60.*mins
-    sys.stdout.write("\r[{0:20s}] {1}% ({2}/{3} iterations) : {4:02}h {5:02}m {6:05.2f}s".\
+    if not args['quiet']:
+        tdiff = time.time() - start_time
+        hrs = int(tdiff/3600.)
+        mins = int((tdiff-3600.*hrs)/60.)
+        secs = tdiff-3600.*hrs-60.*mins
+        sys.stdout.write("\r[{0:20s}] {1}% ({2}/{3} iterations) : {4:02}h {5:02}m {6:05.2f}s".\
                          format('#'*(20),
                                 100,args['attempts'],args['attempts'],
                                 hrs,mins,secs))
-    print
+        print
 
     # generate plan details and map
     best_PP.keyPrep()
@@ -353,6 +357,8 @@ if __name__ == "__main__":
     parser.add_argument('-r','--res',action='store_true',
                         help='Use resistance colors. Default: False')
     parser.add_argument('--attempts',type=int,default=_NUM_ATTEMPTS,
-                        help='Number of iterations to try new plans. Default: 100')    
+                        help='Number of iterations to try new plans. Default: 100')
+    parser.add_argument('-q','--quiet',action='store_true',
+                        help='Do not display status bar. Default: False')
     args = vars(parser.parse_args())
     main(**args)

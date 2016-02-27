@@ -141,7 +141,7 @@ class PlanPrinter:
             #lonmin = np.rad2deg(min([self.a.node[i]['geo'][1] for i in self.a.node.keys()]))
             #loncenter = (lonmax-lonmin)/2. + lonmin
             #latcenter = (latmax-latmin)/2. + latmin
-            print "Center Coordinates (lat,lon): ",latcenter,loncenter
+            #print "Center Coordinates (lat,lon): ",latcenter,loncenter
 
             # turn things in to integers for maps API
             map_xwidth = int(xsize)
