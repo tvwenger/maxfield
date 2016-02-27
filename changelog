@@ -17,3 +17,4 @@ Changes: 26 Feb 2016
 2. Added an option for force optimal if desired.
 3. Added support for SoftBank Link Amps (up to 40 outgoing links)
 4. Added faction color scheme
+5. Fixed link csv file
