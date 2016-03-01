@@ -111,4 +111,4 @@ if __name__=='__main__':
                  [ portals[i-n,1],labelpos[i-n,1],portals[i-n+1,1] ],'r-')
 
     plt.show()
-        
+    plt.close('all')    

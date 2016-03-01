@@ -268,7 +268,7 @@ def main(**args):
             mins = int((tdiff-3600.*hrs)/60.)
             secs = tdiff-3600.*hrs-60.*mins
             sys.stdout.write("\r[{0:20s}] {1}% ({2}/{3} iterations) : {4:02}h {5:02}m {6:05.2f}s".\
-                         format('#'*(20*foobar/(args['attempts']-1)),
+                         format('#'*(20*foobar/args['attempts']),
                                 100*foobar/args['attempts'],
                                 foobar,args['attempts'],
                                 hrs,mins,secs))
@@ -307,8 +307,9 @@ def main(**args):
     best_PP.agentLinks()
 
     # These make step-by-step instructional images
-    best_PP.animate(useGoogle=useGoogle)
-    best_PP.split3instruct(useGoogle=useGoogle)
+    if not args['skipplot']:
+        best_PP.animate(useGoogle=useGoogle)
+        best_PP.split3instruct(useGoogle=useGoogle)
 
     print
     print
@@ -332,6 +333,8 @@ def main(**args):
     mins = int((tdiff-3600.*hrs)/60.)
     secs = tdiff-3600.*hrs-60.*mins
     print "Runtime: {0:02}h {1:02}m {2:05.2f}s".format(hrs,mins,secs)
+
+    plt.close('all')
 
 if __name__ == "__main__":
     description=("Ingress Maxfield - Maximize the number of links "
@@ -364,5 +367,7 @@ if __name__ == "__main__":
                         help='Number of iterations to try new plans. Default: 100')
     parser.add_argument('-q','--quiet',action='store_true',
                         help='Do not display status bar. Default: False')
+    parser.add_argument('-s','--skipplot',action='store_true',
+                        help='Skip the step-by-step plots. Default: False')
     args = vars(parser.parse_args())
     main(**args)

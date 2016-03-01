@@ -417,4 +417,5 @@ if __name__ == '__main__':
    """
         
     plt.show()
+    plt.close('all')
 

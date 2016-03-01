@@ -95,7 +95,7 @@ class PlanPrinter:
         # total stats for this plan
         self.num_portals = self.n
         self.num_links = self.m
-        self.num_fields = -1
+        self.num_fields = 0
 
         if useGoogle:
             # convert xy coordinates to web mercator
@@ -348,6 +348,7 @@ class PlanPrinter:
         plt.title('Portal and Link Map')
         plt.savefig(self.outputDir+"linkMap.png")
         plt.clf()
+        plt.close()
 
 #        for agent in range(self.nagents):
 #            self.drawSubgraph(self.movements[agent])
@@ -378,6 +379,7 @@ class PlanPrinter:
 
                 agentlinkcount[i] += 1
                 agentfieldcount[i] += len(self.a.edge[p][q]['fields'])
+                self.num_fields += len(self.a.edge[p][q]['fields'])
                 totalAP += 313
                 totalAP += 1250 * len(self.a.edge[p][q]['fields'])
                 totalDist += dist
@@ -560,8 +562,7 @@ class PlanPrinter:
         ax.axis('off')
         plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(self.m))
         ax.cla()
-
-        self.num_fields = len(patches)
+        plt.close()
 
     def split3instruct(self, useGoogle=False):
         portals = np.array([self.a.node[i]['xy'] for i in self.a.nodes_iter()]).T
@@ -627,3 +628,4 @@ class PlanPrinter:
         plt.axis('off')
         plt.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
         plt.clf()
+        plt.close()
