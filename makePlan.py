@@ -30,6 +30,8 @@ Original version by jpeterbaker
 21 April 2015 - tvw V2.1 force data read to be string
 26 Feb 2016 - tvw v3.0
               merged some new stuff from jpeterbaker's new version
+02 Mar 2016 - tvw v3.1
+              added option to skip link-by-link plots
 """
 
 import sys
@@ -46,7 +48,7 @@ import time
 import matplotlib.pyplot as plt
 
 # version number
-_V_ = '3.0.0'
+_V_ = '3.1.0'
 # max portals allowed
 _MAX_PORTALS_ = 500
 # number of attempts to try to get best plan

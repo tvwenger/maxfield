@@ -16,6 +16,8 @@ original version by jpeterbaker
 29 Sept 2014 - tvw V2.0 major updates
 26 Feb 2016 - tvw v3.0
               merged some new stuff from jpeterbaker's new version
+01 Mar 2016 - tvw v3.1
+              changed number of fields calculation method
 """
 
 import os
