@@ -33,9 +33,10 @@ def try_reduce_out_degree(a,p):
     toremove = []
     for q in a.edge[p]:
         if ((a.node[q]['sbla'] and a.out_degree(q) < 40) or (a.out_degree(q) < 8)):
-            a.add_edge(q,p)
-            a.edge[q][p] = a.edge[p][q]
-            toremove.append(q)
+            if a.edge[p][q]['reversible']:
+                a.add_edge(q,p)
+                a.edge[q][p] = a.edge[p][q]
+                toremove.append(q)
 
     for q in toremove:
         a.remove_edge(p,q)
