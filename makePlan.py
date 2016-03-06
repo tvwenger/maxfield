@@ -300,6 +300,15 @@ def main(args):
             best_plan = b
             best_PP = copy.deepcopy(PP)
             best_time = totalTime
+
+
+    b = best_plan
+    agentOrder.improveEdgeOrderMore(b)
+    best_PP = PlanPrinterMap.PlanPrinter(b,output_directory,nagents,useGoogle=useGoogle,
+                                    api_key=api_key,color=color)
+    best_time = b.walktime+b.linktime+b.commtime
+
+
     if not args.quiet:
         tdiff = time.time() - start_time
         hrs = int(tdiff/3600.)

@@ -65,7 +65,7 @@ def try_ordered_edge(a,p,q,reversible,allow_suboptimal):
         p,q = q,p
     
     m = a.size()
-    a.add_edge(p,q,{'order':m,'reversible':reversible,'fields':[]})
+    a.add_edge(p,q,{'order':m,'reversible':reversible,'fields':[],'depends':[]})
 
     try:
         a.edgeStack.append( (p,q) )
@@ -257,9 +257,18 @@ class Triangle:
         p,q = edges[lastInd]
 
         self.a.edge[p][q]['fields'].append(self.verts)
+        # the last edge depends on the other two
+        del edges[lastInd]
+        self.a.edge[p][q]['depends'].extend(edges)
 
         for child in self.children:
             child.markEdgesWithFields()
+
+        # all edges starting from inside this triangle have to be completed before it
+        for c in self.contents:
+            self.a.edge[p][q]['depends'].append(c)
+
+        #print("edge %d-%d depends on: %s" % (p, q, self.a.edge[p][q]['depends']))
 
     def edgesByDepth(self,depth):
         # Return list of edges of triangles at given depth
