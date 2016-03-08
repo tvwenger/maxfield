@@ -384,4 +384,6 @@ if __name__ == "__main__":
     try:
         job.get()
     except TimeoutError:
+        if args.log is not None:
+            sys.stdout = open(args.log,'a',0)
         print "Timeout error: your plan took longer than {0} seconds to complete. Please try submitting again and/or removing some portals.".format(args.timeout)
