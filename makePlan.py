@@ -32,6 +32,7 @@ Original version by jpeterbaker
               merged some new stuff from jpeterbaker's new version
 02 Mar 2016 - tvw v3.1
               added option to skip link-by-link plots
+              added timeout
 """
 
 import sys
@@ -44,6 +45,7 @@ from lib import maxfield,PlanPrinterMap,geometry,agentOrder
 import pickle
 import copy
 import time
+from pebble import process, TimeoutError # to handle timeout
 
 import matplotlib.pyplot as plt
 
@@ -54,34 +56,34 @@ _MAX_PORTALS_ = 500
 # number of attempts to try to get best plan
 _NUM_ATTEMPTS = 100
 
-def main(**args):
+def main(args):
     start_time = time.time()
     GREEN = '#3BF256' # Actual faction text colors in the app
     BLUE  = '#2ABBFF'
-    if args['res']:
+    if args.res:
         color=BLUE
     else:
         color=GREEN
     # Use google?
-    useGoogle = args['google']
-    api_key = args['api_key']
+    useGoogle = args.google
+    api_key = args.api_key
 
-    output_directory = args["output_dir"]
+    output_directory = args.output_dir
     # add ending separator
     if output_directory[-1] != os.sep:
         output_directory += os.sep
     # create directory if doesn't exist
     if not os.path.isdir(output_directory):
         os.mkdir(output_directory)
-    output_file = args["output_file"]
+    output_file = args.output_file
     if output_file[-4:] != '.pkl':
         output_file += ".pkl"
 
-    nagents = args["num_agents"]
+    nagents = args.num_agents
     if nagents <= 0:
         sys.exit("Number of agents should be greater than zero")
 
-    input_file = args['input_file']
+    input_file = args.input_file
 
     if input_file[-3:] != 'pkl':
         # If the input file is a portal list, let's set things up
@@ -263,19 +265,19 @@ def main(**args):
     best_plan = None
     best_PP = None
     best_time = 1.e9
-    for foobar in xrange(args['attempts']):
-        if not args['quiet']:
+    for foobar in xrange(args.attempts):
+        if not args.quiet:
             tdiff = time.time() - start_time
             hrs = int(tdiff/3600.)
             mins = int((tdiff-3600.*hrs)/60.)
             secs = tdiff-3600.*hrs-60.*mins
             sys.stdout.write("\r[{0:20s}] {1}% ({2}/{3} iterations) : {4:02}h {5:02}m {6:05.2f}s".\
-                         format('#'*(20*foobar/args['attempts']),
-                                100*foobar/args['attempts'],
-                                foobar,args['attempts'],
+                         format('#'*(20*foobar/args.attempts),
+                                100*foobar/args.attempts,
+                                foobar,args.attempts,
                                 hrs,mins,secs))
         b = copy.deepcopy(a)
-        maxfield.maxFields(b,allow_suboptimal=(not args['optimal']))
+        maxfield.maxFields(b,allow_suboptimal=(not args.optimal))
         # Attach to each edge a list of fields that it completes
         # catch no triangulation (bad portal file?)
         try:
@@ -291,14 +293,14 @@ def main(**args):
             best_plan = b
             best_PP = copy.deepcopy(PP)
             best_time = totalTime
-    if not args['quiet']:
+    if not args.quiet:
         tdiff = time.time() - start_time
         hrs = int(tdiff/3600.)
         mins = int((tdiff-3600.*hrs)/60.)
         secs = tdiff-3600.*hrs-60.*mins
         sys.stdout.write("\r[{0:20s}] {1}% ({2}/{3} iterations) : {4:02}h {5:02}m {6:05.2f}s".\
                          format('#'*(20),
-                                100,args['attempts'],args['attempts'],
+                                100,args.attempts,args.attempts,
                                 hrs,mins,secs))
         print
 
@@ -309,14 +311,14 @@ def main(**args):
     best_PP.agentLinks()
 
     # These make step-by-step instructional images
-    if not args['skipplot']:
+    if not args.skipplot:
         best_PP.animate(useGoogle=useGoogle)
         best_PP.split3instruct(useGoogle=useGoogle)
 
     print
     print
     print
-    print "Found best plan after {0} iterations.".format(args['attempts'])
+    print "Found best plan after {0} iterations.".format(args.attempts)
     totalTime = best_plan.walktime+best_plan.linktime+best_plan.commtime
     print "Total time: {0} minutes".format(int(totalTime/60. + 0.5))
     print "Number of portals: {0}".format(best_PP.num_portals)
@@ -371,5 +373,12 @@ if __name__ == "__main__":
                         help='Do not display status bar. Default: False')
     parser.add_argument('-s','--skipplot',action='store_true',
                         help='Skip the step-by-step plots. Default: False')
-    args = vars(parser.parse_args())
-    main(**args)
+    parser.add_argument('--timeout',type=float,default=None,help='Timeout in seconds. Default: None')
+    args = parser.parse_args()
+    # Set up job using pebble to handle timeout
+    with process.Pool(1) as p:
+        job = p.schedule(main,args=(args,),timeout=args.timeout)
+    try:
+        job.get()
+    except TimeoutError:
+        print "Timeout error: your plan took longer than {0} seconds to complete. Please try submitting again and/or removing some portals.".format(args.timeout)
