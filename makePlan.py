@@ -58,6 +58,8 @@ _NUM_ATTEMPTS = 100
 
 def main(args):
     start_time = time.time()
+    if args.log is not None:
+        sys.stdout = open(args.log,'w',0)
     GREEN = '#3BF256' # Actual faction text colors in the app
     BLUE  = '#2ABBFF'
     if args.res:
@@ -302,7 +304,7 @@ def main(args):
                          format('#'*(20),
                                 100,args.attempts,args.attempts,
                                 hrs,mins,secs))
-        print
+        print ""
 
     # generate plan details and map
     best_PP.keyPrep()
@@ -315,9 +317,9 @@ def main(args):
         best_PP.animate(useGoogle=useGoogle)
         best_PP.split3instruct(useGoogle=useGoogle)
 
-    print
-    print
-    print
+    print ""
+    print ""
+    print ""
     print "Found best plan after {0} iterations.".format(args.attempts)
     totalTime = best_plan.walktime+best_plan.linktime+best_plan.commtime
     print "Total time: {0} minutes".format(int(totalTime/60. + 0.5))
@@ -374,6 +376,7 @@ if __name__ == "__main__":
     parser.add_argument('-s','--skipplot',action='store_true',
                         help='Skip the step-by-step plots. Default: False')
     parser.add_argument('--timeout',type=float,default=None,help='Timeout in seconds. Default: None')
+    parser.add_argument('--log',type=str,default=None,help='Log file. Default: print to screen.')
     args = parser.parse_args()
     # Set up job using pebble to handle timeout
     with process.Pool(1) as p:
