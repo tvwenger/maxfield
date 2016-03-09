@@ -60,6 +60,7 @@ def main(args):
     start_time = time.time()
     if args.log is not None:
         sys.stdout = open(args.log,'w',0)
+        sys.stderr = open('errors_{0}'.format(args.log),'w',0)
     GREEN = '#3BF256' # Actual faction text colors in the app
     BLUE  = '#2ABBFF'
     if args.res:
@@ -386,4 +387,5 @@ if __name__ == "__main__":
     except TimeoutError:
         if args.log is not None:
             sys.stdout = open(args.log,'a',0)
+            sys.stderr = open('errors_{0}'.format(args.log),'a',0)
         print "Timeout error: your plan took longer than {0} seconds to complete. Please try submitting again and/or removing some portals.".format(args.timeout)

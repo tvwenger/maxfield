@@ -41,7 +41,7 @@ def try_reduce_out_degree(a,p):
     for q in toremove:
         a.remove_edge(p,q)
 
-def try_ordered_edge(a,p,q,reversible):
+def try_ordered_edge(a,p,q,reversible,allow_suboptimal):
     # now with SBLA support
     if a.has_edge(p,q) or a.has_edge(q,p):
         return
@@ -103,6 +103,7 @@ class Triangle:
         self.children = []
         self.contents = []
         self.center = None
+        self.allow_suboptimal = allow_suboptimal
 
     def findContents(self,candidates=None):
         if candidates == None:
@@ -172,15 +173,15 @@ class Triangle:
             # Avoid making the final the link origin when possible
             # print self.tostr(),'is exterior'
             try_ordered_edge(self.a,self.verts[1],\
-                               self.verts[0],self.exterior)
+                               self.verts[0],self.exterior,self.allow_suboptimal)
             try_ordered_edge(self.a,self.verts[2],\
-                               self.verts[0],self.exterior)
+                               self.verts[0],self.exterior,self.allow_suboptimal)
         else:
             # print self.tostr(),'is NOT exterior'
             try_ordered_edge(self.a,self.verts[0],\
-                               self.verts[1],self.exterior)
+                               self.verts[1],self.exterior,self.allow_suboptimal)
             try_ordered_edge(self.a,self.verts[0],\
-                               self.verts[2],self.exterior)
+                               self.verts[2],self.exterior,self.allow_suboptimal)
 
         if len(self.children) > 0:
             for i in [1,2]:
@@ -191,7 +192,7 @@ class Triangle:
         if len(self.children) == 0:
             # print 'no children'
             p,q = self.verts[2] , self.verts[1]
-            try_ordered_edge(self.a,p,q,True)
+            try_ordered_edge(self.a,p,q,True,self.allow_suboptimal)
             return
 
         # Child 0 is guaranteed to be the one opposite final
