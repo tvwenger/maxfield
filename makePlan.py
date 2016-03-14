@@ -83,7 +83,8 @@ def main(args):
 
     nagents = args.num_agents
     if nagents <= 0:
-        sys.exit("Number of agents should be greater than zero")
+        print "Number of agents should be greater than zero"
+        raise ValueError("Number of agents should be greater than zero")
 
     input_file = args.input_file
 
@@ -100,14 +101,15 @@ def main(args):
         portals = np.array([portal for portal in portals if (isinstance(portal[0], basestring) and isinstance(portal[1], basestring))])
         print "Found {0} portals in portal list.".format(len(portals))
         if len(portals) < 3:
-            sys.exit("Error: Must have more than 2 portals!")
+            print "Error: Must have more than 2 portals!"
+            raise ValueError("Error: Must have more than 2 portals!")
         if len(portals) > _MAX_PORTALS_:
-            sys.exit("Error: Portal limit is {0}".\
-                     format(_MAX_PORTALS_))
+            print "Error: Portal limit is {0}".format(_MAX_PORTALS_)
+            raise ValueError("Error: Portal limit is {0}".format(_MAX_PORTALS_))
         for num,portal in enumerate(portals):
             if len(portal) < 3:
                 print "Error! Portal ",portal[0]," has a formatting problem."
-                sys.exit()
+                raise ValueError("Error! Portal ",portal[0]," has a formatting problem.")
             # loop over columns. Four possibilities:
             # 0. First entry is always portal name
             # 1. contains "pll=" it is the Intel URL
@@ -126,11 +128,11 @@ def main(args):
                 if 'pll=' in pfoobar: # this is the URL
                     if loc is not None:
                         print "Error! Already found URL for this portal: {0}".format(portal[0])
-                        sys.exit()
+                        raise ValueError("Error! Already found URL for this portal: {0}".format(portal[0]))
                     coords = (pfoobar.strip().split('pll='))
                     if len(coords) < 2:
                         print "Error! Portal ",portal[0]," has a formatting problem."
-                        sys.exit()
+                        raise ValueError("Error! Portal ",portal[0]," has a formatting problem.")
                     coord_parts = coords[1].split(',')
                     lat = int(float(coord_parts[0]) * 1.e6)
                     lon = int(float(coord_parts[1]) * 1.e6)
@@ -151,8 +153,9 @@ def main(args):
                 print "Error: bad data value here:"
                 print portal
                 print pfoobar
-                sys.exit()
+                raise ValueError()
             if loc is None:
+                print "Formatting problem: {0}".format(portal[0])
                 raise ValueError("Formatting problem: {0}".format(portal[0]))
             locs.append(loc)
             a.node[num]['keys'] = keys
