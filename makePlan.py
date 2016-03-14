@@ -152,6 +152,8 @@ def main(args):
                 print portal
                 print pfoobar
                 sys.exit()
+            if loc is None:
+                raise ValueError("Formatting problem: {0}".format(portal[0]))
             locs.append(loc)
             a.node[num]['keys'] = keys
             a.node[num]['sbla'] = sbla
@@ -379,11 +381,14 @@ if __name__ == "__main__":
     parser.add_argument('--log',type=str,default=None,help='Log file. Default: print to screen.')
     args = parser.parse_args()
     # Set up job using pebble to handle timeout
-    with process.Pool(1) as p:
-        job = p.schedule(main,args=(args,),timeout=args.timeout)
-    try:
-        job.get()
-    except TimeoutError:
-        if args.log is not None:
-            sys.stdout = open(args.log,'a',0)
-        print "Timeout error: your plan took longer than {0} seconds to complete. Please try submitting again and/or removing some portals.".format(args.timeout)
+    if args.timeout is not None:
+        with process.Pool(1) as p:
+            job = p.schedule(main,args=(args,),timeout=args.timeout)
+        try:
+            job.get()
+        except TimeoutError:
+            if args.log is not None:
+                sys.stdout = open(args.log,'a',0)
+            print "Timeout error: your plan took longer than {0} seconds to complete. Please try submitting again and/or removing some portals.".format(args.timeout)
+    else:
+        main(args)
