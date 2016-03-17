@@ -59,14 +59,38 @@ def branch_bound(root,lo,hi,callback=None):
     states = [root]
     finals = [] # Terminating states
 
+    # returns true, if an equivalent state of agents has already been
+    # added with a smaller time value
+    def isRedundant(candidate, cache):
+        # creates a bitmap where a '1' in position 'x' (i.e., 1 << x)
+        # means that an agent's last action was to complete
+        # the link number 'x' of the plan
+        key = sum([1 << i for i in candidate.lastat[-1] if i != None])
+
+        val = state.time[-1]
+        try:
+            prev = cache[key]
+            if val < prev:
+                cache[key] = val
+                return False
+            else:
+                return True
+        except KeyError:
+            cache[key] = val
+            return False
+
+
     while len(states) > 0:
         callback()
 
         # The branches of the states
         branches = []
+        bestvals = {}
+
         for state in states:
             try:
-                branches.extend(state.split(splitSize))
+                candidates = state.split(splitSize)
+                branches.extend([c for c in candidates if not isRedundant(c, bestvals)])
                 # print len(branches),'branches'
             except CantSplit:
                 finals.append(state)
