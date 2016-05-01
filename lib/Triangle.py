@@ -74,6 +74,9 @@ def try_ordered_edge(a,p,q,reversible,allow_suboptimal):
         # print 'adding',p,q
         # print a.edgeStack
 
+
+triangleContentCache = {}
+
 class Triangle:
     def __init__(self,verts,a,exterior=False,allow_suboptimal=_ALLOW_SUBOPTIMAL):
         '''
@@ -108,11 +111,20 @@ class Triangle:
     def findContents(self,candidates=None):
         if candidates == None:
             candidates = xrange(self.a.order())
-        for p in candidates:
-            if p in self.verts:
-                continue
-            if geometry.sphereTriContains(self.pts,self.a.node[p]['xyz']):
-                self.contents.append(p)
+
+        triangleKey = sum([1 << p for p in self.verts])
+
+        if triangleKey in triangleContentCache:
+            self.contents.extend(triangleContentCache[triangleKey])
+
+        else:
+            for p in candidates:
+                if p in self.verts:
+                    continue
+                if geometry.sphereTriContains(self.pts,self.a.node[p]['xyz']):
+                    self.contents.append(p)
+            triangleContentCache[triangleKey] = self.contents
+
 
     def randSplit(self):
         if len(self.contents) == 0:
