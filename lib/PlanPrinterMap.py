@@ -34,6 +34,7 @@ from cStringIO import StringIO
 from PIL import Image
 import urllib2
 import math
+import time
 
 # returns the points in a shrunken toward their centroid
 def shrink(a):
@@ -50,7 +51,7 @@ class PlanPrinter:
         self.a = a
         self.n = a.order() # number of nodes
         self.m = a.size()  # number of links
-                
+
         self.nagents = nagents
         self.outputDir = outputDir
         self.color = color
@@ -168,16 +169,21 @@ class PlanPrinter:
                 print("Could not connect to google maps server!")
 
     def keyPrep(self):
-        rowFormat = '{0:11d} | {1:6d} | {2}\n'
+        rowFormat = '{0:11d} | {1:6d} | {2:4d} | {3}\n'
+        TotalKeylack = 0
         with open(self.outputDir+'keyPrep.txt','w') as fout:
-            fout.write('Keys Needed | Lacked\n')
+            fout.write( 'Keys Needed | Lacked | Map# |                           %s\n'\
+                %time.strftime('%Y-%m-%d %H:%M:%S %Z'))
             for i in self.nameOrder:
                 keylack = max(self.a.in_degree(i)-self.a.node[i]['keys'],0)
                 fout.write(rowFormat.format(\
                     self.a.in_degree(i),\
                     keylack,\
+                    self.nslabel[i],\
                     self.names[i]\
                 ))
+                TotalKeylack += keylack
+            fout.write('Number of missing Keys: %s\n'%TotalKeylack)
 
         unused   = set(xrange(self.n))
         infirst  = []
@@ -195,12 +201,13 @@ class PlanPrinter:
         outfirst.sort()
 
         with open(self.outputDir+'ownershipPrep.txt','w') as fout:
-            fout.write("These portals' first links are incoming\n")
-            fout.write('They should be at full resonators before linking\n')
+            fout.write("These portals' first links are incoming                 %s\n"\
+                %time.strftime('%Y-%m-%d %H:%M:%S %Z'))
+            fout.write('They should be at full resonators before linking\n\n')
             for s in infirst:
                 fout.write('  %s\n'%s)
 
-            fout.write("\nThese portals' first links are outgoing\n")
+            fout.write("\nThese portals' first links are outgoing\n\n")
             fout.write('Their resonators can be applied when first agent arrives\n')
             for s in outfirst:
                 fout.write('  %s\n'%s)
@@ -213,7 +220,8 @@ class PlanPrinter:
         for agent in range(self.nagents):
             with open(self.outputDir+'keys_for_agent_%s_of_%s.txt'\
                     %(agent+1,self.nagents),'w') as fout:
-                fout.write('Keys for Agent %s of %s\n\n'%(agent+1,self.nagents))
+                fout.write('Keys for Agent %s of %s                                   %s\n\n'\
+                    %(agent+1,self.nagents, time.strftime('%Y-%m-%d %H:%M:%S %Z')))
                 fout.write('Map# Keys Name\n')
 
                 for portal in self.nameOrder:
@@ -398,8 +406,8 @@ class PlanPrinter:
         for agent in range(self.nagents):
             with open(self.outputDir+'links_for_agent_%s_of_%s.txt'\
                     %(agent+1,self.nagents),'w') as fout:
-                fout.write('Complete link schedule issued to agent %s of %s\n\n'\
-                    %(agent+1,self.nagents))
+                fout.write('Complete link schedule issued to agent %s of %s           %s\n\n'\
+                    %(agent+1,self.nagents,time.strftime('%Y-%m-%d %H:%M:%S %Z')))
                 fout.write('\nLinks marked with * can be made EARLY\n')
                 fout.write('----------- PLAN DATA ------------\n')
                 fout.write('Minutes:                 %s minutes\n'%int(totalTime/60+.5))
@@ -407,9 +415,9 @@ class PlanPrinter:
                 fout.write('Total AP:                %s\n'%totalAP)
                 fout.write('AP per Agent per minute: %0.2f AP/Agent/min\n'%float(totalAP/self.nagents/(totalTime/60+.5)))
                 fout.write('AP per Agent per meter:  %0.2f AP/Agent/m\n'%float(totalAP/self.nagents/totalDist))
-                
+
                 agentAP = 313*agentlinkcount[agent] + 1250*agentfieldcount[agent]
-                
+
                 fout.write('----------- AGENT DATA -----------\n')
                 fout.write('Distance traveled: %s m (%s %%)\n'%(int(agentdists[agent]),int(100*agentdists[agent]/totalDist)))
                 fout.write('Links made:        %s\n'%(agentlinkcount[agent]))
@@ -426,7 +434,7 @@ class PlanPrinter:
                     p,q = self.orderedEdges[i]
                     
                     linkagent = self.link2agent[i]
-    
+
                     # Put a star by links that can be completed early since they complete no fields
                     numfields = len(self.a.edge[p][q]['fields'])
                     if numfields == 0:
@@ -440,7 +448,7 @@ class PlanPrinter:
 
                     if linkagent != agent:
                         fout.write(plainStr.format(\
-                            i,\
+                            i+1,\
                             star,\
                             linkagent+1,\
                             self.nslabel[p],\
@@ -454,7 +462,7 @@ class PlanPrinter:
                             fout.write('\n')
                         last_link_from_other_agent = 0
                         fout.write(hilitStr.format(\
-                            i,\
+                            i+1,\
                             star,\
                             linkagent+1,\
                             self.nslabel[p],\
@@ -528,7 +536,7 @@ class PlanPrinter:
             aptotal += 313+1250*len(newPatches)
             newEdge = np.array([self.a.node[p]['xy'],self.a.node[q]['xy']]).T
             patches += newPatches
-            edges.append(newEdge)            
+            edges.append(newEdge)
             plt.plot(newEdge[0],newEdge[1],'k-',lw=2)
             x0 = newEdge[0][0]
             x1 = newEdge[0][1]
@@ -544,7 +552,7 @@ class PlanPrinter:
             ax.axis('off')
             plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(i))
             ax.cla()
-                
+
             # reset patches to green
             for patch in newPatches:
                 patch.set_facecolor(GREEN)
