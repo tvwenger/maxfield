@@ -8,6 +8,7 @@ http://www.gnu.org/licenses/
 Copyright(C) 2016 by
 Jonathan Baker; babamots@gmail.com
 Trey Wenger; tvwenger@gmail.com
+Travis Crowder; spechal@gmail.com
 
 This is a replacement for PlanPrinter.py
 With google maps support
@@ -18,12 +19,15 @@ original version by jpeterbaker
               merged some new stuff from jpeterbaker's new version
 01 Mar 2016 - tvw v3.1
               changed number of fields calculation method
+03 Jun 2016 - tac v3.2
+              Moving away from PIL to Pillow via matplotlib
 """
 
 import os
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import matplotlib.image as Image
 import geometry
 from matplotlib.patches import Polygon
 import numpy as np
@@ -31,7 +35,6 @@ import agentOrder
 import networkx as nx
 import electricSpring
 from cStringIO import StringIO
-from PIL import Image
 import urllib2
 import math
 
@@ -50,7 +53,7 @@ class PlanPrinter:
         self.a = a
         self.n = a.order() # number of nodes
         self.m = a.size()  # number of links
-                
+
         self.nagents = nagents
         self.outputDir = outputDir
         self.color = color
@@ -157,12 +160,12 @@ class PlanPrinter:
             else:
                 url = "http://maps.googleapis.com/maps/api/staticmap?center={0},{1}&size={2}x{3}&zoom={4}&sensor=false".format(latcenter,loncenter,map_xwidth,map_ywidth,zoom)
             #print url
-        
+
             # determine if we can use google maps
             self.google_image = None
             try:
                 buffer = StringIO(urllib2.urlopen(url).read())
-                self.google_image = Image.open(buffer)
+                self.google_image = Image.imread(buffer)
                 plt.clf()
             except urllib2.URLError as err:
                 print("Could not connect to google maps server!")
@@ -217,11 +220,11 @@ class PlanPrinter:
                 fout.write('Map# Keys Name\n')
 
                 for portal in self.nameOrder:
-                    
+
                     keys = self.agentkeyneeds[agent,portal]
                     if self.agentkeyneeds[agent,portal] == 0:
                         keys = ''
-                        
+
                     fout.write(rowFormat%(\
                         self.nslabel[portal],\
                         keys,\
@@ -328,7 +331,7 @@ class PlanPrinter:
                 va = 'bottom'
             else:
                 va = 'top'
-            
+
             plt.text(self.xy[i,0],self.xy[i,1],str(j),ha=ha,va=va)
 
         fig = plt.gcf()
@@ -394,7 +397,7 @@ class PlanPrinter:
 
         csv_file = open(self.outputDir+'links_for_agents.csv','w')
         csv_file.write('Link, Agent, MapNumOrigin, OriginName, MapNumDestination, DestinationName\n')
-        
+
         for agent in range(self.nagents):
             with open(self.outputDir+'links_for_agent_%s_of_%s.txt'\
                     %(agent+1,self.nagents),'w') as fout:
@@ -407,9 +410,9 @@ class PlanPrinter:
                 fout.write('Total AP:                %s\n'%totalAP)
                 fout.write('AP per Agent per minute: %0.2f AP/Agent/min\n'%float(totalAP/self.nagents/(totalTime/60+.5)))
                 fout.write('AP per Agent per meter:  %0.2f AP/Agent/m\n'%float(totalAP/self.nagents/totalDist))
-                
+
                 agentAP = 313*agentlinkcount[agent] + 1250*agentfieldcount[agent]
-                
+
                 fout.write('----------- AGENT DATA -----------\n')
                 fout.write('Distance traveled: %s m (%s %%)\n'%(int(agentdists[agent]),int(100*agentdists[agent]/totalDist)))
                 fout.write('Links made:        %s\n'%(agentlinkcount[agent]))
@@ -420,13 +423,13 @@ class PlanPrinter:
                 fout.write('                 Link Destination\n')
                 fout.write('----------------------------------\n')
                 #             1234112345612345 name
-                
+
                 last_link_from_other_agent = 0
                 for i in xrange(self.m):
                     p,q = self.orderedEdges[i]
-                    
+
                     linkagent = self.link2agent[i]
-    
+
                     # Put a star by links that can be completed early since they complete no fields
                     numfields = len(self.a.edge[p][q]['fields'])
                     if numfields == 0:
@@ -482,7 +485,7 @@ class PlanPrinter:
 
         portals = np.array([self.a.node[i]['xy']
                             for i in self.a.nodes_iter()]).T
-        
+
         # Plot all edges lightly
         def dashAllEdges():
             for p,q in self.a.edges_iter():
@@ -524,11 +527,11 @@ class PlanPrinter:
                 coords = np.array([ self.a.node[v]['xy'] for v in tri ])
                 newPatches.append(Polygon(shrink(coords.T).T,facecolor=RED,\
                                                  edgecolor=INVISIBLE))
-            
+
             aptotal += 313+1250*len(newPatches)
             newEdge = np.array([self.a.node[p]['xy'],self.a.node[q]['xy']]).T
             patches += newPatches
-            edges.append(newEdge)            
+            edges.append(newEdge)
             plt.plot(newEdge[0],newEdge[1],'k-',lw=2)
             x0 = newEdge[0][0]
             x1 = newEdge[0][1]
@@ -544,7 +547,7 @@ class PlanPrinter:
             ax.axis('off')
             plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(i))
             ax.cla()
-                
+
             # reset patches to green
             for patch in newPatches:
                 patch.set_facecolor(GREEN)
@@ -568,7 +571,7 @@ class PlanPrinter:
 
     def split3instruct(self, useGoogle=False):
         portals = np.array([self.a.node[i]['xy'] for i in self.a.nodes_iter()]).T
-        
+
         gen1 = self.a.triangulation
 
         oldedges = []
@@ -609,7 +612,7 @@ class PlanPrinter:
 
             for edge in newedges:
                 plt.plot(edge[0],edge[1],'r-')
-            
+
             oldedges += newedges
             if useGoogle: plt.axis(self.xylims)
             plt.axis('off')
