@@ -311,7 +311,8 @@ def improveEdgeOrderMore(a):
     d = geometry.sphereDist(geo,geo)
 
     def pathLength(d, edges):
-        return sum([d[edges[i][0]][edges[i+1][0]] for i in xrange(len(edges)-1)])
+        startps = [edges[i][0] for i in xrange(len(edges))]
+        return np.sum(d[startps[:-1], startps[1:]])
 
     def dependsOn(subjects, objects):
         '''
@@ -364,7 +365,18 @@ def improveEdgeOrderMore(a):
             # max block size is 5 (6-1); chosen arbitrarily
             for block in xrange(1, 6):
                 moving = orderedEdges[j:j+block]
-                for possible in possiblePlaces(j, moving):
+                # if the first and last link in the block are from the same portal
+                # and the link before or after the block is also from that portal,
+                # moving the block will not improve the path length, and thus there
+                # is no point in trying
+                if moving[0][0] == moving[-1][0] and (
+                        (j > 0 and moving[0][0] == orderedEdges[j-1][0]) or
+                        (j + block < m and moving[0][0] == orderedEdges[j+block][0])):
+                    filter = [] # skips the loop below
+                else:
+                    filter = True # do the loop
+
+                for possible in filter and possiblePlaces(j, moving):
                     if possible < j:
                         # Move the links to be at an earlier index
                         path = orderedEdges[   :possible] +\
@@ -380,7 +392,7 @@ def improveEdgeOrderMore(a):
 
                     length = pathLength(d,path)
 
-                    if length < bestLength:
+                    if bestLength - length > 1e-10:
                         #print("Improved by %f meters in index %d (from %d, block %d)" % (bestLength-length, possible, best, block))
                         best = possible
                         bestLength = length
