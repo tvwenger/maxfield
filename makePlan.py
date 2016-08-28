@@ -46,6 +46,7 @@ import pickle
 import copy
 import time
 from pebble import process, TimeoutError # to handle timeout
+import json
 
 import matplotlib.pyplot as plt
 
@@ -100,6 +101,11 @@ def main(args):
         portals = np.array(portals)
         portals = np.array([portal for portal in portals if (isinstance(portal[0], basestring) and isinstance(portal[1], basestring))])
         print "Found {0} portals in portal list.".format(len(portals))
+
+        intel_url = "https://www.ingress.com/intel?z=17&" # setup url for intel map
+        ll_set = False
+        pls = []
+
         if len(portals) < 3:
             print "Error: Must have more than 2 portals!"
             raise ValueError("Error: Must have more than 2 portals!")
@@ -136,7 +142,12 @@ def main(args):
                     coord_parts = coords[1].split(',')
                     lat = int(float(coord_parts[0]) * 1.e6)
                     lon = int(float(coord_parts[1]) * 1.e6)
+                    pls.append(coord_parts[0] + "," + coord_parts[1])
                     loc = np.array([lat,lon],dtype=float)
+                    if not ll_set:
+                        # use coordinates from first portal to center the map
+                        intel_url += "ll=" + coord_parts[0] + "," + coord_parts[1] + "&"
+                        ll_set = True
                     continue
                 try: # this is the number of keys
                     keys = int(pfoobar.strip())
@@ -176,6 +187,28 @@ def main(args):
             a.node[i]['geo'] = locs[i]
             a.node[i]['xyz'] = xyz[i]
             a.node[i]['xy' ] = xy[i]
+
+        # build portal list for intel_url
+        intel_url += "pls="
+        json_output = []
+        for p in xrange(len(pls)):
+            if p < len(pls) - 1:
+                intel_url += pls[p] + "," + pls[p+1]
+                intel_url += "_"
+                json_output.append({"type":"polyline", "latLngs":
+                    [ { "lat": pls[p].split(',')[0],   "lng": pls[p].split(',')[1] },
+                      { "lat": pls[p+1].split(',')[0], "lng": pls[p+1].split(',')[1] }
+                    ],
+                    "color": "#a24ac3"})
+            elif p == len(pls)-1:
+                intel_url += pls[p] + "," + pls[0]
+                json_output.append({"type":"polyline", "latLngs":
+                    [ { "lat": pls[p].split(',')[0], "lng": pls[p].split(',')[1] },
+                      { "lat": pls[0].split(',')[0], "lng": pls[0].split(',')[1] }
+                    ],
+                    "color": "#a24ac3"})
+        print intel_url
+        print json.dumps(json_output, indent=4)
 
         # Below is remnants from "random optimization" technique
         """
