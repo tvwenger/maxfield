@@ -300,6 +300,27 @@ def main(args):
             best_plan = b
             best_PP = copy.deepcopy(PP)
             best_time = totalTime
+
+
+    b = best_plan
+    agentOrder.improveEdgeOrderMore(b)
+
+    # Re-run to fix the animations and stars of edges that can be done early
+    # (improveEdgeOrderMore may have modified the completion order)
+    try:
+        first = True
+        for t in b.triangulation:
+            t.markEdgesWithFields(clean = first)
+            first = False
+    except AttributeError:
+        print "Error: problem with bestgraph... no triangulation...?"
+
+
+    best_PP = PlanPrinterMap.PlanPrinter(b,output_directory,nagents,useGoogle=useGoogle,
+                                    api_key=api_key,color=color)
+    best_time = b.walktime+b.linktime+b.commtime
+
+
     if not args.quiet:
         tdiff = time.time() - start_time
         hrs = int(tdiff/3600.)

@@ -65,7 +65,7 @@ def try_ordered_edge(a,p,q,reversible,allow_suboptimal):
         p,q = q,p
     
     m = a.size()
-    a.add_edge(p,q,{'order':m,'reversible':reversible,'fields':[]})
+    a.add_edge(p,q,{'order':m,'reversible':reversible,'fields':[],'depends':[]})
 
     try:
         a.edgeStack.append( (p,q) )
@@ -243,7 +243,12 @@ class Triangle:
         return np.all(np.sum(self.orths*(pt-self.pts),1) < 0)
 
     # Attach to each edge a list of fields that it completes
-    def markEdgesWithFields(self):
+    def markEdgesWithFields(self, clean=False):
+        if clean:
+            for p,q in self.a.edges_iter():
+                self.a.edge[p][q]['fields'] = []
+                self.a.edge[p][q]['depends'] = []
+
         edges = [(0,0)]*3
         for i in range(3):
             p = self.verts[i-1]
@@ -269,9 +274,26 @@ class Triangle:
         p,q = edges[lastInd]
 
         self.a.edge[p][q]['fields'].append(self.verts)
+        if not self.exterior:
+            # the last edge depends on the other two
+            del edges[lastInd]
+            self.a.edge[p][q]['depends'].extend(edges)
+        else:
+            # in an exterior triangle that has children, only the edge
+            # on the opposite side of the "final" vertex is a dependency;
+            # childless exterior triangles can be built in any order
+            if len(self.children) > 0:
+                self.a.edge[p][q]['depends'].append(edges[0])
+
 
         for child in self.children:
             child.markEdgesWithFields()
+
+        # all edges starting from inside this triangle have to be completed before it
+        for c in self.contents:
+            self.a.edge[p][q]['depends'].append(c)
+
+        #print("edge %d-%d depends on: %s" % (p, q, self.a.edge[p][q]['depends']))
 
     def edgesByDepth(self,depth):
         # Return list of edges of triangles at given depth

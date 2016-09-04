@@ -292,6 +292,126 @@ def improveEdgeOrder(a):
         a.edge[p][q]['order'] = i
         # print
 
+
+def improveEdgeOrderMore(a):
+    '''
+    A greedy algorithm to reduce the path length.
+    Moves edges earlier or later, if they can be moved (dependencies are
+    done in the proper order) and the move reduces the total length of the
+    path.
+    The algorithm tries to move 1 to 5 edges at the same time as a block
+    to improve upon certain types of local optima.
+    '''
+
+    m = a.size()
+    # If link i is e then orderedEdges[i]=e
+    orderedEdges = [-1]*m
+
+    geo = np.array([ a.node[i]['geo'] for i in xrange(a.order())])
+    d = geometry.sphereDist(geo,geo)
+
+    def pathLength(d, edges):
+        startps = [edges[i][0] for i in xrange(len(edges))]
+        return np.sum(d[startps[:-1], startps[1:]])
+
+    def dependsOn(subjects, objects):
+        '''
+        Returns True, if an edge inside 'objects' should be made before
+        one (or more) of the edges inside 'subjects'
+        '''
+        for p,q in subjects:
+            depends = a.edge[p][q]['depends']
+            for u,v in objects:
+                if depends.count((u,v,)) + depends.count(u) > 0:
+                    return True
+
+        return False
+
+
+    def possiblePlaces(j, block):
+        '''
+        A generator returning the possible places of the given
+        block of edges within the complete edge sequence.
+        The current position (j) is not returned.
+        '''
+        pos = j
+        # smaller index means made earlier
+        while pos > 0 and not dependsOn(block, [orderedEdges[pos-1]]):
+            pos -= 1
+            yield pos
+
+        pos = j
+        bsize = len(block)
+        n = len(orderedEdges) - bsize + 1
+        # bigger index means made later
+        while pos < n-1 and not dependsOn([orderedEdges[pos+bsize]], block):
+            pos += 1
+            yield pos
+
+
+    for p,q in a.edges_iter():
+        orderedEdges[a.edge[p][q]['order']] = (p,q)
+
+    origLength = pathLength(d, orderedEdges)
+    bestLength = origLength
+
+    cont = True
+    while cont:
+        cont = False
+        for j in xrange(m):
+            best = j
+            bestPath = orderedEdges
+
+            # max block size is 5 (6-1); chosen arbitrarily
+            for block in xrange(1, 6):
+                moving = orderedEdges[j:j+block]
+                # if the first and last link in the block are from the same portal
+                # and the link before or after the block is also from that portal,
+                # moving the block will not improve the path length, and thus there
+                # is no point in trying
+                if moving[0][0] == moving[-1][0] and (
+                        (j > 0 and moving[0][0] == orderedEdges[j-1][0]) or
+                        (j + block < m and moving[0][0] == orderedEdges[j+block][0])):
+                    filter = [] # skips the loop below
+                else:
+                    filter = True # do the loop
+
+                for possible in filter and possiblePlaces(j, moving):
+                    if possible < j:
+                        # Move the links to be at an earlier index
+                        path = orderedEdges[   :possible] +\
+                                    moving +\
+                                    orderedEdges[possible  :j] +\
+                                    orderedEdges[j+block: ]
+                    else:
+                        # Move to a later position
+                        path = orderedEdges[   :j] +\
+                                    orderedEdges[j+block: possible+block] +\
+                                    moving +\
+                                    orderedEdges[possible+block  :]
+
+                    length = pathLength(d,path)
+
+                    if bestLength - length > 1e-10:
+                        #print("Improved by %f meters in index %d (from %d, block %d)" % (bestLength-length, possible, best, block))
+                        best = possible
+                        bestLength = length
+                        bestPath = path
+
+            if best != j:
+                #print("New order (%d -> %d): %s" % (j, best, bestPath))
+                orderedEdges = bestPath
+                cont = True
+
+    length = pathLength(d, orderedEdges)
+    print
+    #print("Length reduction: original = %d, improved = %d, change = %d meters" % (origLength, length, length-origLength))
+
+    for i in xrange(m):
+        p,q = orderedEdges[i]
+        a.edge[p][q]['order'] = i
+
+
 if __name__=='__main__':
     order = [0,5,5,5,2,2,1,0]
     # order = [5]*5
