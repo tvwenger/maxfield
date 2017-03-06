@@ -112,7 +112,7 @@ class Triangle:
         if candidates == None:
             candidates = xrange(self.a.order())
 
-        triangleKey = sum([1 << p for p in self.verts])
+        triangleKey = sum([1 << int(p) for p in self.verts])
 
         if triangleKey in triangleContentCache:
             self.contents.extend(triangleContentCache[triangleKey])
