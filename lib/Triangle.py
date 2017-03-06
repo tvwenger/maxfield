@@ -27,12 +27,15 @@ class Deadend(Exception):
     def __init__(self,s):
         self.explain = s
 
+def can_add_more_links_from_portal(a, p):
+    return (a.out_degree(p) < 8) or (a.node[p]['sbla'] and a.out_degree(p) < 40)
+
 def try_reduce_out_degree(a,p):
     # Reverse as many edges out-edges of p as possible
     # now with SBLA support!
     toremove = []
     for q in a.edge[p]:
-        if ((a.node[q]['sbla'] and a.out_degree(q) < 40) or (a.out_degree(q) < 8)):
+        if can_add_more_links_from_portal(a,q):
             if a.edge[p][q]['reversible']:
                 a.add_edge(q,p)
                 a.edge[q][p] = a.edge[p][q]
@@ -49,17 +52,17 @@ def try_ordered_edge(a,p,q,reversible,allow_suboptimal):
     # if reversible and a.out_degree(p) > a.out_degree(q):
         # p,q = q,p
 
-    if ((a.node[p]['sbla'] and a.out_degree(p) >= 40) or (a.out_degree(p) >= 8)):
+    if not can_add_more_links_from_portal(a,p):
         try_reduce_out_degree(a,p)
 
-    if ((a.node[p]['sbla'] and a.out_degree(p) >= 40) or (a.out_degree(p) >= 8)):
+    if not can_add_more_links_from_portal(a,p):
     # We tried but failed to reduce the out-degree of p
         if not reversible and not allow_suboptimal:
             # print '%s already has 8 outgoing'%p
             raise(Deadend('%s already has max outgoing'%p))
-        if ((a.node[q]['sbla'] and a.out_degree(q) >= 40) or (a.out_degree(q) >= 8)):
+        if not can_add_more_links_from_portal(a,q):
             try_reduce_out_degree(a,q)
-        if (((a.node[q]['sbla'] and a.out_degree(q) > 40) or (a.out_degree(q) >= 8)) and not allow_suboptimal):
+        if (not can_add_more_links_from_portal(a,q) and not allow_suboptimal):
             # print '%s and %s already have 8 outgoing'%(p,q)
             raise(Deadend('%s and %s already have max outgoing'%(p,q)))
         p,q = q,p
