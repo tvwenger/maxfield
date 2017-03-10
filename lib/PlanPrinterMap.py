@@ -494,40 +494,32 @@ class PlanPrinter:
         portals = np.array([self.a.node[i]['xy']
                             for i in self.a.nodes_iter()]).T
 
-        # Plot all edges lightly
-        def dashAllEdges():
-            for p,q in self.a.edges_iter():
-                plt.plot(portals[0,[p,q]],portals[1,[p,q]],'k:')
 
         aptotal = 0
-        edges   = []
-        patches = []
+
+        fig = plt.figure()
+        ax = fig.add_subplot(1,1,1)
+        ax.plot(portals[0],portals[1],'go')
 
         if useGoogle:
             if self.google_image is None:
                 return
-            implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
-        plt.plot(portals[0],portals[1],'go')
-        dashAllEdges()
+            implot = ax.imshow(self.google_image,extent=self.xylims,origin='upper')
+        ax.plot(portals[0],portals[1],'go')
+        # Plot all edges lightly
+        for p,q in self.a.edges_iter():
+            ax.plot(portals[0,[p,q]],portals[1,[p,q]],'k:')
 
-        plt.title('AP:\n%s'%commaGroup(aptotal),ha='center')
-        if useGoogle: plt.axis(self.xylims)
-        plt.axis('off')
-        plt.savefig(self.outputDir+'frame_-1.png')
-        plt.clf()
-
+        ax.set_title('AP:\n%s'%commaGroup(aptotal),ha='center')
+        if useGoogle: 
+            ax.set_xlim(self.xylims[0],self.xylims[1])
+            ax.set_ylim(self.xylims[2],self.xylims[3])
+        ax.axis('off')
+        fig.savefig(self.outputDir+'frame_-1.png')
+        
         # let's plot some stuff
         for i in xrange(self.m):
-            if useGoogle:
-                if self.google_image is None:
-                    return
-                implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
             p,q = self.orderedEdges[i]
-            plt.plot(portals[0],portals[1],'go')
-            # Plot all edges lightly
-            dashAllEdges()
-            for edge in edges:
-                plt.plot(edge[0],edge[1],'g-')
 
             # We'll display the new fields in red
             newPatches = []
@@ -536,64 +528,53 @@ class PlanPrinter:
                 newPatches.append(Polygon(shrink(coords.T).T,facecolor=RED,\
                                                  edgecolor=INVISIBLE))
 
+            newDrawn = []
             aptotal += 313+1250*len(newPatches)
             newEdge = np.array([self.a.node[p]['xy'],self.a.node[q]['xy']]).T
-            patches += newPatches
-            edges.append(newEdge)
-            plt.plot(newEdge[0],newEdge[1],'k-',lw=2)
+            newDrawn += ax.plot(newEdge[0],newEdge[1],'k-',lw=2)
             x0 = newEdge[0][0]
             x1 = newEdge[0][1]
             y0 = newEdge[1][0]
             y1 = newEdge[1][1]
-            plt.plot([x1-0.05*(x1-x0),x1-0.4*(x1-x0)],
-                     [y1-0.05*(y1-y0),y1-0.4*(y1-y0)],'k-',lw=6)
-            ax = plt.gca()
-            for patch in patches:
-                ax.add_patch(patch)
+            newDrawn += ax.plot([x1-0.05*(x1-x0),x1-0.4*(x1-x0)],
+                                [y1-0.05*(y1-y0),y1-0.4*(y1-y0)],'k-',lw=6)
+            for patch in newPatches:
+                newDrawn.append(ax.add_patch(patch))
             ax.set_title('AP:\n%s'%commaGroup(aptotal),ha='center')
-            if useGoogle: plt.axis(self.xylims)
-            ax.axis('off')
-            plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(i))
-            ax.cla()
+            fig.savefig(self.outputDir+'frame_{0:03d}.png'.format(i))
 
+            # remove the newly added edges and triangles from the graph
+            for drawn in newDrawn:
+                drawn.remove()
+            # redraw the new edges and triangles in the final color
+            ax.plot(newEdge[0],newEdge[1],'g-')
             # reset patches to green
             for patch in newPatches:
                 patch.set_facecolor(GREEN)
+                ax.add_patch(patch)
 
-        if useGoogle:
-            if self.google_image is None:
-                return
-            implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
-
-        plt.plot(portals[0],portals[1],'go')
-        for edge in edges:
-            plt.plot(edge[0],edge[1],'g-')
-        for patch in patches:
-            ax.add_patch(patch)
         ax.set_title('AP:\n%s'%commaGroup(aptotal),ha='center')
-        if useGoogle: plt.axis(self.xylims)
-        ax.axis('off')
-        plt.savefig(self.outputDir+'frame_{0:03d}.png'.format(self.m))
-        ax.cla()
-        plt.close()
+        fig.savefig(self.outputDir+'frame_{0:03d}.png'.format(self.m))
 
     def split3instruct(self, useGoogle=False):
         portals = np.array([self.a.node[i]['xy'] for i in self.a.nodes_iter()]).T
 
         gen1 = self.a.triangulation
 
-        oldedges = []
+        fig = plt.figure()
+        ax = fig.add_subplot(1,1,1)
+        ax.plot(portals[0],portals[1],'go')
 
-        plt.clf()
         if useGoogle:
             if self.google_image is None:
                 return
-            implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
-        plt.plot(portals[0],portals[1],'go')
-        if useGoogle: plt.axis(self.xylims)
-        plt.axis('off')
-        plt.savefig(self.outputDir+'depth_-1.png')
-        plt.clf()
+            implot = ax.imshow(self.google_image,extent=self.xylims,origin='upper')
+        ax.plot(portals[0],portals[1],'go')
+        if useGoogle: 
+            ax.set_xlim(self.xylims[0], self.xylims[1])
+            ax.set_ylim(self.xylims[2], self.xylims[3])
+        ax.axis('off')
+        fig.savefig(self.outputDir+'depth_-1.png')
 
         depth = 0
         while True:
@@ -609,36 +590,19 @@ class PlanPrinter:
             if len(newedges) == 0:
                 break
 
-            if useGoogle:
-                if self.google_image is None:
-                    return
-                implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
-            plt.plot(portals[0],portals[1],'go')
-
-            for edge in oldedges:
-                plt.plot(edge[0],edge[1],'k-')
-
+            newDrawn = []
             for edge in newedges:
-                plt.plot(edge[0],edge[1],'r-')
+                newDrawn += ax.plot(edge[0],edge[1],'r-')
 
-            oldedges += newedges
-            if useGoogle: plt.axis(self.xylims)
-            plt.axis('off')
-            plt.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
-            plt.clf()
+            fig.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
+            # remove the new edges from the graph
+            for drawn in newDrawn:
+                drawn.remove()
+            # redraw them in the final color
+            for edge in newedges:
+                ax.plot(edge[0],edge[1],'r-')
 
             depth += 1
 
-        if useGoogle:
-            if self.google_image is None:
-                return
-            implot = plt.imshow(self.google_image,extent=self.xylims,origin='upper')
-        plt.plot(portals[0],portals[1],'go')
+        fig.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
 
-        for edge in oldedges:
-            plt.plot(edge[0],edge[1],'k-')
-        if useGoogle: plt.axis(self.xylims)
-        plt.axis('off')
-        plt.savefig(self.outputDir+'depth_{0:03d}.png'.format(depth))
-        plt.clf()
-        plt.close()
