@@ -322,7 +322,7 @@ def improveEdgeOrderMore(a):
         for p,q in subjects:
             depends = a.edge[p][q]['depends']
             for u,v in objects:
-                if depends.count((u,v,)) + depends.count(u) > 0:
+                if depends.count((u,v,)) > 0 or depends.count(u) > 0:
                     return True
 
         return False
@@ -340,11 +340,11 @@ def improveEdgeOrderMore(a):
             pos -= 1
             yield pos
 
-        pos = j
         bsize = len(block)
-        n = len(orderedEdges) - bsize + 1
+        pos = j + bsize
+        n = len(orderedEdges) + 1
         # bigger index means made later
-        while pos < n-1 and not dependsOn([orderedEdges[pos+bsize]], block):
+        while pos < n-1 and not dependsOn([orderedEdges[pos]], block):
             pos += 1
             yield pos
 
@@ -361,7 +361,7 @@ def improveEdgeOrderMore(a):
         for j in xrange(m):
             best = j
             bestPath = orderedEdges
-
+            currentLength = bestLength
             # max block size is 5 (6-1); chosen arbitrarily
             for block in xrange(1, 6):
                 moving = orderedEdges[j:j+block]
@@ -372,31 +372,47 @@ def improveEdgeOrderMore(a):
                 if moving[0][0] == moving[-1][0] and (
                         (j > 0 and moving[0][0] == orderedEdges[j-1][0]) or
                         (j + block < m and moving[0][0] == orderedEdges[j+block][0])):
-                    filter = [] # skips the loop below
-                else:
-                    filter = True # do the loop
+                    continue
 
+                removedEdgesLengthBase = 0
+                addedEdgesLengthBase = 0
+                if j > 0:
+                    removedEdgesLengthBase += d[orderedEdges[j-1][0], orderedEdges[j][0]]
+                if j+block < m:
+                    removedEdgesLengthBase += d[orderedEdges[j+block-1][0], orderedEdges[j+block][0]]
+                if j > 0 and j+block<m:
+                    addedEdgesLengthBase += d[orderedEdges[j-1][0], orderedEdges[j+block][0]]
                 for possible in filter and possiblePlaces(j, moving):
+                    addedEdgesLength = addedEdgesLengthBase
+                    removedEdgesLength = removedEdgesLengthBase
+                    if possible > 0:
+                        addedEdgesLength += d[orderedEdges[possible-1][0], moving[0][0]]
+                        if possible < m:
+                            removedEdgesLength += d[orderedEdges[possible-1][0], orderedEdges[possible][0]]               
+                    if possible < m:
+                        addedEdgesLength += d[moving[-1][0], orderedEdges[possible][0]]
+
+                    length = currentLength - removedEdgesLength + addedEdgesLength
+                    if bestLength - length <= 1e-10:
+                        continue
+
+                    #print("Improved by %f meters in index %d (from %d, block %d)" % (bestLength-length, possible, best, block))
+                    
                     if possible < j:
                         # Move the links to be at an earlier index
-                        path = orderedEdges[   :possible] +\
+                        bestPath = orderedEdges[   :possible] +\
                                     moving +\
                                     orderedEdges[possible  :j] +\
                                     orderedEdges[j+block: ]
                     else:
                         # Move to a later position
-                        path = orderedEdges[   :j] +\
-                                    orderedEdges[j+block: possible+block] +\
+                        bestPath = orderedEdges[   :j] +\
+                                    orderedEdges[j+block: possible] +\
                                     moving +\
-                                    orderedEdges[possible+block  :]
-
-                    length = pathLength(d,path)
-
-                    if bestLength - length > 1e-10:
-                        #print("Improved by %f meters in index %d (from %d, block %d)" % (bestLength-length, possible, best, block))
-                        best = possible
-                        bestLength = length
-                        bestPath = path
+                                    orderedEdges[possible  :]
+                    #assert abs(length - pathLength(d,bestPath)) < 1e-10
+                    best = possible
+                    bestLength = length
 
             if best != j:
                 #print("New order (%d -> %d): %s" % (j, best, bestPath))
