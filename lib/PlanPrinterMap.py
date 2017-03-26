@@ -479,6 +479,60 @@ class PlanPrinter:
                                           self.nslabel[q],self.names[q]))
         csv_file.close()
 
+
+    def validatePlan(self):
+        '''
+        Basic validation of the plan. Checks for each link that:
+         - the source portal of the link is not covered by an earlier field
+         - the link makes at most one field on each side
+        '''
+        self.allCompletedFields = []
+        seemsOk = True
+
+        for i in xrange(self.m):
+            p,q = self.orderedEdges[i]
+            if not self.validateLink(p):
+                print 'ERROR in step {0}: source portal is covered'.format(i+1)
+                seemsOk = False
+            elif not self.validateFields((p, q), self.a.edge[p][q]['fields']):
+                print 'ERROR in step {0}: too many fields on the same side of a link'.format(i+1)
+                seemsOk = False
+
+        return seemsOk
+
+    def validateLink(self, srcPortal):
+        for field in self.allCompletedFields:
+            if not self.a.node[srcPortal]['xyz'] in field:
+                if geometry.sphereTriContains(field, self.a.node[srcPortal]['xyz']):
+                    return False
+
+        return True
+
+    def validateFields(self, lastLink, fields):
+        if len(fields) > 2:
+            return False
+
+        if len(fields) > 0:
+            pts0 = np.array([self.a.node[p]['xyz'] for p in fields[0]])
+            self.allCompletedFields.append(pts0)
+
+        if len(fields) == 2:
+            for v in fields[0]:
+                if v <> lastLink[0] and v <> lastLink[1]:
+                    tip0 = v
+            for v in fields[1]:
+                if v <> lastLink[0] and v <> lastLink[1]:
+                    tip1 = v
+
+            pts1 = np.array([self.a.node[p]['xyz'] for p in fields[1]])
+            self.allCompletedFields.append(pts1)
+
+            if geometry.sphereTriContains(pts0, self.a.node[tip1]['xyz']) or \
+                     geometry.sphereTriContains(pts1, self.a.node[tip0]['xyz']):
+                return False
+
+        return True
+
     def animate(self,useGoogle=False):
         """
         Show how the links will unfold

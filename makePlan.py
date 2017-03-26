@@ -371,6 +371,11 @@ def main(args):
     best_PP.planMap(useGoogle=useGoogle)
     best_PP.agentLinks()
 
+    if args.check and not best_PP.validatePlan():
+        print "The plan contains errors!"
+        if not args.optimal:
+            print "The errors may be due to not using --optimal."
+
     # These make step-by-step instructional images
     if not args.skipplot:
         best_PP.animate(useGoogle=useGoogle)
@@ -435,6 +440,8 @@ if __name__ == "__main__":
     parser.add_argument('-s','--skipplot',action='store_true',
                         help='Skip the step-by-step plots. Default: False')
     parser.add_argument('--timeout',type=float,default=None,help='Timeout in seconds. Default: None')
+    parser.add_argument('-c','--check',action='store_true',
+                        help='Validate the plan for algorithm errors. Default: False')
     parser.add_argument('--log',type=str,default=None,help='Log file. Default: print to screen.')
     args = parser.parse_args()
     # Set up job using pebble to handle timeout
