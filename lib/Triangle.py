@@ -163,13 +163,13 @@ class Triangle:
         # Because of the build order, it's safe for this triangle to
         # believe it is exterior
         opposite  =  Triangle([p,self.verts[1],
-                               self.verts[2]],self.a,True)
+                               self.verts[2]],self.a,True, allow_suboptimal=self.allow_suboptimal)
         # The other two children must also use my final as their final
         adjacents = [\
                      Triangle([self.verts[0],\
-                               self.verts[2],p],self.a),\
+                               self.verts[2],p],self.a, allow_suboptimal=self.allow_suboptimal),\
                      Triangle([self.verts[0],\
-                               self.verts[1],p],self.a)\
+                               self.verts[1],p],self.a, allow_suboptimal=self.allow_suboptimal)\
                     ]
         
         self.children = [opposite]+adjacents
