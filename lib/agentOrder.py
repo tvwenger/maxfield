@@ -382,7 +382,7 @@ def improveEdgeOrderMore(a):
                     removedEdgesLengthBase += d[orderedEdges[j+block-1][0], orderedEdges[j+block][0]]
                 if j > 0 and j+block<m:
                     addedEdgesLengthBase += d[orderedEdges[j-1][0], orderedEdges[j+block][0]]
-                for possible in filter and possiblePlaces(j, moving):
+                for possible in possiblePlaces(j, moving):
                     addedEdgesLength = addedEdgesLengthBase
                     removedEdgesLength = removedEdgesLengthBase
                     if possible > 0:
