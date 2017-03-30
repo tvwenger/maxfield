@@ -189,7 +189,7 @@ def triangulate(a,perim,allow_suboptimal=True):
             # print 'big fail'
             continue
         # print 'continuing with',perim[range(i+1-pn,i)]
-        if not triangulate(a,perim[range(i+1-pn,i)]): # i+1 through i-1
+        if not triangulate(a,perim[range(i+1-pn,i)],allow_suboptimal): # i+1 through i-1
             # remove the links formed since beginning of loop
             removeSince(a,startStackLen,startTriLen)
             continue
