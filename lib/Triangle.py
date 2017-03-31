@@ -67,15 +67,17 @@ def try_ordered_edge(a,p,q,reversible,allow_suboptimal):
             raise(Deadend('%s and %s already have max outgoing'%(p,q)))
         p,q = q,p
     
-    m = a.size()
+    try:
+        m = len(a.edgeStack)
+    except AttributeError:
+        a.edgeStack = []
+        m = 0
+
     a.add_edge(p,q,{'order':m,'reversible':reversible,'fields':[],'depends':[]})
 
-    try:
-        a.edgeStack.append( (p,q) )
-    except AttributeError:
-        a.edgeStack = [ (p,q) ]
-        # print 'adding',p,q
-        # print a.edgeStack
+    a.edgeStack.append( (p,q) )
+    # print 'adding',p,q
+    # print a.edgeStack
 
 
 triangleContentCache = {}
