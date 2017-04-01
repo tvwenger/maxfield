@@ -223,15 +223,12 @@ class Triangle:
     def buildGraph(self):
         # print 'building',self.tostr()
         '''
-        TODO
         A first generation triangle could have its final vertex's
         edges already completed by neighbors.
         This will cause the first generation to be completed when
         the opposite edge is added which complicates completing inside
         descendants.
-        This could be solved by choosing a new final vertex (or
-        carefully choosing the order of completion of first generation
-        triangles).
+        Solve this by choosing a new final vertex, if possible.
         '''
         if (                                                \
             self.a.has_edge(self.verts[0],self.verts[1]) or \
@@ -242,7 +239,13 @@ class Triangle:
             self.a.has_edge(self.verts[2],self.verts[0])    \
            ):
             # print 'Final vertex completed!!!'
-            raise Deadend('Final vertex completed by neighbors')
+            if self.a.has_edge(self.verts[2],self.verts[1]) or \
+               self.a.has_edge(self.verts[1],self.verts[2]):
+                raise Deadend('Final vertex completed by neighbors')
+            else:
+                # make verts[1] the new final vertex
+                self.verts[0], self.verts[1] = self.verts[1], self.verts[0]
+
         self.buildExceptFinal()
         self.buildFinal()
 
