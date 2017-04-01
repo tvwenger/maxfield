@@ -142,7 +142,7 @@ class Triangle:
         for child in self.children:
             child.randSplit()
 
-    def nearSplit(self):
+    def nearSplit(self, recursive=False):
         # Split on the node closest to final
         if len(self.contents) == 0:
             return
@@ -153,8 +153,9 @@ class Triangle:
 
         self.splitOn(self.contents[closest])
 
-        for child in self.children:
-            child.nearSplit()
+        if recursive:
+            for child in self.children:
+                child.nearSplit()
 
     def splitOn(self,p):
         # Splits this Triangle to produce 3 children using portal p
@@ -206,6 +207,7 @@ class Triangle:
 
     def buildExceptFinal(self):
         # print 'building EXCEPT final',self.tostr()
+        self.nearSplit()
         if len(self.children) == 0:
             # print 'no children'
             p,q = self.verts[2] , self.verts[1]

@@ -168,7 +168,7 @@ def triangulate(a,perim,allow_suboptimal=True):
                           allow_suboptimal=allow_suboptimal)
             t0.findContents()
             # t0.randSplit() # Split triangle on a random portal
-            t0.nearSplit() # Split triangle on the nearest portal
+            # t0.nearSplit() # Split triangle on the nearest portal
             try:
                 # print 'trying to build'
                 t0.buildGraph()
