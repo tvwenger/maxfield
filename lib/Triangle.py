@@ -28,7 +28,9 @@ class Deadend(Exception):
         self.explain = s
 
 def can_add_more_links_from_portal(a, p):
-    return (a.out_degree(p) < 8) or (a.node[p]['sbla'] and a.out_degree(p) < 40)
+    # assert len(a.successors(p)) == a.out_degree(p)
+    outdegree = len(a.successors(p))
+    return (outdegree < 8) or (a.node[p]['sbla'] and outdegree < 40)
 
 def try_reduce_out_degree(a,p):
     # Reverse as many edges out-edges of p as possible
