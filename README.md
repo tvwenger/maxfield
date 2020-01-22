@@ -26,6 +26,14 @@ likely get a new plan every time you run the tool. Each plan will
 almost certainly have the maximum possible AP, but the linking order
 and walking distance may be different.
 
+This version (v4.0) is a nearly complete re-write of the original
+Maxfield code (based originally off of work by J. Peter Baker), which
+brings Maxfield into the future with Python 3, fixes many bugs, and
+improves the algorithm dramatically. Previous users of Maxfield will
+notice that plans are now much more efficient in that they require
+fewer keys from any individual portal, and the link order is more
+sensible for multi-agent operations.
+
 You can download this tool and run it locally on your computer by
 following the instructions below. Or, you can use the on-line version
 of this tool: http://www.ingress-maxfield.com
