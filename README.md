@@ -1,6 +1,8 @@
 # Ingress Maxfield (v4.0)
 ## An [Ingress](https://ingress.com/) Linking and Fielding Strategy Generator
 
+![Maxfield Demonstration](https://raw.githubusercontent.com/tvwenger/maxfield/master/example/plan_movie.gif)
+
 ### Introduction
 
 This is for Ingress. If you don't know what that is, you're lost.
@@ -216,6 +218,14 @@ these:
 		
 	link_map.png
 		A map showing the locations of portals and links
+		
+	frames/
+	plan_movie.gif
+		The directory contains images of each step of the plan, which
+		are compiled into the GIF.
+		The location of each agent is highlighted by the magenta box,
+		new fields are in red, and the paths of the agents are the
+		magenta dashed lines.
 		
 ### Issues and Contributing
 
