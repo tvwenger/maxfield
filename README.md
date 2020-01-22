@@ -196,7 +196,7 @@ these:
 	Catholic Church of the Holy Comforter; https://www.ingress.com/intel?ll=38.031745,-78.478592&z=18&pll=38.031796,-78.479439; SBUL
 	Catholic Church of the Holy Comforter; https://www.ingress.com/intel?ll=38.031745,-78.478592&z=18&pll=38.031796,-78.479439; SBUL; 3
 
-### OUTPUT FILE LIST
+### Output Files
 
 	key_preparation.txt
 		List of portals, their numbers on the map, and how many keys are needed
