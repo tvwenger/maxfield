@@ -1,0 +1,145 @@
+Agent Linking Assignments: links should be made in this order
+
+Link = the current link number
+Agent = the person making this link
+# = portal number on portal map
+Link Origin/Destination = portal name in portal file
+
+Link ; Agent ;   # ; Link Origin
+                 # ; Link Destination
+
+   1 ;     1 ;   1 ; Historic Jail House 
+             ;   5 : Town Hall Levy Opera House 
+
+   2 ;     2 ;   0 ; The Kissing Stone 
+             ;  15 : Albermarle County Courthouse 
+
+   3 ;     3 ;   4 ; Jack Jouett's Ride 
+             ;   0 : The Kissing Stone 
+
+   4 ;     1 ;   1 ; Historic Jail House 
+             ;   6 : Stonewall Jackson Statue 
+
+   5 ;     2 ;   0 ; The Kissing Stone 
+             ;  12 : Merriwether Lewis Placard 
+
+   6 ;     3 ;   4 ; Jack Jouett's Ride 
+             ;   7 : Paul Goodloe McIntire 
+
+   7 ;     2 ;   0 ; The Kissing Stone 
+             ;  17 : Watering Fountains 
+
+   8 ;     2 ;   0 ; The Kissing Stone 
+             ;   1 : Historic Jail House 
+
+   9 ;     2 ;   0 ; The Kissing Stone 
+             ;  10 : Catholic Church of the Holy Comforter 
+
+  10 ;     1 ;   5 ; Town Hall Levy Opera House 
+             ;  14 : Site of Old Swan Tavern 
+
+  11 ;     2 ;   0 ; The Kissing Stone 
+             ;   2 : Jefferson Quote 
+
+  12 ;     2 ;   0 ; The Kissing Stone 
+             ;   3 : Gen. Alexander Archer Vandergri 
+
+  13 ;     1 ;   6 ; Stonewall Jackson Statue 
+             ;  14 : Site of Old Swan Tavern 
+
+  14 ;     3 ;   9 ; Congregation Beth Israel 
+             ;   0 : The Kissing Stone 
+
+  15 ;     2 ;   0 ; The Kissing Stone 
+             ;  13 : Historic Courthouse Square 
+
+  16 ;     1 ;   6 ; Stonewall Jackson Statue 
+             ;  11 : Massie Wills House 
+
+  17 ;     3 ;   9 ; Congregation Beth Israel 
+             ;  10 : Catholic Church of the Holy Comforter 
+
+  18 ;     1 ;   6 ; Stonewall Jackson Statue 
+             ;   5 : Town Hall Levy Opera House 
+
+  19 ;     3 ;  10 ; Catholic Church of the Holy Comforter 
+             ;  17 : Watering Fountains 
+
+  20 ;     3 ;  10 ; Catholic Church of the Holy Comforter 
+             ;  11 : Massie Wills House 
+
+  21 ;     3 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   6 : Stonewall Jackson Statue 
+
+  22 ;     3 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   1 : Historic Jail House 
+
+  23 ;     1 ;  17 ; Watering Fountains 
+             ;  16 : Early Hotels: Dining, Dancing, and the Mail 
+
+  24 ;     1 ;  17 ; Watering Fountains 
+             ;   1 : Historic Jail House 
+
+  25 ;     1 ;  17 ; Watering Fountains 
+             ;   6 : Stonewall Jackson Statue 
+
+  26 ;     1 ;  17 ; Watering Fountains 
+             ;  11 : Massie Wills House 
+
+  27 ;     1 ;  17 ; Watering Fountains 
+             ;   5 : Town Hall Levy Opera House 
+
+  28 ;     1 ;  17 ; Watering Fountains 
+             ;  14 : Site of Old Swan Tavern 
+
+  29 ;     1 ;  17 ; Watering Fountains 
+             ;  12 : Merriwether Lewis Placard 
+
+  30 ;     1 ;  17 ; Watering Fountains 
+             ;  15 : Albermarle County Courthouse 
+
+  31 ;     3 ;  15 ; Albermarle County Courthouse 
+             ;   8 : The Original Site of First Baptist Church 1831 
+
+  32 ;     3 ;  15 ; Albermarle County Courthouse 
+             ;   4 : Jack Jouett's Ride 
+
+  33 ;     3 ;  15 ; Albermarle County Courthouse 
+             ;   7 : Paul Goodloe McIntire 
+
+  34 ;     3 ;  15 ; Albermarle County Courthouse 
+             ;  12 : Merriwether Lewis Placard 
+
+  35 ;     1 ;  13 ; Historic Courthouse Square 
+             ;   3 : Gen. Alexander Archer Vandergri 
+
+  36 ;     2 ;   8 ; The Original Site of First Baptist Church 1831 
+             ;   0 : The Kissing Stone 
+
+  37 ;     2 ;   8 ; The Original Site of First Baptist Church 1831 
+             ;   4 : Jack Jouett's Ride 
+
+  38 ;     2 ;   8 ; The Original Site of First Baptist Church 1831 
+             ;   7 : Paul Goodloe McIntire 
+
+  39 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+             ;   0 : The Kissing Stone 
+
+  40 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+             ;  13 : Historic Courthouse Square 
+
+  41 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+             ;   2 : Jefferson Quote 
+
+  42 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+             ;  15 : Albermarle County Courthouse 
+
+  43 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+             ;   8 : The Original Site of First Baptist Church 1831 
+
+  44 ;     2 ;   2 ; Jefferson Quote 
+             ;  13 : Historic Courthouse Square 
+
+  45 ;     2 ;   2 ; Jefferson Quote 
+             ;   3 : Gen. Alexander Archer Vandergri 
+

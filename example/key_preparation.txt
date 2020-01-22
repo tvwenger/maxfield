@@ -1,0 +1,27 @@
+Key Preparation: sorted by portal name
+
+Needed = total keys required
+Have = keys in inventory
+Remaining = keys necessary to farm
+# = portal number on portal map
+Name = portal name in portal file
+
+Needed ; Have ; Remaining ;   # ; Name
+     2 ;    0 ;         2 ;  14 : Albermarle County Courthouse
+     4 ;    0 ;         4 ;   1 : Catholic Church of the Holy Comforter
+     3 ;    0 ;         3 ;   0 : Congregation Beth Israel
+     3 ;    0 ;         3 ;  17 : Early Hotels: Dining, Dancing, and the Mail
+     3 ;    0 ;         3 ;   8 : Gen. Alexander Archer Vandergri
+     3 ;    0 ;         3 ;  16 : Historic Courthouse Square
+     2 ;    0 ;         2 ;   9 : Historic Jail House
+     3 ;    0 ;         3 ;   7 : Jack Jouett's Ride
+     3 ;    0 ;         3 ;  11 : Jefferson Quote
+     2 ;    0 ;         2 ;   2 : Massie Wills House
+     3 ;    0 ;         3 ;  13 : Merriwether Lewis Placard
+     2 ;    0 ;         2 ;  12 : Paul Goodloe McIntire
+     3 ;    0 ;         3 ;   4 : Site of Old Swan Tavern
+     3 ;    0 ;         3 ;   3 : Stonewall Jackson Statue
+     0 ;    0 ;         0 ;  10 : The Kissing Stone
+     3 ;    0 ;         3 ;  15 : The Original Site of First Baptist Church 1831
+     2 ;    0 ;         2 ;   6 : Town Hall Levy Opera House
+     1 ;    0 ;         1 ;   5 : Watering Fountains

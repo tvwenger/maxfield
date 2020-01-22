@@ -1,0 +1,46 @@
+Agent 3 Linking Assignment: links should be made in this order
+
+Link = the current link number
+Agent = the person making this link
+# = portal number on portal map
+Link Origin/Destination = portal name in portal file
+
+Link ; Agent ;   # ; Link Origin
+                 # ; Link Destination
+
+   3 ;     3 ;   4 ; Jack Jouett's Ride 
+             ;   0 : The Kissing Stone 
+
+   6 ;     3 ;   4 ; Jack Jouett's Ride 
+             ;   7 : Paul Goodloe McIntire 
+
+  14 ;     3 ;   9 ; Congregation Beth Israel 
+             ;   0 : The Kissing Stone 
+
+  17 ;     3 ;   9 ; Congregation Beth Israel 
+             ;  10 : Catholic Church of the Holy Comforter 
+
+  19 ;     3 ;  10 ; Catholic Church of the Holy Comforter 
+             ;  17 : Watering Fountains 
+
+  20 ;     3 ;  10 ; Catholic Church of the Holy Comforter 
+             ;  11 : Massie Wills House 
+
+  21 ;     3 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   6 : Stonewall Jackson Statue 
+
+  22 ;     3 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   1 : Historic Jail House 
+
+  31 ;     3 ;  15 ; Albermarle County Courthouse 
+             ;   8 : The Original Site of First Baptist Church 1831 
+
+  32 ;     3 ;  15 ; Albermarle County Courthouse 
+             ;   4 : Jack Jouett's Ride 
+
+  33 ;     3 ;  15 ; Albermarle County Courthouse 
+             ;   7 : Paul Goodloe McIntire 
+
+  34 ;     3 ;  15 ; Albermarle County Courthouse 
+             ;  12 : Merriwether Lewis Placard 
+

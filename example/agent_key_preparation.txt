@@ -1,0 +1,49 @@
+Agent Key Preparation: sorted by portal name 
+
+Needed = keys this agent requires
+# = portal number on portal map
+Name = portal name in portal file
+
+Keys for Agent 1
+Needed ;   # ; Name
+     1 ;  14 ; Albermarle County Courthouse
+     1 ;   1 ; Catholic Church of the Holy Comforter
+     1 ;   0 ; Congregation Beth Israel
+     1 ;  17 ; Early Hotels: Dining, Dancing, and the Mail
+     2 ;   8 ; Gen. Alexander Archer Vandergri
+     1 ;  16 ; Historic Courthouse Square
+     3 ;   7 ; Jack Jouett's Ride
+     2 ;  11 ; Jefferson Quote
+     1 ;   2 ; Massie Wills House
+     2 ;   4 ; Site of Old Swan Tavern
+     3 ;   3 ; Stonewall Jackson Statue
+     1 ;  15 ; The Original Site of First Baptist Church 1831
+     1 ;   5 ; Watering Fountains
+
+Keys for Agent 2
+Needed ;   # ; Name
+     1 ;   1 ; Catholic Church of the Holy Comforter
+     1 ;   0 ; Congregation Beth Israel
+     2 ;  17 ; Early Hotels: Dining, Dancing, and the Mail
+     1 ;  16 ; Historic Courthouse Square
+     1 ;   9 ; Historic Jail House
+     1 ;   2 ; Massie Wills House
+     1 ;  13 ; Merriwether Lewis Placard
+     1 ;  12 ; Paul Goodloe McIntire
+     1 ;   4 ; Site of Old Swan Tavern
+     2 ;  15 ; The Original Site of First Baptist Church 1831
+     1 ;   6 ; Town Hall Levy Opera House
+
+Keys for Agent 3
+Needed ;   # ; Name
+     1 ;  14 ; Albermarle County Courthouse
+     2 ;   1 ; Catholic Church of the Holy Comforter
+     1 ;   0 ; Congregation Beth Israel
+     1 ;   8 ; Gen. Alexander Archer Vandergri
+     1 ;  16 ; Historic Courthouse Square
+     1 ;   9 ; Historic Jail House
+     1 ;  11 ; Jefferson Quote
+     2 ;  13 ; Merriwether Lewis Placard
+     1 ;  12 ; Paul Goodloe McIntire
+     1 ;   6 ; Town Hall Levy Opera House
+
