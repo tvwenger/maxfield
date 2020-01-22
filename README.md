@@ -1,7 +1,7 @@
 # Ingress Maxfield (v4.0)
 ## An [Ingress](https://ingress.com/) Linking and Fielding Strategy Generator
 
-![Maxfield Demonstration](https://raw.githubusercontent.com/tvwenger/maxfield/master/example/plan_movie.gif | width=400)
+![Maxfield Demonstration](https://raw.githubusercontent.com/tvwenger/maxfield/master/example/plan_movie.gif?s=200)
 
 ### Introduction
 
