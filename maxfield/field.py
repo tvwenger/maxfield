@@ -150,7 +150,7 @@ def add_link(graph, portal1, portal2, reversible=False):
         #
         # Reverse one
         #
-        p1 = p1[np.where(is_reversible[0][0])]
+        p1 = p1[np.where(is_reversible)[0][0]]
         graph.add_edge(portal2, p1, **graph.edges[p1, portal2])
         graph.remove_edge(p1, portal2)
         old_order_idx = graph.link_order.index((p1, portal2))
