@@ -13,18 +13,18 @@ These portals' first links are incoming. They should be at full resonators befor
   9 ; Historic Jail House
   7 ; Jack Jouett's Ride
  11 ; Jefferson Quote
-  2 ; Massie Wills House
- 13 ; Merriwether Lewis Placard
+ 12 ; Paul Goodloe McIntire
   4 ; Site of Old Swan Tavern
-  3 ; Stonewall Jackson Statue
+ 10 ; The Kissing Stone
  15 ; The Original Site of First Baptist Church 1831
   6 ; Town Hall Levy Opera House
-  5 ; Watering Fountains
 
 These portals' first links are outgoing. Their resonators can be applied when the first agent arrives.
 
   # ; Name
   1 ; Catholic Church of the Holy Comforter
   0 ; Congregation Beth Israel
- 12 ; Paul Goodloe McIntire
- 10 ; The Kissing Stone
+  2 ; Massie Wills House
+ 13 ; Merriwether Lewis Placard
+  3 ; Stonewall Jackson Statue
+  5 ; Watering Fountains

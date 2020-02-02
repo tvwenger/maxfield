@@ -58,7 +58,7 @@ The `example` directory includes the Maxfield output for the portal
 list in `example/example_portals.txt`. These results were generated
 with the following command:
 
-	maxfield-plan example_portals.txt --num_agents 3 --num_cpus 0 --verbose
+	maxfield-plan example_portals.txt --num_agents 3 --num_cpus 0 --verbose --google_api_key <REDACTED> --google_api_secret <REDACTED>
 	
 Here was the output from this command:
 
