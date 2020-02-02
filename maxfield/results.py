@@ -33,6 +33,8 @@ import urllib.request
 import urllib.error
 from io import BytesIO
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import image
 from matplotlib.patches import Polygon
