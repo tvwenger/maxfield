@@ -91,7 +91,7 @@ def add_link(graph, portal1, portal2, reversible=False):
     num_links = len(graph.link_order)
     if can_add_outbound(graph, portal1):
         #
-        # Add the edge
+        # Add the link from portal1 to portal2
         #
         graph.add_edge(portal1, portal2, order=num_links,
                        reversible=reversible,
@@ -99,7 +99,8 @@ def add_link(graph, portal1, portal2, reversible=False):
         graph.link_order.append((portal1, portal2))
         return
     #
-    # Try reversing direction
+    # If link is reversible and portal2 hasn't reached outgoing link
+    # limit, add link from portal2 to portal1
     #
     if reversible and can_add_outbound(graph, portal2):
         graph.add_edge(portal2, portal1, order=num_links,
@@ -108,10 +109,11 @@ def add_link(graph, portal1, portal2, reversible=False):
         graph.link_order.append((portal2, portal1))
         return
     #
-    # Try reducing number of links from portal1
+    # Try reducing number of links from portal1, then add link
+    # from portal1 to portal2
     #
     try:
-        is_reversible, p2 = \
+        is_reversible, p1other = \
             zip(*[((graph.edges[portal1, link[1]]['reversible'] and
                     can_add_outbound(graph, link[1])), link[1])
                   for link in graph.edges(portal1)])
@@ -120,15 +122,15 @@ def add_link(graph, portal1, portal2, reversible=False):
         is_reversible = []
     if np.sum(is_reversible) > 0:
         #
-        # Reverse one
+        # Reverse one from portal1
         #
-        p2 = p2[np.where(is_reversible)[0][0]]
-        graph.add_edge(p2, portal1, **graph.edges[portal1, p2])
-        graph.remove_edge(portal1, p2)
-        old_order_idx = graph.link_order.index((portal1, p2))
-        graph.link_order[old_order_idx] = (p2, portal1)
+        p1other = p1other[np.where(is_reversible)[0][0]]
+        graph.add_edge(p1other, portal1, **graph.edges[portal1, p1other])
+        graph.remove_edge(portal1, p1other)
+        old_order_idx = graph.link_order.index((portal1, p1other))
+        graph.link_order[old_order_idx] = (p1other, portal1)
         #
-        # Add new one
+        # Add link from portal1 to portal2
         #
         graph.add_edge(portal1, portal2, order=num_links,
                        reversible=reversible,
@@ -136,10 +138,11 @@ def add_link(graph, portal1, portal2, reversible=False):
         graph.link_order.append((portal1, portal2))
         return
     #
-    # If reversible, try reducing number of links from portal2
+    # If reversible, try reducing number of links from portal2,
+    # then add link from portal2 to portal1
     #
     try:
-        is_reversible, p1 = \
+        is_reversible, p2other = \
             zip(*[((graph.edges[portal2, link[1]]['reversible'] and
                     can_add_outbound(graph, link[1])), link[1])
                   for link in graph.edges(portal2)])
@@ -150,11 +153,11 @@ def add_link(graph, portal1, portal2, reversible=False):
         #
         # Reverse one
         #
-        p1 = p1[np.where(is_reversible)[0][0]]
-        graph.add_edge(portal2, p1, **graph.edges[p1, portal2])
-        graph.remove_edge(p1, portal2)
-        old_order_idx = graph.link_order.index((p1, portal2))
-        graph.link_order[old_order_idx] = (portal2, p1)
+        p2other = p2other[np.where(is_reversible)[0][0]]
+        graph.add_edge(portal2, p2other, **graph.edges[portal2, p2other])
+        graph.remove_edge(p2other, portal2)
+        old_order_idx = graph.link_order.index((portal2, p2other))
+        graph.link_order[old_order_idx] = (p2other, portal2)
         #
         # Add new one
         #
