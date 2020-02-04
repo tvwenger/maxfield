@@ -8,33 +8,69 @@ Link Origin/Destination = portal name in portal file
 Link ; Agent ;   # ; Link Origin
                  # ; Link Destination
 
-   2 ;     2 ;   0 ; The Kissing Stone 
+   1 ;     2 ;  10 ; Catholic Church of the Holy Comforter 
              ;   1 : Historic Jail House 
 
-   5 ;     2 ;   0 ; The Kissing Stone 
-             ;  10 : Catholic Church of the Holy Comforter 
+   3 ;     2 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   0 : The Kissing Stone 
 
-   8 ;     2 ;   0 ; The Kissing Stone 
-             ;   9 : Congregation Beth Israel 
-
-  16 ;     2 ;   4 ; Jack Jouett's Ride 
-             ;   2 : Jefferson Quote 
-
-  17 ;     2 ;   4 ; Jack Jouett's Ride 
-             ;   3 : Gen. Alexander Archer Vandergri 
-
-  18 ;     2 ;   4 ; Jack Jouett's Ride 
-             ;   5 : Town Hall Levy Opera House 
-
-  20 ;     2 ;   4 ; Jack Jouett's Ride 
+   4 ;     2 ;  10 ; Catholic Church of the Holy Comforter 
              ;   6 : Stonewall Jackson Statue 
 
-  36 ;     2 ;  11 ; Massie Wills House 
+   7 ;     2 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   9 : Congregation Beth Israel 
+
+   9 ;     2 ;  10 ; Catholic Church of the Holy Comforter 
+             ;  15 : Albermarle County Courthouse 
+
+  11 ;     2 ;  10 ; Catholic Church of the Holy Comforter 
+             ;  17 : Watering Fountains 
+
+  13 ;     2 ;  10 ; Catholic Church of the Holy Comforter 
+             ;  14 : Site of Old Swan Tavern 
+
+  14 ;     2 ;  10 ; Catholic Church of the Holy Comforter 
+             ;  16 : Early Hotels: Dining, Dancing, and the Mail 
+
+  19 ;     2 ;   5 ; Town Hall Levy Opera House 
+             ;  10 : Catholic Church of the Holy Comforter 
+
+  28 ;     2 ;   1 ; Historic Jail House 
+             ;   4 : Jack Jouett's Ride 
+
+  30 ;     2 ;   1 ; Historic Jail House 
+             ;   3 : Gen. Alexander Archer Vandergri 
+
+  31 ;     2 ;   1 ; Historic Jail House 
+             ;   6 : Stonewall Jackson Statue 
+
+  32 ;     2 ;   0 ; The Kissing Stone 
              ;   2 : Jefferson Quote 
 
-  37 ;     2 ;  11 ; Massie Wills House 
+  34 ;     2 ;   0 ; The Kissing Stone 
+             ;   1 : Historic Jail House 
+
+  38 ;     2 ;   2 ; Jefferson Quote 
+             ;  10 : Catholic Church of the Holy Comforter 
+
+  39 ;     2 ;   2 ; Jefferson Quote 
+             ;   1 : Historic Jail House 
+
+  40 ;     2 ;   2 ; Jefferson Quote 
+             ;   4 : Jack Jouett's Ride 
+
+  41 ;     2 ;   2 ; Jefferson Quote 
+             ;   5 : Town Hall Levy Opera House 
+
+  42 ;     2 ;   2 ; Jefferson Quote 
+             ;   3 : Gen. Alexander Archer Vandergri 
+
+  43 ;     2 ;   2 ; Jefferson Quote 
              ;   7 : Paul Goodloe McIntire 
 
-  38 ;     2 ;  11 ; Massie Wills House 
-             ;  14 : Site of Old Swan Tavern 
+  44 ;     2 ;   2 ; Jefferson Quote 
+             ;  13 : Historic Courthouse Square 
+
+  45 ;     2 ;   2 ; Jefferson Quote 
+             ;   8 : The Original Site of First Baptist Church 1831 
 

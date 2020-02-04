@@ -8,69 +8,33 @@ Link Origin/Destination = portal name in portal file
 Link ; Agent ;   # ; Link Origin
                  # ; Link Destination
 
-   1 ;     1 ;   1 ; Historic Jail House 
-             ;   4 : Jack Jouett's Ride 
-
-   4 ;     1 ;   1 ; Historic Jail House 
-             ;   6 : Stonewall Jackson Statue 
-
-   7 ;     1 ;   1 ; Historic Jail House 
-             ;   3 : Gen. Alexander Archer Vandergri 
-
-  15 ;     1 ;   5 ; Town Hall Levy Opera House 
-             ;   2 : Jefferson Quote 
-
-  19 ;     1 ;   7 ; Paul Goodloe McIntire 
-             ;   2 : Jefferson Quote 
-
-  22 ;     1 ;   7 ; Paul Goodloe McIntire 
-             ;  14 : Site of Old Swan Tavern 
-
-  26 ;     1 ;  15 ; Albermarle County Courthouse 
-             ;  13 : Historic Courthouse Square 
-
-  27 ;     1 ;  15 ; Albermarle County Courthouse 
-             ;   8 : The Original Site of First Baptist Church 1831 
-
-  28 ;     1 ;  15 ; Albermarle County Courthouse 
-             ;  12 : Merriwether Lewis Placard 
-
-  30 ;     1 ;  17 ; Watering Fountains 
-             ;  10 : Catholic Church of the Holy Comforter 
-
-  31 ;     1 ;  17 ; Watering Fountains 
-             ;  11 : Massie Wills House 
-
-  32 ;     1 ;  17 ; Watering Fountains 
-             ;  14 : Site of Old Swan Tavern 
-
-  33 ;     1 ;  17 ; Watering Fountains 
-             ;   7 : Paul Goodloe McIntire 
-
-  34 ;     1 ;  17 ; Watering Fountains 
+   5 ;     1 ;  14 ; Site of Old Swan Tavern 
              ;  15 : Albermarle County Courthouse 
 
-  35 ;     1 ;  17 ; Watering Fountains 
-             ;  12 : Merriwether Lewis Placard 
+  10 ;     1 ;  17 ; Watering Fountains 
+             ;  16 : Early Hotels: Dining, Dancing, and the Mail 
 
-  39 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;   9 : Congregation Beth Israel 
+  12 ;     1 ;  17 ; Watering Fountains 
+             ;  14 : Site of Old Swan Tavern 
 
-  40 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+  15 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
              ;   2 : Jefferson Quote 
 
-  41 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;   1 : Historic Jail House 
+  17 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+             ;   7 : Paul Goodloe McIntire 
 
-  42 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;   4 : Jack Jouett's Ride 
-
-  43 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;   5 : Town Hall Levy Opera House 
-
-  44 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;   6 : Stonewall Jackson Statue 
-
-  45 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+  18 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
              ;  11 : Massie Wills House 
+
+  21 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+             ;  13 : Historic Courthouse Square 
+
+  23 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+             ;  12 : Merriwether Lewis Placard 
+
+  25 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+             ;  14 : Site of Old Swan Tavern 
+
+  27 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+             ;  15 : Albermarle County Courthouse 
 

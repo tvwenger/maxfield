@@ -52,7 +52,7 @@ class Results:
     """
     def __init__(self, plan, outdir='', res_colors=False,
                  google_api_key=None, google_api_secret=None,
-                 verbose=False):
+                 output_csv=False, verbose=False):
         """
         Initialize a new Planner object.
 
@@ -71,6 +71,8 @@ class Results:
           google_api_secret :: string
             If not None, use this as a signature secret for google 
             maps. If None, do not use a google API signature.
+          output_csv :: boolean
+            If True, also output machine-readable CSV files
           verbose :: boolean
             If True, display helpful information along the way
 
@@ -81,6 +83,7 @@ class Results:
         self.outdir = outdir
         self.google_api_key = google_api_key
         self.google_api_secret = google_api_secret
+        self.output_csv = output_csv
         self.verbose = verbose
         #
         # Get portal indicies sorted by portal name
@@ -195,6 +198,9 @@ class Results:
         if self.verbose:
             print("Generating key preparation file.")
         fname = os.path.join(self.outdir, 'key_preparation.txt')
+        if self.output_csv:
+            fname_csv = os.path.join(self.outdir, 'key_preparation.csv')
+            fout_csv = open(fname_csv, 'w')
         with open(fname, 'w') as fout:
             fout.write('Key Preparation: sorted by portal name\n\n')
             fout.write('Needed = total keys required\n')
@@ -203,6 +209,8 @@ class Results:
             fout.write('# = portal number on portal map\n')
             fout.write('Name = portal name in portal file\n\n')
             fout.write('Needed ; Have ; Remaining ;   # ; Name\n')
+            if self.output_csv:
+                fout_csv.write('KeysNeeded, KeysHave, KeysRemaining, PortalNum, PortalName\n')
             for i in self.name_order:
                 needed = self.plan.graph.in_degree(i)
                 have = self.plan.portals[i]['keys']
@@ -211,8 +219,17 @@ class Results:
                     '{0:>6d} ; {1:>4d} ; {2:>9d} ; {3:>3d} : {4}\n'.
                     format(needed, have, remaining, self.pos_order[i],
                            self.plan.portals[i]['name']))
+                if self.output_csv:
+                    fout_csv.write(
+                        '{0}, {1}, {2}, {3}, {4}\n'.
+                        format(needed, have, remaining, self.pos_order[i],
+                               self.plan.portals[i]['name']))
         if self.verbose:
             print("File saved to: {0}".format(fname))
+            if self.output_csv:
+                print("CSV File saved to: {0}".format(fname_csv))
+        if self.output_csv:
+            fout_csv.close()
 
     def ownership_prep(self):
         """
@@ -275,12 +292,17 @@ class Results:
         if self.verbose:
             print("Generating agent key preparation file.")
         fname = os.path.join(self.outdir, 'agent_key_preparation.txt')
+        if self.output_csv:
+            fname_csv = os.path.join(self.outdir, 'agent_key_preparation.csv')
+            fout_csv = open(fname_csv, 'w')
         with open(fname, 'w') as fout:
             fout.write("Agent Key Preparation: sorted by portal name "
                        "\n\n")
             fout.write('Needed = keys this agent requires\n')
             fout.write('# = portal number on portal map\n')
             fout.write('Name = portal name in portal file\n\n')
+            if self.output_csv:
+                fout_csv.write('Agent, KeysNeeded, PortalNum, Portal Name\n')
             for agent in range(self.plan.num_agents):
                 fout.write('Keys for Agent {0}\n'.format(agent+1))
                 fout.write('Needed ;   # ; Name\n')
@@ -294,9 +316,18 @@ class Results:
                             "{0:>6d} ; {1:>3d} ; {2}\n".
                             format(count, self.pos_order[i],
                                    self.plan.portals[i]['name']))
+                        if self.output_csv:
+                            fout_csv.write(
+                                "{0}, {1}, {2}, {3}\n".
+                                format(agent, count, self.pos_order[i],
+                                       self.plan.portals[i]['name']))
                 fout.write('\n')
         if self.verbose:
             print("File saved to: {0}".format(fname))
+            if self.output_csv:
+                print("CSV File saved to: {0}".format(fname_csv))
+        if self.output_csv:
+            fout_csv.close()
 
     def agent_assignments(self):
         """
@@ -320,6 +351,9 @@ class Results:
         # Generate master assignment list
         #
         fname = os.path.join(self.outdir, 'agent_assignments.txt')
+        if self.output_csv:
+            fname_csv = os.path.join(self.outdir, 'agent_assignments.csv')
+            fout_csv = open(fname_csv, 'w')
         with open(fname, 'w') as fout:
             fout.write("Agent Linking Assignments: links should be made in this order\n\n")
             fout.write("Link = the current link number\n")
@@ -328,6 +362,8 @@ class Results:
             fout.write("Link Origin/Destination = portal name in portal file\n\n")
             fout.write("Link ; Agent ;   # ; Link Origin\n")
             fout.write("                 # ; Link Destination\n\n")
+            if self.output_csv:
+                fout_csv.write('LinkNum, Agent, OriginNum, OriginName, DestinationNum, DestinationName\n')
             #
             # Group assignments by arrival time
             #
@@ -351,6 +387,10 @@ class Results:
                         self.plan.portals[origin]['name']))
                     fout.write("             ; {0:3} : {1} \n\n".format(
                         dest, self.plan.portals[dest]['name']))
+                    if self.output_csv:
+                        fout_csv.write('{0}, {1}, {2}, {3}, {4}, {5}\n'.format(
+                            link, ass['agent']+1, origin, self.plan.portals[origin]['name'],
+                            dest, self.plan.portals[dest]['name']))
                     #
                     # Save to agent assignment
                     #
@@ -360,6 +400,10 @@ class Results:
                     link += 1
         if self.verbose:
             print("File saved to {0}".format(fname))
+            if self.output_csv:
+                print("CSV File saved to {0}".format(fname_csv))
+        if self.output_csv:
+            fout_csv.close()
         #
         # Generate each agent's assignment
         #

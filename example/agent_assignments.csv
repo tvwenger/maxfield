@@ -1,0 +1,46 @@
+LinkNum, Agent, OriginNum, OriginName, DestinationNum, DestinationName
+1, 2, 10, Catholic Church of the Holy Comforter, 1, Historic Jail House
+2, 3, 9, Congregation Beth Israel, 0, The Kissing Stone
+3, 2, 10, Catholic Church of the Holy Comforter, 0, The Kissing Stone
+4, 2, 10, Catholic Church of the Holy Comforter, 6, Stonewall Jackson Statue
+5, 1, 14, Site of Old Swan Tavern, 15, Albermarle County Courthouse
+6, 3, 11, Massie Wills House, 10, Catholic Church of the Holy Comforter
+7, 2, 10, Catholic Church of the Holy Comforter, 9, Congregation Beth Israel
+8, 3, 11, Massie Wills House, 12, Merriwether Lewis Placard
+9, 2, 10, Catholic Church of the Holy Comforter, 15, Albermarle County Courthouse
+10, 1, 17, Watering Fountains, 16, Early Hotels: Dining, Dancing, and the Mail
+11, 2, 10, Catholic Church of the Holy Comforter, 17, Watering Fountains
+12, 1, 17, Watering Fountains, 14, Site of Old Swan Tavern
+13, 2, 10, Catholic Church of the Holy Comforter, 14, Site of Old Swan Tavern
+14, 2, 10, Catholic Church of the Holy Comforter, 16, Early Hotels: Dining, Dancing, and the Mail
+15, 1, 16, Early Hotels: Dining, Dancing, and the Mail, 2, Jefferson Quote
+16, 3, 13, Historic Courthouse Square, 8, The Original Site of First Baptist Church 1831
+17, 1, 16, Early Hotels: Dining, Dancing, and the Mail, 7, Paul Goodloe McIntire
+18, 1, 16, Early Hotels: Dining, Dancing, and the Mail, 11, Massie Wills House
+19, 2, 5, Town Hall Levy Opera House, 10, Catholic Church of the Holy Comforter
+20, 3, 7, Paul Goodloe McIntire, 8, The Original Site of First Baptist Church 1831
+21, 1, 16, Early Hotels: Dining, Dancing, and the Mail, 13, Historic Courthouse Square
+22, 3, 7, Paul Goodloe McIntire, 10, Catholic Church of the Holy Comforter
+23, 1, 16, Early Hotels: Dining, Dancing, and the Mail, 12, Merriwether Lewis Placard
+24, 3, 7, Paul Goodloe McIntire, 11, Massie Wills House
+25, 1, 16, Early Hotels: Dining, Dancing, and the Mail, 14, Site of Old Swan Tavern
+26, 3, 7, Paul Goodloe McIntire, 12, Merriwether Lewis Placard
+27, 1, 16, Early Hotels: Dining, Dancing, and the Mail, 15, Albermarle County Courthouse
+28, 2, 1, Historic Jail House, 4, Jack Jouett's Ride
+29, 3, 7, Paul Goodloe McIntire, 13, Historic Courthouse Square
+30, 2, 1, Historic Jail House, 3, Gen. Alexander Archer Vandergri
+31, 2, 1, Historic Jail House, 6, Stonewall Jackson Statue
+32, 2, 0, The Kissing Stone, 2, Jefferson Quote
+33, 3, 4, Jack Jouett's Ride, 10, Catholic Church of the Holy Comforter
+34, 2, 0, The Kissing Stone, 1, Historic Jail House
+35, 3, 4, Jack Jouett's Ride, 6, Stonewall Jackson Statue
+36, 3, 4, Jack Jouett's Ride, 5, Town Hall Levy Opera House
+37, 3, 4, Jack Jouett's Ride, 3, Gen. Alexander Archer Vandergri
+38, 2, 2, Jefferson Quote, 10, Catholic Church of the Holy Comforter
+39, 2, 2, Jefferson Quote, 1, Historic Jail House
+40, 2, 2, Jefferson Quote, 4, Jack Jouett's Ride
+41, 2, 2, Jefferson Quote, 5, Town Hall Levy Opera House
+42, 2, 2, Jefferson Quote, 3, Gen. Alexander Archer Vandergri
+43, 2, 2, Jefferson Quote, 7, Paul Goodloe McIntire
+44, 2, 2, Jefferson Quote, 13, Historic Courthouse Square
+45, 2, 2, Jefferson Quote, 8, The Original Site of First Baptist Church 1831

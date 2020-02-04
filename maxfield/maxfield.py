@@ -143,7 +143,7 @@ def maxfield(filename, num_agents=1, num_field_iterations=1000,
              max_route_runtime=60,
              outdir='.', skip_plots=False, skip_step_plots=False,
              res_colors=False, google_api_key=None,
-             google_api_secret=None, verbose=False):
+             google_api_secret=None, output_csv=False, verbose=False):
     """
     Given a portal list file, determine the optimal linking and
     fielding strategy to maximize AP, minimize walking distance, and
@@ -188,6 +188,8 @@ def maxfield(filename, num_agents=1, num_field_iterations=1000,
       google_api_secret :: string
         If not None, use this as a signature secret for google maps.
         If None, do not use a google API signature.
+      output_csv :: boolean
+        If True, also output machine readable CSV files.
       verbose :: boolean
         If True, display helpful information along the way
 
@@ -222,7 +224,7 @@ def maxfield(filename, num_agents=1, num_field_iterations=1000,
     results = Results(plan, outdir=outdir, res_colors=res_colors,
                       google_api_key=google_api_key,
                       google_api_secret=google_api_secret,
-                      verbose=verbose)
+                      output_csv=output_csv,verbose=verbose)
     results.key_prep()
     results.ownership_prep()
     results.agent_key_prep()

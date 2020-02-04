@@ -58,7 +58,7 @@ The `example` directory includes the Maxfield output for the portal
 list in `example/example_portals.txt`. These results were generated
 with the following command:
 
-	maxfield-plan example_portals.txt --num_agents 3 --num_cpus 0 --verbose --google_api_key <REDACTED> --google_api_secret <REDACTED>
+	maxfield-plan example_portals.txt --num_agents 3 --num_cpus 0 --verbose --output_csv --google_api_key <REDACTED> --google_api_secret <REDACTED>
 	
 Here was the output from this command:
 
@@ -66,14 +66,14 @@ Here was the output from this command:
 Found 18 portals in portal file: example_portals.txt
 
 Starting field generation with 8 CPUs.
-Field generation runtime: 15.9 seconds.
+Field generation runtime: 17.1 seconds.
 
 ==============================
 Maxfield Plan Results:
     portals         = 18
     links           = 45
     fields          = 40
-    max keys needed = 4
+    max keys needed = 5
     AP from portals = 31500
     AP from links   = 14085
     AP from fields  = 50000
@@ -81,18 +81,21 @@ Maxfield Plan Results:
 ==============================
 
 Optimizing agent link assignments.
-Route optimization runtime: 26.4 seconds
+Route optimization runtime: 24.5 seconds
 
-Total plan build time: 19.2 minutes
+Total plan build time: 16.6 minutes
 
 Generating key preparation file.
 File saved to: ./key_preparation.txt
+CSV File saved to: ./key_preparation.csv
 Generating ownership preparation file.
 File saved to: ./ownership_preparation.txt
 Generating agent key preparation file.
 File saved to: ./agent_key_preparation.txt
+CSV File saved to: ./agent_key_preparation.csv
 Generating agent link assignments.
 File saved to ./agent_assignments.txt
+CSV File saved to ./agent_assignments.csv
 Generating link assignment for agent 1.
 File saved to ./agent_1_assignment.txt
 Generating link assignment for agent 2.
@@ -110,7 +113,7 @@ Frames saved to: ./frames/
 gifsicle: warning: huge GIF, conserving memory (processing may take a while)
 GIF saved to ./plan_movie.gif
 
-Total maxfield runtime: 94.3 seconds
+Total maxfield runtime: 87.5 seconds
 ```
 	
 ### Usage
@@ -124,7 +127,7 @@ usage: maxfield.py [-h] [--version] [-n NUM_AGENTS]
                    [--max_route_runtime MAX_ROUTE_RUNTIME] [-o OUTDIR]
                    [--skip_plots] [--skip_step_plots] [-r]
                    [--google_api_key GOOGLE_API_KEY]
-                   [--google_api_secret GOOGLE_API_SECRET] [-v]
+                   [--google_api_secret GOOGLE_API_SECRET] [--output_csv] [-v]
                    filename
 
 Ingress Maxfield: An Ingress Linking and Fielding Strategy Generator.
@@ -162,6 +165,7 @@ optional arguments:
   --google_api_secret GOOGLE_API_SECRET
                         A Google Maps API signature secret. If not set, do not
                         use signature. (default: None)
+  --output_csv          Output machine-readable CSV files. (default: False)
   -v, --verbose         Print information along the way. (default: False)
 ```
 
@@ -206,16 +210,16 @@ these:
 
 ### Output Files
 
-	key_preparation.txt
+	key_preparation.txt, key_preparation.csv
 		List of portals, their numbers on the map, and how many keys are needed
 
-	agent_key_preparation.txt
+	agent_key_preparation.txt, agent_key_preparation.csv
 		How many keys each agent will need for each portal
 		
 	ownership_preparation.txt
 		Which portals must be fully deployed pre-operation
 		
-	agent_assignments.txt
+	agent_assignments.txt, agent_assignments.csv
 		The master list of the link order for all agents.
 		
 	agent_N_assignment.txt

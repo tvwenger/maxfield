@@ -8,42 +8,42 @@ Link Origin/Destination = portal name in portal file
 Link ; Agent ;   # ; Link Origin
                  # ; Link Destination
 
-   3 ;     3 ;   2 ; Jefferson Quote 
-             ;   1 : Historic Jail House 
-
-   6 ;     3 ;   2 ; Jefferson Quote 
-             ;   3 : Gen. Alexander Archer Vandergri 
-
-   9 ;     3 ;   2 ; Jefferson Quote 
+   2 ;     3 ;   9 ; Congregation Beth Israel 
              ;   0 : The Kissing Stone 
 
-  10 ;     3 ;   2 ; Jefferson Quote 
-             ;  17 : Watering Fountains 
+   6 ;     3 ;  11 ; Massie Wills House 
+             ;  10 : Catholic Church of the Holy Comforter 
 
-  11 ;     3 ;   2 ; Jefferson Quote 
+   8 ;     3 ;  11 ; Massie Wills House 
              ;  12 : Merriwether Lewis Placard 
 
-  12 ;     3 ;   2 ; Jefferson Quote 
-             ;  15 : Albermarle County Courthouse 
-
-  13 ;     3 ;   2 ; Jefferson Quote 
+  16 ;     3 ;  13 ; Historic Courthouse Square 
              ;   8 : The Original Site of First Baptist Church 1831 
 
-  14 ;     3 ;   2 ; Jefferson Quote 
-             ;  13 : Historic Courthouse Square 
-
-  21 ;     3 ;  13 ; Historic Courthouse Square 
+  20 ;     3 ;   7 ; Paul Goodloe McIntire 
              ;   8 : The Original Site of First Baptist Church 1831 
 
-  23 ;     3 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
-             ;   2 : Jefferson Quote 
+  22 ;     3 ;   7 ; Paul Goodloe McIntire 
+             ;  10 : Catholic Church of the Holy Comforter 
 
-  24 ;     3 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+  24 ;     3 ;   7 ; Paul Goodloe McIntire 
+             ;  11 : Massie Wills House 
+
+  26 ;     3 ;   7 ; Paul Goodloe McIntire 
+             ;  12 : Merriwether Lewis Placard 
+
+  29 ;     3 ;   7 ; Paul Goodloe McIntire 
              ;  13 : Historic Courthouse Square 
 
-  25 ;     3 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
-             ;  15 : Albermarle County Courthouse 
+  33 ;     3 ;   4 ; Jack Jouett's Ride 
+             ;  10 : Catholic Church of the Holy Comforter 
 
-  29 ;     3 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
-             ;  17 : Watering Fountains 
+  35 ;     3 ;   4 ; Jack Jouett's Ride 
+             ;   6 : Stonewall Jackson Statue 
+
+  36 ;     3 ;   4 ; Jack Jouett's Ride 
+             ;   5 : Town Hall Levy Opera House 
+
+  37 ;     3 ;   4 ; Jack Jouett's Ride 
+             ;   3 : Gen. Alexander Archer Vandergri 
 

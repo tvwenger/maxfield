@@ -81,6 +81,9 @@ parser.add_argument(
     help=('A Google Maps API signature secret. If '
           'not set, do not use signature.'))
 parser.add_argument(
+    '--output_csv', action='store_true',
+    help='Output machine-readable CSV files.')
+parser.add_argument(
     '-v', '--verbose', action='store_true',
     help='Print information along the way.')
 
