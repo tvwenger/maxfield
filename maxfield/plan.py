@@ -151,18 +151,18 @@ class Plan:
             #
             if num_cpus < 1:
                 num_cpus = mp.cpu_count()
-            pool = mp.Pool(num_cpus)
-            if self.verbose:
-                print("Starting field generation with {0} CPUs.".
-                      format(num_cpus))
-                start_time = time.time()
-            results = pool.map(
-                generator.generate,
-                [i for i in range(num_field_iterations)])
-            if self.verbose:
-                print("Field generation runtime: {0:.1f} seconds.".
-                      format(time.time()-start_time))
-                print()
+            with mp.Pool(num_cpus) as pool:
+                if self.verbose:
+                    print("Starting field generation with {0} CPUs.".
+                          format(num_cpus))
+                    start_time = time.time()
+                results = pool.map(
+                    generator.generate,
+                    [i for i in range(num_field_iterations)])
+                if self.verbose:
+                    print("Field generation runtime: {0:.1f} seconds.".
+                          format(time.time()-start_time))
+                    print()
         #
         # Get best plan, sorted by:
         # max AP, min single agent distance, min keys
