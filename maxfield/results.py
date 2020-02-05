@@ -506,7 +506,7 @@ class Results:
         if self.verbose:
             print("Generating portal map.")
         fig, ax = self.make_portal_fig()
-        ax.set_title('Portal Map: {0}',
+        ax.set_title('Portal Map: {0}'.
                      format(len(self.plan.portals)), fontsize=18)
         fname = os.path.join(self.outdir, 'portal_map.png')
         fig.savefig(fname, dpi=300)

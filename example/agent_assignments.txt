@@ -8,138 +8,138 @@ Link Origin/Destination = portal name in portal file
 Link ; Agent ;   # ; Link Origin
                  # ; Link Destination
 
-   1 ;     2 ;   1 ; Historic Jail House 
-             ;   0 : The Kissing Stone 
-
-   2 ;     3 ;   0 ; The Kissing Stone 
+   1 ;     1 ;  13 ; Historic Courthouse Square 
              ;   2 : Jefferson Quote 
 
-   3 ;     1 ;   2 ; Jefferson Quote 
-             ;  13 : Historic Courthouse Square 
+   2 ;     2 ;  14 ; Site of Old Swan Tavern 
+             ;   4 : Jack Jouett's Ride 
 
-   4 ;     3 ;   0 ; The Kissing Stone 
-             ;  15 : Albermarle County Courthouse 
-
-   5 ;     3 ;   0 ; The Kissing Stone 
-             ;  12 : Merriwether Lewis Placard 
-
-   6 ;     3 ;   0 ; The Kissing Stone 
-             ;   6 : Stonewall Jackson Statue 
-
-   7 ;     2 ;   3 ; Gen. Alexander Archer Vandergri 
-             ;   7 : Paul Goodloe McIntire 
-
-   8 ;     3 ;   0 ; The Kissing Stone 
+   3 ;     3 ;  17 ; Watering Fountains 
              ;  11 : Massie Wills House 
 
-   9 ;     2 ;   3 ; Gen. Alexander Archer Vandergri 
-             ;   8 : The Original Site of First Baptist Church 1831 
-
-  10 ;     3 ;   0 ; The Kissing Stone 
-             ;   7 : Paul Goodloe McIntire 
-
-  11 ;     3 ;   0 ; The Kissing Stone 
-             ;   3 : Gen. Alexander Archer Vandergri 
-
-  12 ;     1 ;   9 ; Congregation Beth Israel 
-             ;   8 : The Original Site of First Baptist Church 1831 
-
-  13 ;     2 ;   6 ; Stonewall Jackson Statue 
-             ;  12 : Merriwether Lewis Placard 
-
-  14 ;     3 ;   0 ; The Kissing Stone 
-             ;   9 : Congregation Beth Israel 
-
-  15 ;     1 ;   9 ; Congregation Beth Israel 
-             ;   3 : Gen. Alexander Archer Vandergri 
-
-  16 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;   0 : The Kissing Stone 
-
-  17 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;   9 : Congregation Beth Israel 
-
-  18 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;  11 : Massie Wills House 
-
-  19 ;     2 ;  11 ; Massie Wills House 
-             ;  17 : Watering Fountains 
-
-  20 ;     2 ;  11 ; Massie Wills House 
+   4 ;     3 ;  17 ; Watering Fountains 
              ;  16 : Early Hotels: Dining, Dancing, and the Mail 
 
-  21 ;     2 ;  11 ; Massie Wills House 
-             ;   9 : Congregation Beth Israel 
-
-  22 ;     2 ;  11 ; Massie Wills House 
-             ;   3 : Gen. Alexander Archer Vandergri 
-
-  23 ;     2 ;  11 ; Massie Wills House 
-             ;   7 : Paul Goodloe McIntire 
-
-  24 ;     2 ;  11 ; Massie Wills House 
-             ;   8 : The Original Site of First Baptist Church 1831 
-
-  25 ;     2 ;  11 ; Massie Wills House 
-             ;   6 : Stonewall Jackson Statue 
-
-  26 ;     2 ;  11 ; Massie Wills House 
+   5 ;     3 ;  17 ; Watering Fountains 
              ;  15 : Albermarle County Courthouse 
 
-  27 ;     1 ;  15 ; Albermarle County Courthouse 
+   6 ;     2 ;   5 ; Town Hall Levy Opera House 
+             ;   4 : Jack Jouett's Ride 
+
+   7 ;     3 ;  17 ; Watering Fountains 
              ;  13 : Historic Courthouse Square 
 
-  28 ;     3 ;   4 ; Jack Jouett's Ride 
-             ;   0 : The Kissing Stone 
+   8 ;     2 ;   5 ; Town Hall Levy Opera House 
+             ;  17 : Watering Fountains 
 
-  29 ;     1 ;  15 ; Albermarle County Courthouse 
+   9 ;     3 ;  17 ; Watering Fountains 
+             ;   1 : Historic Jail House 
+
+  10 ;     2 ;   5 ; Town Hall Levy Opera House 
+             ;  14 : Site of Old Swan Tavern 
+
+  11 ;     3 ;  17 ; Watering Fountains 
+             ;  14 : Site of Old Swan Tavern 
+
+  12 ;     2 ;   5 ; Town Hall Levy Opera House 
+             ;   1 : Historic Jail House 
+
+  13 ;     1 ;   0 ; The Kissing Stone 
+             ;   1 : Historic Jail House 
+
+  14 ;     2 ;   1 ; Historic Jail House 
+             ;  13 : Historic Courthouse Square 
+
+  15 ;     2 ;   1 ; Historic Jail House 
+             ;  15 : Albermarle County Courthouse 
+
+  16 ;     3 ;   3 ; Gen. Alexander Archer Vandergri 
+             ;   9 : Congregation Beth Israel 
+
+  17 ;     2 ;   1 ; Historic Jail House 
+             ;   2 : Jefferson Quote 
+
+  18 ;     2 ;   1 ; Historic Jail House 
+             ;   9 : Congregation Beth Israel 
+
+  19 ;     3 ;   6 ; Stonewall Jackson Statue 
+             ;   3 : Gen. Alexander Archer Vandergri 
+
+  20 ;     2 ;   1 ; Historic Jail House 
+             ;   3 : Gen. Alexander Archer Vandergri 
+
+  21 ;     3 ;   6 ; Stonewall Jackson Statue 
+             ;   7 : Paul Goodloe McIntire 
+
+  22 ;     2 ;   1 ; Historic Jail House 
              ;   6 : Stonewall Jackson Statue 
 
-  30 ;     3 ;   5 ; Town Hall Levy Opera House 
-             ;  17 : Watering Fountains 
+  23 ;     1 ;  12 ; Merriwether Lewis Placard 
+             ;   1 : Historic Jail House 
+
+  24 ;     2 ;   1 ; Historic Jail House 
+             ;  14 : Site of Old Swan Tavern 
+
+  25 ;     1 ;  15 ; Albermarle County Courthouse 
+             ;  13 : Historic Courthouse Square 
+
+  26 ;     3 ;   7 ; Paul Goodloe McIntire 
+             ;   8 : The Original Site of First Baptist Church 1831 
+
+  27 ;     2 ;   1 ; Historic Jail House 
+             ;   4 : Jack Jouett's Ride 
+
+  28 ;     1 ;  15 ; Albermarle County Courthouse 
+             ;   2 : Jefferson Quote 
+
+  29 ;     1 ;  15 ; Albermarle County Courthouse 
+             ;  16 : Early Hotels: Dining, Dancing, and the Mail 
+
+  30 ;     3 ;  11 ; Massie Wills House 
+             ;  10 : Catholic Church of the Holy Comforter 
 
   31 ;     1 ;  15 ; Albermarle County Courthouse 
              ;  12 : Merriwether Lewis Placard 
 
-  32 ;     3 ;   5 ; Town Hall Levy Opera House 
+  32 ;     3 ;  11 ; Massie Wills House 
+             ;   8 : The Original Site of First Baptist Church 1831 
+
+  33 ;     3 ;  11 ; Massie Wills House 
+             ;   7 : Paul Goodloe McIntire 
+
+  34 ;     3 ;  11 ; Massie Wills House 
              ;   1 : Historic Jail House 
 
-  33 ;     1 ;  15 ; Albermarle County Courthouse 
-             ;   2 : Jefferson Quote 
-
-  34 ;     3 ;   5 ; Town Hall Levy Opera House 
-             ;   0 : The Kissing Stone 
-
-  35 ;     1 ;  15 ; Albermarle County Courthouse 
-             ;  16 : Early Hotels: Dining, Dancing, and the Mail 
-
-  36 ;     3 ;   5 ; Town Hall Levy Opera House 
-             ;   4 : Jack Jouett's Ride 
-
-  37 ;     3 ;   5 ; Town Hall Levy Opera House 
-             ;  14 : Site of Old Swan Tavern 
-
-  38 ;     1 ;  14 ; Site of Old Swan Tavern 
-             ;   0 : The Kissing Stone 
-
-  39 ;     1 ;  14 ; Site of Old Swan Tavern 
-             ;   4 : Jack Jouett's Ride 
-
-  40 ;     3 ;  17 ; Watering Fountains 
-             ;   0 : The Kissing Stone 
-
-  41 ;     3 ;  17 ; Watering Fountains 
+  35 ;     3 ;  11 ; Massie Wills House 
              ;  15 : Albermarle County Courthouse 
 
-  42 ;     3 ;  17 ; Watering Fountains 
-             ;   2 : Jefferson Quote 
-
-  43 ;     3 ;  17 ; Watering Fountains 
-             ;  13 : Historic Courthouse Square 
-
-  44 ;     3 ;  17 ; Watering Fountains 
+  36 ;     3 ;  11 ; Massie Wills House 
              ;  16 : Early Hotels: Dining, Dancing, and the Mail 
 
-  45 ;     3 ;  17 ; Watering Fountains 
-             ;  14 : Site of Old Swan Tavern 
+  37 ;     3 ;  11 ; Massie Wills House 
+             ;  12 : Merriwether Lewis Placard 
+
+  38 ;     3 ;  11 ; Massie Wills House 
+             ;   6 : Stonewall Jackson Statue 
+
+  39 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   0 : The Kissing Stone 
+
+  40 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   1 : Historic Jail House 
+
+  41 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   6 : Stonewall Jackson Statue 
+
+  42 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   3 : Gen. Alexander Archer Vandergri 
+
+  43 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   9 : Congregation Beth Israel 
+
+  44 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   7 : Paul Goodloe McIntire 
+
+  45 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   8 : The Original Site of First Baptist Church 1831 
 

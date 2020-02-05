@@ -1,4 +1,4 @@
-Agent Key Preparation: sorted by portal name 
+Agent Key Preparation: sorted by portal number 
 
 Needed = keys this agent requires
 # = portal number on portal map
@@ -6,46 +6,44 @@ Name = portal name in portal file
 
 Keys for Agent 1
 Needed ;   # ; Name
-     2 ;   0 ; The Kissing Stone
-     1 ;   2 ; Jefferson Quote
+     1 ;   0 ; The Kissing Stone
+     3 ;   1 ; Historic Jail House
+     2 ;   2 ; Jefferson Quote
      1 ;   3 ; Gen. Alexander Archer Vandergri
-     1 ;   4 ; Jack Jouett's Ride
      1 ;   6 ; Stonewall Jackson Statue
+     1 ;   7 ; Paul Goodloe McIntire
      1 ;   8 ; The Original Site of First Baptist Church 1831
      1 ;   9 ; Congregation Beth Israel
-     1 ;  11 ; Massie Wills House
      1 ;  12 ; Merriwether Lewis Placard
-     2 ;  13 ; Historic Courthouse Square
+     1 ;  13 ; Historic Courthouse Square
      1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail
 
 Keys for Agent 2
 Needed ;   # ; Name
-     1 ;   0 ; The Kissing Stone
+     1 ;   1 ; Historic Jail House
+     1 ;   2 ; Jefferson Quote
+     1 ;   3 ; Gen. Alexander Archer Vandergri
+     3 ;   4 ; Jack Jouett's Ride
+     1 ;   6 ; Stonewall Jackson Statue
+     1 ;   9 ; Congregation Beth Israel
+     1 ;  13 ; Historic Courthouse Square
+     2 ;  14 ; Site of Old Swan Tavern
+     1 ;  15 ; Albermarle County Courthouse
+     1 ;  17 ; Watering Fountains
+
+Keys for Agent 3
+Needed ;   # ; Name
+     2 ;   1 ; Historic Jail House
      1 ;   3 ; Gen. Alexander Archer Vandergri
      1 ;   6 ; Stonewall Jackson Statue
      2 ;   7 ; Paul Goodloe McIntire
      2 ;   8 ; The Original Site of First Baptist Church 1831
      1 ;   9 ; Congregation Beth Israel
-     1 ;  12 ; Merriwether Lewis Placard
-     1 ;  15 ; Albermarle County Courthouse
-     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail
-     1 ;  17 ; Watering Fountains
-
-Keys for Agent 3
-Needed ;   # ; Name
-     3 ;   0 ; The Kissing Stone
-     1 ;   1 ; Historic Jail House
-     2 ;   2 ; Jefferson Quote
-     1 ;   3 ; Gen. Alexander Archer Vandergri
-     1 ;   4 ; Jack Jouett's Ride
-     1 ;   6 ; Stonewall Jackson Statue
-     1 ;   7 ; Paul Goodloe McIntire
-     1 ;   9 ; Congregation Beth Israel
+     1 ;  10 ; Catholic Church of the Holy Comforter
      1 ;  11 ; Massie Wills House
      1 ;  12 ; Merriwether Lewis Placard
      1 ;  13 ; Historic Courthouse Square
-     2 ;  14 ; Site of Old Swan Tavern
+     1 ;  14 ; Site of Old Swan Tavern
      2 ;  15 ; Albermarle County Courthouse
-     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail
-     1 ;  17 ; Watering Fountains
+     2 ;  16 ; Early Hotels: Dining, Dancing, and the Mail
 

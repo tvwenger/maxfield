@@ -8,42 +8,45 @@ Link Origin/Destination = portal name in portal file
 Link ; Agent ;   # ; Link Origin
                  # ; Link Destination
 
-   3 ;     1 ;   2 ; Jefferson Quote 
+   1 ;     1 ;  13 ; Historic Courthouse Square 
+             ;   2 : Jefferson Quote 
+
+  13 ;     1 ;   0 ; The Kissing Stone 
+             ;   1 : Historic Jail House 
+
+  23 ;     1 ;  12 ; Merriwether Lewis Placard 
+             ;   1 : Historic Jail House 
+
+  25 ;     1 ;  15 ; Albermarle County Courthouse 
              ;  13 : Historic Courthouse Square 
 
-  12 ;     1 ;   9 ; Congregation Beth Israel 
-             ;   8 : The Original Site of First Baptist Church 1831 
-
-  15 ;     1 ;   9 ; Congregation Beth Israel 
-             ;   3 : Gen. Alexander Archer Vandergri 
-
-  16 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;   0 : The Kissing Stone 
-
-  17 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;   9 : Congregation Beth Israel 
-
-  18 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
-             ;  11 : Massie Wills House 
-
-  27 ;     1 ;  15 ; Albermarle County Courthouse 
-             ;  13 : Historic Courthouse Square 
+  28 ;     1 ;  15 ; Albermarle County Courthouse 
+             ;   2 : Jefferson Quote 
 
   29 ;     1 ;  15 ; Albermarle County Courthouse 
-             ;   6 : Stonewall Jackson Statue 
+             ;  16 : Early Hotels: Dining, Dancing, and the Mail 
 
   31 ;     1 ;  15 ; Albermarle County Courthouse 
              ;  12 : Merriwether Lewis Placard 
 
-  33 ;     1 ;  15 ; Albermarle County Courthouse 
-             ;   2 : Jefferson Quote 
-
-  35 ;     1 ;  15 ; Albermarle County Courthouse 
-             ;  16 : Early Hotels: Dining, Dancing, and the Mail 
-
-  38 ;     1 ;  14 ; Site of Old Swan Tavern 
+  39 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
              ;   0 : The Kissing Stone 
 
-  39 ;     1 ;  14 ; Site of Old Swan Tavern 
-             ;   4 : Jack Jouett's Ride 
+  40 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   1 : Historic Jail House 
+
+  41 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   6 : Stonewall Jackson Statue 
+
+  42 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   3 : Gen. Alexander Archer Vandergri 
+
+  43 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   9 : Congregation Beth Israel 
+
+  44 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   7 : Paul Goodloe McIntire 
+
+  45 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   8 : The Original Site of First Baptist Church 1831 
 

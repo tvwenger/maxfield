@@ -1,19 +1,19 @@
 KeysNeeded, KeysHave, KeysRemaining, PortalNum, PortalName
-6, 0, 6, 0, The Kissing Stone
-1, 0, 1, 1, Historic Jail House
+1, 0, 1, 0, The Kissing Stone
+6, 0, 6, 1, Historic Jail House
 3, 0, 3, 2, Jefferson Quote
 3, 0, 3, 3, Gen. Alexander Archer Vandergri
-2, 0, 2, 4, Jack Jouett's Ride
+3, 0, 3, 4, Jack Jouett's Ride
 0, 0, 0, 5, Town Hall Levy Opera House
 3, 0, 3, 6, Stonewall Jackson Statue
 3, 0, 3, 7, Paul Goodloe McIntire
 3, 0, 3, 8, The Original Site of First Baptist Church 1831
 3, 0, 3, 9, Congregation Beth Israel
-0, 0, 0, 10, Catholic Church of the Holy Comforter
-2, 0, 2, 11, Massie Wills House
-3, 0, 3, 12, Merriwether Lewis Placard
+1, 0, 1, 10, Catholic Church of the Holy Comforter
+1, 0, 1, 11, Massie Wills House
+2, 0, 2, 12, Merriwether Lewis Placard
 3, 0, 3, 13, Historic Courthouse Square
-2, 0, 2, 14, Site of Old Swan Tavern
+3, 0, 3, 14, Site of Old Swan Tavern
 3, 0, 3, 15, Albermarle County Courthouse
 3, 0, 3, 16, Early Hotels: Dining, Dancing, and the Mail
-2, 0, 2, 17, Watering Fountains
+1, 0, 1, 17, Watering Fountains

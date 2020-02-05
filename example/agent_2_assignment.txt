@@ -8,39 +8,42 @@ Link Origin/Destination = portal name in portal file
 Link ; Agent ;   # ; Link Origin
                  # ; Link Destination
 
-   1 ;     2 ;   1 ; Historic Jail House 
-             ;   0 : The Kissing Stone 
+   2 ;     2 ;  14 ; Site of Old Swan Tavern 
+             ;   4 : Jack Jouett's Ride 
 
-   7 ;     2 ;   3 ; Gen. Alexander Archer Vandergri 
-             ;   7 : Paul Goodloe McIntire 
+   6 ;     2 ;   5 ; Town Hall Levy Opera House 
+             ;   4 : Jack Jouett's Ride 
 
-   9 ;     2 ;   3 ; Gen. Alexander Archer Vandergri 
-             ;   8 : The Original Site of First Baptist Church 1831 
-
-  13 ;     2 ;   6 ; Stonewall Jackson Statue 
-             ;  12 : Merriwether Lewis Placard 
-
-  19 ;     2 ;  11 ; Massie Wills House 
+   8 ;     2 ;   5 ; Town Hall Levy Opera House 
              ;  17 : Watering Fountains 
 
-  20 ;     2 ;  11 ; Massie Wills House 
-             ;  16 : Early Hotels: Dining, Dancing, and the Mail 
+  10 ;     2 ;   5 ; Town Hall Levy Opera House 
+             ;  14 : Site of Old Swan Tavern 
 
-  21 ;     2 ;  11 ; Massie Wills House 
+  12 ;     2 ;   5 ; Town Hall Levy Opera House 
+             ;   1 : Historic Jail House 
+
+  14 ;     2 ;   1 ; Historic Jail House 
+             ;  13 : Historic Courthouse Square 
+
+  15 ;     2 ;   1 ; Historic Jail House 
+             ;  15 : Albermarle County Courthouse 
+
+  17 ;     2 ;   1 ; Historic Jail House 
+             ;   2 : Jefferson Quote 
+
+  18 ;     2 ;   1 ; Historic Jail House 
              ;   9 : Congregation Beth Israel 
 
-  22 ;     2 ;  11 ; Massie Wills House 
+  20 ;     2 ;   1 ; Historic Jail House 
              ;   3 : Gen. Alexander Archer Vandergri 
 
-  23 ;     2 ;  11 ; Massie Wills House 
-             ;   7 : Paul Goodloe McIntire 
-
-  24 ;     2 ;  11 ; Massie Wills House 
-             ;   8 : The Original Site of First Baptist Church 1831 
-
-  25 ;     2 ;  11 ; Massie Wills House 
+  22 ;     2 ;   1 ; Historic Jail House 
              ;   6 : Stonewall Jackson Statue 
 
-  26 ;     2 ;  11 ; Massie Wills House 
-             ;  15 : Albermarle County Courthouse 
+  24 ;     2 ;   1 ; Historic Jail House 
+             ;  14 : Site of Old Swan Tavern 
+
+  27 ;     2 ;   1 ; Historic Jail House 
+             ;   4 : Jack Jouett's Ride 
 

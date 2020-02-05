@@ -1,37 +1,35 @@
 Agent, KeysNeeded, PortalNum, Portal Name
-0, 2, 0, The Kissing Stone
-0, 1, 2, Jefferson Quote
+0, 1, 0, The Kissing Stone
+0, 3, 1, Historic Jail House
+0, 2, 2, Jefferson Quote
 0, 1, 3, Gen. Alexander Archer Vandergri
-0, 1, 4, Jack Jouett's Ride
 0, 1, 6, Stonewall Jackson Statue
+0, 1, 7, Paul Goodloe McIntire
 0, 1, 8, The Original Site of First Baptist Church 1831
 0, 1, 9, Congregation Beth Israel
-0, 1, 11, Massie Wills House
 0, 1, 12, Merriwether Lewis Placard
-0, 2, 13, Historic Courthouse Square
+0, 1, 13, Historic Courthouse Square
 0, 1, 16, Early Hotels: Dining, Dancing, and the Mail
-1, 1, 0, The Kissing Stone
+1, 1, 1, Historic Jail House
+1, 1, 2, Jefferson Quote
 1, 1, 3, Gen. Alexander Archer Vandergri
+1, 3, 4, Jack Jouett's Ride
 1, 1, 6, Stonewall Jackson Statue
-1, 2, 7, Paul Goodloe McIntire
-1, 2, 8, The Original Site of First Baptist Church 1831
 1, 1, 9, Congregation Beth Israel
-1, 1, 12, Merriwether Lewis Placard
+1, 1, 13, Historic Courthouse Square
+1, 2, 14, Site of Old Swan Tavern
 1, 1, 15, Albermarle County Courthouse
-1, 1, 16, Early Hotels: Dining, Dancing, and the Mail
 1, 1, 17, Watering Fountains
-2, 3, 0, The Kissing Stone
-2, 1, 1, Historic Jail House
-2, 2, 2, Jefferson Quote
+2, 2, 1, Historic Jail House
 2, 1, 3, Gen. Alexander Archer Vandergri
-2, 1, 4, Jack Jouett's Ride
 2, 1, 6, Stonewall Jackson Statue
-2, 1, 7, Paul Goodloe McIntire
+2, 2, 7, Paul Goodloe McIntire
+2, 2, 8, The Original Site of First Baptist Church 1831
 2, 1, 9, Congregation Beth Israel
+2, 1, 10, Catholic Church of the Holy Comforter
 2, 1, 11, Massie Wills House
 2, 1, 12, Merriwether Lewis Placard
 2, 1, 13, Historic Courthouse Square
-2, 2, 14, Site of Old Swan Tavern
+2, 1, 14, Site of Old Swan Tavern
 2, 2, 15, Albermarle County Courthouse
-2, 1, 16, Early Hotels: Dining, Dancing, and the Mail
-2, 1, 17, Watering Fountains
+2, 2, 16, Early Hotels: Dining, Dancing, and the Mail
