@@ -88,12 +88,12 @@ class Results:
         #
         # Get portal indicies sorted by portal name
         #
-        self.name_order = np.argsort(
-            [portal['name'].lower() for portal in self.plan.portals])
+        #self.name_order = np.argsort(
+        #    [portal['name'].lower() for portal in self.plan.portals])
         #
         # Get portal indicies sorted from west (left) to east (right)
         #
-        self.pos_order = np.argsort(self.plan.portals_mer[:, 0])
+        #self.pos_order = np.argsort(self.plan.portals_mer[:, 0])
         #
         # Get links, origins, and destinations in build order
         #
@@ -202,7 +202,7 @@ class Results:
             fname_csv = os.path.join(self.outdir, 'key_preparation.csv')
             fout_csv = open(fname_csv, 'w')
         with open(fname, 'w') as fout:
-            fout.write('Key Preparation: sorted by portal name\n\n')
+            fout.write('Key Preparation: sorted by portal number\n\n')
             fout.write('Needed = total keys required\n')
             fout.write('Have = keys in inventory\n')
             fout.write('Remaining = keys necessary to farm\n')
@@ -211,18 +211,27 @@ class Results:
             fout.write('Needed ; Have ; Remaining ;   # ; Name\n')
             if self.output_csv:
                 fout_csv.write('KeysNeeded, KeysHave, KeysRemaining, PortalNum, PortalName\n')
-            for i in self.name_order:
+            #for i in self.name_order:
+            for i in range(len(self.plan.portals)):
                 needed = self.plan.graph.in_degree(i)
                 have = self.plan.portals[i]['keys']
                 remaining = np.max([0, needed-have])
+                #fout.write(
+                #    '{0:>6d} ; {1:>4d} ; {2:>9d} ; {3:>3d} : {4}\n'.
+                #    format(needed, have, remaining, self.pos_order[i],
+                #           self.plan.portals[i]['name']))
                 fout.write(
                     '{0:>6d} ; {1:>4d} ; {2:>9d} ; {3:>3d} : {4}\n'.
-                    format(needed, have, remaining, self.pos_order[i],
+                    format(needed, have, remaining, i,
                            self.plan.portals[i]['name']))
                 if self.output_csv:
+                    #fout_csv.write(
+                    #    '{0}, {1}, {2}, {3}, {4}\n'.
+                    #    format(needed, have, remaining, self.pos_order[i],
+                    #           self.plan.portals[i]['name']))
                     fout_csv.write(
                         '{0}, {1}, {2}, {3}, {4}\n'.
-                        format(needed, have, remaining, self.pos_order[i],
+                        format(needed, have, remaining, i,
                                self.plan.portals[i]['name']))
         if self.verbose:
             print("File saved to: {0}".format(fname))
@@ -245,37 +254,45 @@ class Results:
         fname = os.path.join(self.outdir, 'ownership_preparation.txt')
         with open(fname, 'w') as fout:
             fout.write('Ownership Preparation: '
-                       'sorted by portal name\n\n')
+                       'sorted by portal number\n\n')
             fout.write('# = portal number on portal map\n')
             fout.write('Name = portal name in portal file\n\n')
             fout.write("These portals' first links are incoming. "
                        "They should be at full resonators before "
                        "linking.\n\n")
             fout.write('  # ; Name\n')
-            for i in self.name_order:
+            #for i in self.name_order:
+            for i in range(len(self.plan.portals)):
                 if ((i in self.ordered_destinations and
                      i in self.ordered_origins and
                      (self.ordered_destinations.index(i) <
                       self.ordered_origins.index(i))) or
                         (i in self.ordered_destinations and
                          i not in self.ordered_origins)):
+                    #fout.write("{0:>3d} ; {1}\n".
+                    #           format(self.pos_order[i],
+                    #                  self.plan.portals[i]['name']))
                     fout.write("{0:>3d} ; {1}\n".
-                               format(self.pos_order[i],
+                               format(i,
                                       self.plan.portals[i]['name']))
             fout.write("\n")
             fout.write("These portals' first links are outgoing. "
                        "Their resonators can be applied when the "
                        "first agent arrives.\n\n")
             fout.write('  # ; Name\n')
-            for i in self.name_order:
+            #for i in self.name_order:
+            for i in range(len(self.plan.portals)):
                 if ((i in self.ordered_destinations and
                      i in self.ordered_origins and
                      (self.ordered_origins.index(i) <
                       self.ordered_destinations.index(i))) or
                         (i in self.ordered_origins and
                          i not in self.ordered_destinations)):
+                    #fout.write("{0:>3d} ; {1}\n".
+                    #           format(self.pos_order[i],
+                    #                  self.plan.portals[i]['name']))
                     fout.write("{0:>3d} ; {1}\n".
-                               format(self.pos_order[i],
+                               format(i,
                                       self.plan.portals[i]['name']))
         if self.verbose:
             print("File saved to: {0}".format(fname))
@@ -296,7 +313,7 @@ class Results:
             fname_csv = os.path.join(self.outdir, 'agent_key_preparation.csv')
             fout_csv = open(fname_csv, 'w')
         with open(fname, 'w') as fout:
-            fout.write("Agent Key Preparation: sorted by portal name "
+            fout.write("Agent Key Preparation: sorted by portal number "
                        "\n\n")
             fout.write('Needed = keys this agent requires\n')
             fout.write('# = portal number on portal map\n')
@@ -309,17 +326,26 @@ class Results:
                 destinations = [ass['link'] for ass in
                                 self.plan.assignments
                                 if ass['agent'] == agent]
-                for i in self.name_order:
+                #for i in self.name_order:
+                for i in range(len(self.plan.portals)):
                     count = destinations.count(i)
                     if count > 0:
+                        #fout.write(
+                        #    "{0:>6d} ; {1:>3d} ; {2}\n".
+                        #    format(count, self.pos_order[i],
+                        #           self.plan.portals[i]['name']))
                         fout.write(
                             "{0:>6d} ; {1:>3d} ; {2}\n".
-                            format(count, self.pos_order[i],
+                            format(count, i,
                                    self.plan.portals[i]['name']))
                         if self.output_csv:
+                            #fout_csv.write(
+                            #    "{0}, {1}, {2}, {3}\n".
+                            #    format(agent, count, self.pos_order[i],
+                            #           self.plan.portals[i]['name']))
                             fout_csv.write(
                                 "{0}, {1}, {2}, {3}\n".
-                                format(agent, count, self.pos_order[i],
+                                format(agent, count, i,
                                        self.plan.portals[i]['name']))
                 fout.write('\n')
         if self.verbose:
@@ -378,10 +404,12 @@ class Results:
                 my_ass = [ass for ass in self.plan.assignments
                           if ass['arrive'] == arrival]
                 for ass in my_ass:
-                    origin = np.where(
-                        self.pos_order == ass['location'])[0][0]
-                    dest = np.where(
-                        self.pos_order == ass['link'])[0][0]
+                    # origin = np.where(
+                    #     self.pos_order == ass['location'])[0][0]
+                    # dest = np.where(
+                    #     self.pos_order == ass['link'])[0][0]
+                    origin = ass['location']
+                    dest = ass['link']
                     fout.write("{0:4} ; {1:5} ; {2:3} ; {3} \n".format(
                         link, ass['agent']+1, origin,
                         self.plan.portals[origin]['name']))
@@ -450,10 +478,15 @@ class Results:
                 self.plan.portals_mer[:, 1],
                 marker='o', color=self.color, linestyle='none',
                 markeredgecolor='black', markersize=10, zorder=10)
-        for i, mer in enumerate(self.plan.portals_mer[self.pos_order]):
+        #for i, mer in enumerate(self.plan.portals_mer[self.pos_order]):
+        for i, mer in enumerate(self.plan.portals_mer):
+            # ax.text(mer[0], mer[1], i, fontweight='bold',
+            #         ha=self.ha[self.pos_order[i]],
+            #         va=self.va[self.pos_order[i]],
+            #         fontsize=16, zorder=11)
             ax.text(mer[0], mer[1], i, fontweight='bold',
-                    ha=self.ha[self.pos_order[i]],
-                    va=self.va[self.pos_order[i]],
+                    ha=self.ha[i],
+                    va=self.va[i],
                     fontsize=16, zorder=11)
         ax.set_aspect('equal')
         if self.image is not None:
@@ -473,7 +506,7 @@ class Results:
         if self.verbose:
             print("Generating portal map.")
         fig, ax = self.make_portal_fig()
-        ax.set_title('Portal Map: {0} portals numbered W to E'.
+        ax.set_title('Portal Map: {0}',
                      format(len(self.plan.portals)), fontsize=18)
         fname = os.path.join(self.outdir, 'portal_map.png')
         fig.savefig(fname, dpi=300)

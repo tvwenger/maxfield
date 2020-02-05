@@ -6,25 +6,25 @@ Name = portal name in portal file
 These portals' first links are incoming. They should be at full resonators before linking.
 
   # ; Name
- 14 ; Albermarle County Courthouse
-  1 ; Catholic Church of the Holy Comforter
-  0 ; Congregation Beth Israel
-  8 ; Gen. Alexander Archer Vandergri
- 16 ; Historic Courthouse Square
-  2 ; Massie Wills House
- 13 ; Merriwether Lewis Placard
- 12 ; Paul Goodloe McIntire
-  4 ; Site of Old Swan Tavern
- 15 ; The Original Site of First Baptist Church 1831
-  5 ; Watering Fountains
+  0 ; The Kissing Stone
+  2 ; Jefferson Quote
+  6 ; Stonewall Jackson Statue
+  7 ; Paul Goodloe McIntire
+  8 ; The Original Site of First Baptist Church 1831
+ 11 ; Massie Wills House
+ 12 ; Merriwether Lewis Placard
+ 13 ; Historic Courthouse Square
+ 14 ; Site of Old Swan Tavern
+ 15 ; Albermarle County Courthouse
+ 16 ; Early Hotels: Dining, Dancing, and the Mail
+ 17 ; Watering Fountains
 
 These portals' first links are outgoing. Their resonators can be applied when the first agent arrives.
 
   # ; Name
- 17 ; Early Hotels: Dining, Dancing, and the Mail
-  9 ; Historic Jail House
-  7 ; Jack Jouett's Ride
- 11 ; Jefferson Quote
-  3 ; Stonewall Jackson Statue
- 10 ; The Kissing Stone
-  6 ; Town Hall Levy Opera House
+  1 ; Historic Jail House
+  3 ; Gen. Alexander Archer Vandergri
+  4 ; Jack Jouett's Ride
+  5 ; Town Hall Levy Opera House
+  9 ; Congregation Beth Israel
+ 10 ; Catholic Church of the Holy Comforter

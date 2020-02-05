@@ -8,33 +8,42 @@ Link Origin/Destination = portal name in portal file
 Link ; Agent ;   # ; Link Origin
                  # ; Link Destination
 
-   5 ;     1 ;  14 ; Site of Old Swan Tavern 
-             ;  15 : Albermarle County Courthouse 
-
-  10 ;     1 ;  17 ; Watering Fountains 
-             ;  16 : Early Hotels: Dining, Dancing, and the Mail 
-
-  12 ;     1 ;  17 ; Watering Fountains 
-             ;  14 : Site of Old Swan Tavern 
-
-  15 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
-             ;   2 : Jefferson Quote 
-
-  17 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
-             ;   7 : Paul Goodloe McIntire 
-
-  18 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
-             ;  11 : Massie Wills House 
-
-  21 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+   3 ;     1 ;   2 ; Jefferson Quote 
              ;  13 : Historic Courthouse Square 
 
-  23 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
+  12 ;     1 ;   9 ; Congregation Beth Israel 
+             ;   8 : The Original Site of First Baptist Church 1831 
+
+  15 ;     1 ;   9 ; Congregation Beth Israel 
+             ;   3 : Gen. Alexander Archer Vandergri 
+
+  16 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   0 : The Kissing Stone 
+
+  17 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;   9 : Congregation Beth Israel 
+
+  18 ;     1 ;  10 ; Catholic Church of the Holy Comforter 
+             ;  11 : Massie Wills House 
+
+  27 ;     1 ;  15 ; Albermarle County Courthouse 
+             ;  13 : Historic Courthouse Square 
+
+  29 ;     1 ;  15 ; Albermarle County Courthouse 
+             ;   6 : Stonewall Jackson Statue 
+
+  31 ;     1 ;  15 ; Albermarle County Courthouse 
              ;  12 : Merriwether Lewis Placard 
 
-  25 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
-             ;  14 : Site of Old Swan Tavern 
+  33 ;     1 ;  15 ; Albermarle County Courthouse 
+             ;   2 : Jefferson Quote 
 
-  27 ;     1 ;  16 ; Early Hotels: Dining, Dancing, and the Mail 
-             ;  15 : Albermarle County Courthouse 
+  35 ;     1 ;  15 ; Albermarle County Courthouse 
+             ;  16 : Early Hotels: Dining, Dancing, and the Mail 
+
+  38 ;     1 ;  14 ; Site of Old Swan Tavern 
+             ;   0 : The Kissing Stone 
+
+  39 ;     1 ;  14 ; Site of Old Swan Tavern 
+             ;   4 : Jack Jouett's Ride 
 
