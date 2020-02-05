@@ -78,6 +78,9 @@ def read_portal_file(filename):
             sbul = False
             for part in parts[1:]:
                 part = part.strip()
+                if not part:
+                    # skip empty
+                    continue
                 if 'pll' in part:
                     if lon is not None:
                         raise ValueError(
