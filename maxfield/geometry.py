@@ -81,6 +81,12 @@ def gnomonic_proj(LL):
     #
     cos_c = sin_lat_centroid*sin_lat + cos_lat_centroid*cos_lat*np.cos(LL[:, 0]-lon_centroid)
     #
+    # Check that all points lie on one hemisphere (i.e. no separations
+    # from centroid larger than 90 degrees)
+    #
+    if np.any(cos_c < 0.):
+        raise ValueError("Portals are too separated. They must all lie in single hemisphere.")
+    #
     # Gnomonic projection
     #
     x = _R_EARTH*cos_lat*np.sin(LL[:, 0]-lon_centroid)/cos_c
