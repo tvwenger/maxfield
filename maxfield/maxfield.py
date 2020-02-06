@@ -58,8 +58,11 @@ def read_portal_file(filename):
     with open(filename, 'r') as fin:
         for line in fin:
             #
-            # Skip commented lines, remove comments and newline
+            # Skip commented/empty lines, remove comments and newline
             #
+            line = line.strip()
+            if not line:
+                continue
             if line[0] == '#':
                 continue
             line = line.split('#')[0]
@@ -134,6 +137,15 @@ def read_portal_file(filename):
             if lon is None or lat is None:
                 raise ValueError(
                     "Portal {0} is missing Intel URL".format(name))
+            #
+            # Check that longitude and latitude don't match a portal
+            # already
+            #
+            for p in portals:
+                if lon == p['lon'] and lat == p['lat']:
+                    print("Portal list contains a duplicate URL. Skipping this duplicate line:")
+                    print(line)
+                    continue
             #
             # Populate portal dict and append
             #
