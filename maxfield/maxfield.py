@@ -141,11 +141,15 @@ def read_portal_file(filename):
             # Check that longitude and latitude don't match a portal
             # already
             #
+            skip_line = False
             for p in portals:
                 if lon == p['lon'] and lat == p['lat']:
                     print("Portal list contains a duplicate URL. Skipping this duplicate line:")
                     print(line)
-                    continue
+                    skip_line = True
+                    break
+            if skip_line:
+                continue
             #
             # Populate portal dict and append
             #
