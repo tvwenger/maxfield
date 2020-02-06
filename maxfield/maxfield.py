@@ -96,7 +96,7 @@ def read_portal_file(filename):
                     if len(coord_parts) != 2:
                         raise ValueError(
                             "Portal {0} incorrect Intel URL. Did you "
-                            "select a portal first?".format(name))
+                            "select a portal before clicking the link button?".format(name))
                     lat, lon = coord_parts[1].split(',')
                     lat = float(lat)
                     lon = float(lon)
@@ -136,7 +136,7 @@ def read_portal_file(filename):
             #
             if lon is None or lat is None:
                 raise ValueError(
-                    "Portal {0} is missing Intel URL".format(name))
+                    "Portal {0} is missing Intel URL. Did you remove all semi-colons and pound (hashtag) symbols from the portal name?".format(name))
             #
             # Check that longitude and latitude don't match a portal
             # already

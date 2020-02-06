@@ -45,12 +45,28 @@ you have a Python environment on your computer. The `pygifsicle`
 package depends on `gifsicle`, so you will need to install `gifsicle`.
 Instructions can be [found here](https://www.lcdf.org/gifsicle/).
 
-Once that's done, installing Maxfield is as easy as:
+Once that's done, installing Maxfield (tested on Linux) is as easy as:
 
 	python setup.py install
 	
 Now you can run Maxfield using the command `maxfield-plan` at the
 command line.
+
+I am not too familiar with Python on Windows, but here is how I tested
+an installation on Windows 10 in a virtual environment. I downloaded
+this repository as a `.zip` and extracted the contents to 
+`C:\Users\username\Documents\maxfield`
+
+	cd C:\Users\username\Documents\maxfield
+	"C:\Program Files\Python38\python.exe" -m venv env
+	env\Scripts\activate
+	pip install numpy networkx scipy ortools matplotlib imageio pygifsicle
+	python setup.py install
+	
+Then, Maxfield can be launched on Windows from any folder via
+
+	C:\Users\username\Documents\maxfield\env\Scripts\activate
+	python C:\Users\username\Documents\maxfield\bin\maxfield-plan
 
 ### Example
 
