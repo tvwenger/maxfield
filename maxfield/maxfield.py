@@ -130,7 +130,7 @@ def read_portal_file(filename):
                 # If we get here, something is wrong!
                 #
                 raise ValueError(
-                    "Portal {0} is improperly formatted".format(name))
+                    "Portal {0} is improperly formatted. Unknown property: {1}".format(name, part))
             #
             # Check that longitude and latitude were obtained
             #
