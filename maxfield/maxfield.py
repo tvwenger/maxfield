@@ -84,6 +84,9 @@ def read_portal_file(filename):
                 if not part:
                     # skip empty
                     continue
+                if part == 'undefined':
+                    # skip undefined
+                    continue
                 if 'pll' in part:
                     if lon is not None:
                         raise ValueError(
