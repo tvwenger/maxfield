@@ -28,64 +28,65 @@ January 2020 - A complete re-write of original Ingress Maxfield.
 import argparse
 from maxfield import maxfield
 
-desc = ('Ingress Maxfield: An Ingress Linking and Fielding '
-        'Strategy Generator.')
-parser = argparse.ArgumentParser(
-    description=desc,
-    prog='maxfield.py',
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument(
-    'filename', type=str,
-    help='The properly formatted portal file.')
-parser.add_argument(
-    '--version', action='version',
-    version='Ingress Maxfield v{0}'.format(maxfield.__version__))
-parser.add_argument(
-    '-n', '--num_agents', type=int, default=1,
-    help='The number of agents in the operation.')
-parser.add_argument(
-    '--num_field_iterations', type=int, default=1000,
-    help=('The number of random field plans to '
-          'generate before selecting the best.'))
-parser.add_argument(
-    '-c', '--num_cpus', type=int, default=1,
-    help=('The number of CPUs used to generate '
-          'field plans. If <1, use maximum.'))
-parser.add_argument(
-    '--max_route_solutions', type=int, default=1000,
-    help=('The maximum number of agent routes to '
-          'generate before selecting the best.'))
-parser.add_argument(
-    '--max_route_runtime', type=int, default=60,
-    help=('The maximum runtime of the agent '
-          'routing algorithm in seconds.'))
-parser.add_argument(
-    '-o', '--outdir', type=str, default='.',
-    help=('The directory where results are '
-          'saved. Created if necessary.'))
-parser.add_argument(
-    '--skip_plots', action='store_true',
-    help='Skip generating plots.')
-parser.add_argument(
-    '--skip_step_plots', action='store_true',
-    help=('Skip generating step-by-step linking plots.'))
-parser.add_argument(
-    '-r', '--res_colors', action='store_true',
-    help='Use Resistance color scheme.')
-parser.add_argument(
-    '--google_api_key', type=str, default=None,
-    help=('A Google Maps API key. If set, make '
-          'plots on top of Google Maps background.'))
-parser.add_argument(
-    '--google_api_secret', type=str, default=None,
-    help=('A Google Maps API signature secret. If '
-          'not set, do not use signature.'))
-parser.add_argument(
-    '--output_csv', action='store_true',
-    help='Output machine-readable CSV files.')
-parser.add_argument(
-    '-v', '--verbose', action='store_true',
-    help='Print information along the way.')
+if __name__ == "__main__":
+    desc = ('Ingress Maxfield: An Ingress Linking and Fielding '
+            'Strategy Generator.')
+    parser = argparse.ArgumentParser(
+        description=desc,
+        prog='maxfield.py',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        'filename', type=str,
+        help='The properly formatted portal file.')
+    parser.add_argument(
+        '--version', action='version',
+        version='Ingress Maxfield v{0}'.format(maxfield.__version__))
+    parser.add_argument(
+        '-n', '--num_agents', type=int, default=1,
+        help='The number of agents in the operation.')
+    parser.add_argument(
+        '--num_field_iterations', type=int, default=1000,
+        help=('The number of random field plans to '
+              'generate before selecting the best.'))
+    parser.add_argument(
+        '-c', '--num_cpus', type=int, default=1,
+        help=('The number of CPUs used to generate '
+              'field plans. If <1, use maximum.'))
+    parser.add_argument(
+        '--max_route_solutions', type=int, default=1000,
+        help=('The maximum number of agent routes to '
+              'generate before selecting the best.'))
+    parser.add_argument(
+        '--max_route_runtime', type=int, default=60,
+        help=('The maximum runtime of the agent '
+              'routing algorithm in seconds.'))
+    parser.add_argument(
+        '-o', '--outdir', type=str, default='.',
+        help=('The directory where results are '
+              'saved. Created if necessary.'))
+    parser.add_argument(
+        '--skip_plots', action='store_true',
+        help='Skip generating plots.')
+    parser.add_argument(
+        '--skip_step_plots', action='store_true',
+        help=('Skip generating step-by-step linking plots.'))
+    parser.add_argument(
+        '-r', '--res_colors', action='store_true',
+        help='Use Resistance color scheme.')
+    parser.add_argument(
+        '--google_api_key', type=str, default=None,
+        help=('A Google Maps API key. If set, make '
+              'plots on top of Google Maps background.'))
+    parser.add_argument(
+        '--google_api_secret', type=str, default=None,
+        help=('A Google Maps API signature secret. If '
+              'not set, do not use signature.'))
+    parser.add_argument(
+        '--output_csv', action='store_true',
+        help='Output machine-readable CSV files.')
+    parser.add_argument(
+        '-v', '--verbose', action='store_true',
+        help='Print information along the way.')
 
-args = vars(parser.parse_args())
-maxfield.maxfield(**args)
+    args = vars(parser.parse_args())
+    maxfield.maxfield(**args)
