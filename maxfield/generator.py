@@ -111,7 +111,10 @@ class Generator:
             #
             # No valid solution.
             #
-            return (np.inf, np.nan, np.nan, np.inf)
+            graph.ap = -1
+            graph.length = np.inf
+            graph.max_keys = np.inf
+            return graph
         #
         # Assign fields and link dependencies to all links in graph
         #
