@@ -29,15 +29,18 @@ import itertools
 import numpy as np
 
 _OUTGOING_LIMIT = 8
-_OUTGOING_LIMIT_SBUL = 40 # assume fully deployed with SBULs
+_OUTGOING_LIMIT_SBUL = 24  # assume deployed with two SBULs
+
 
 class DeadendError(Exception):
     """
     Exception in case of failure to converge
     """
+
     def __init__(self, message):
         super(DeadendError, self).__init__(message)
         self.explain = message
+
 
 def can_add_outbound(graph, portal):
     """
@@ -48,7 +51,7 @@ def can_add_outbound(graph, portal):
         The graph for this plan
       portal :: integer
         The index of the origin portal
-    
+
     Returns: can_add
       can_add :: boolean
         True if we can add another outgoing link from portal
@@ -57,6 +60,7 @@ def can_add_outbound(graph, portal):
     if graph.nodes[portal]['sbul']:
         max_out = _OUTGOING_LIMIT_SBUL
     return graph.out_degree(portal) < max_out
+
 
 def add_link(graph, portal1, portal2, reversible=False):
     """
@@ -171,10 +175,12 @@ def add_link(graph, portal1, portal2, reversible=False):
     #
     raise DeadendError("All portals have maximum outgoing links.")
 
+
 class Field:
     """
     A container for fields.
     """
+
     def __init__(self, vertices, exterior=False):
         """
         Initialize a new Field object.
@@ -401,7 +407,8 @@ class Field:
             # Determine which link is opposite. It is the one not
             # containing the anchor portal
             #
-            opplink = [link for link in links if self.vertices[0] not in link][0]
+            opplink = [
+                link for link in links if self.vertices[0] not in link][0]
             graph.edges[lastlink]['depends'].append(opplink)
         #
         # Assign fields to childrens' links
