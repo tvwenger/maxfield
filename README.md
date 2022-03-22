@@ -68,6 +68,9 @@ Then, Maxfield can be launched on Windows from any folder via
 	C:\Users\username\Documents\maxfield\env\Scripts\activate
 	python C:\Users\username\Documents\maxfield\bin\maxfield-plan
 
+N.B. There is a bug with the latest version of `ortools`, so we use
+an older version. See: https://github.com/google/or-tools/issues/3202
+
 ### Example
 
 The `example` directory includes the Maxfield output for the portal
