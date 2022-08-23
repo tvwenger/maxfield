@@ -187,6 +187,8 @@ class Results:
                       format(err))
             self.extent = [0, 640, 0, 640]
 
+        self.frames = []
+
     def key_prep(self):
         """
         Save key preparation file to: outdir/key_preparation.txt
@@ -577,7 +579,6 @@ class Results:
         fig, ax = self.make_portal_fig()
         drawn_agents = []
         agents_last_pos = []
-        frames = []
         for agent in range(self.plan.num_agents):
             #
             # Find agent's first location
@@ -604,7 +605,7 @@ class Results:
                      'AP: {0:>7d}'.format(num_ap), fontsize=18)
         fname = os.path.join(outdir, 'frame_00000.png')
         fig.savefig(fname, dpi=300)
-        frames.append(fname)
+        self.frames.append(fname)
         #
         # Group assignments by arrival time, and plot each arrival
         # time actions as a single frame.
@@ -676,7 +677,7 @@ class Results:
                                      format(frame))
                 frame += 1
                 fig.savefig(fname, dpi=300)
-                frames.append(fname)
+                self.frames.append(fname)
                 #
                 # Remove drawn lines
                 #
@@ -717,7 +718,7 @@ class Results:
                                  format(frame))
             frame += 1
             fig.savefig(fname, dpi=300)
-            frames.append(fname)
+            self.frames.append(fname)
             #
             # Remove red patch, update to color and re-add
             #
@@ -728,12 +729,16 @@ class Results:
         plt.close(fig)
         if self.verbose:
             print("Frames saved to: {0}/".format(outdir))
+
+    def step_gif(self):
+        if self.verbose:
+            print("Generating plan movie.")
         #
         # Generate GIF
         #
         fname = os.path.join(self.outdir, 'plan_movie.gif')
         with imageio.get_writer(fname, mode='I', duration=0.5) as writer:
-            for frame in frames:
+            for frame in self.frames:
                 image = imageio.imread(frame)
                 writer.append_data(image)
         optimize(fname)
