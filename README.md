@@ -71,6 +71,52 @@ Then, Maxfield can be launched on Windows from any folder via
 N.B. There is a bug with the latest version of `ortools`, so we use
 an older version. See: https://github.com/google/or-tools/issues/3202
 
+## Run Using Docker
+
+You can run Maxfield using Docker for a consistent and isolated environment. Follow these steps:
+
+### Build the Docker Image
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/tvwenger/maxfield.git
+   cd maxfield
+   ```
+
+2. Build the Docker image:
+   ```bash
+   docker build -t maxfield .
+   ```
+
+### Run Maxfield with Docker
+
+To run Maxfield, use the following command:
+
+```bash
+docker run --rm -v $(pwd):/app maxfield ./example/example_portals.txt --num_agents 3 --verbose --output_csv 
+```
+
+### Explanation of Command
+
+- `docker run --rm`: Run the container and remove it after execution.
+- `-v $(pwd):/app`: Mount the current working directory into the container at `/app` so that input and output files are accessible.
+- `maxfield`: The name of the Docker image.
+- `./example/example_portals.txt`: The input file containing the list of portals.
+- `--num_agents 3 --verbose --output_csv`: Example arguments to customize the operation.
+
+### Output Files
+
+The results will be saved in the current working directory (`$(pwd)`), including:
+
+- **`key_preparation.txt`**: List of keys needed for each portal.
+- **`agent_assignments.txt`**: Link assignments for each agent.
+- **`link_map.png`**: Visual representation of links and fields.
+- **`plan_movie.gif`**: Step-by-step animation of the linking plan.
+
+### Notes
+
+Ensure the `example_portals.txt` file is present in your working directory or specify its actual location when running the command.
+
 ### Example
 
 The `example` directory includes the Maxfield output for the portal
