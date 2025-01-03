@@ -101,7 +101,7 @@ docker run --rm -v $(pwd):/app maxfield ./example/example_portals.txt --num_agen
 - `docker run --rm`: Run the container and remove it after execution.
 - `-v $(pwd):/app`: Mount the current working directory into the container at `/app` so that input and output files are accessible.
 - `maxfield`: The name of the Docker image.
-- `/app/example_portals.txt`: The input file containing the list of portals.
+- `./example/example_portals.txt`: The input file containing the list of portals.
 - `--num_agents 3 --verbose --output_csv`: Example arguments to customize the operation.
 
 ### Output Files
