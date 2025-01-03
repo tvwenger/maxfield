@@ -93,7 +93,7 @@ You can run Maxfield using Docker for a consistent and isolated environment. Fol
 To run Maxfield, use the following command:
 
 ```bash
-docker run --rm -v $(pwd):/app maxfield /app/example_portals.txt --num_agents 3 --verbose --output_csv
+docker run --rm -v $(pwd):/app maxfield ./example/example_portals.txt --num_agents 3 --verbose --output_csv 
 ```
 
 ### Explanation of Command
