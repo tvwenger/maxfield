@@ -248,7 +248,7 @@ class Router:
             (np.zeros((origins_dists.shape[0], 1)), origins_dists))
         origins_dists = np.vstack(
             (np.zeros(origins_dists.shape[1]), origins_dists))
-        origins_dists = np.array(origins_dists, dtype=np.int)
+        origins_dists = np.array(origins_dists, dtype=int)
         #
         # Create the routing index manager
         # Set starting and ending locations to index 0 for the dummy
