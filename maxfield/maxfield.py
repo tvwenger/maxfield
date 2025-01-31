@@ -56,6 +56,7 @@ def read_portal_file(filename):
     #
     portals = []
     with open(filename, 'r') as fin:
+        has_inbound_portal = False
         for line in fin:
             #
             # Skip commented/empty lines, remove comments and newline
@@ -79,6 +80,7 @@ def read_portal_file(filename):
             lat = None
             keys = 0
             sbul = False
+            inbound = False
             for part in parts[1:]:
                 part = part.strip()
                 if not part:
@@ -130,6 +132,25 @@ def read_portal_file(filename):
                     sbul = try_sbul
                     continue
                 #
+                # See if this is inbound only portal
+                #
+                try_inbound = part.strip().lower() == 'inbound'
+                if try_inbound and inbound:
+                    raise ValueError(
+                        "Portal {0} has multiple inbound entries".
+                            format(name))
+                if try_inbound:
+                    if sbul:
+                        raise ValueError(
+                            "Portal {0} has both SBUL and inbound flags".
+                                format(name))
+                    if has_inbound_portal:
+                        raise ValueError("Plan has more than one inbound portal")
+
+                    inbound = try_inbound
+                    has_inbound_portal = True
+                    continue
+                #
                 # If we get here, something is wrong!
                 #
                 raise ValueError(
@@ -157,7 +178,7 @@ def read_portal_file(filename):
             # Populate portal dict and append
             #
             portals.append({'name':name, 'lon':lon, 'lat':lat,
-                            'keys': keys, 'sbul': sbul})
+                            'keys': keys, 'sbul': sbul, 'inbound': inbound})
     return portals
 
 def maxfield(filename, num_agents=1, num_field_iterations=1000,

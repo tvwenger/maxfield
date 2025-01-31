@@ -106,6 +106,7 @@ class Plan:
         for i, portal in enumerate(self.portals):
             self.graph.add_node(i)
             self.graph.nodes[i]['sbul'] = portal['sbul']
+            self.graph.nodes[i]['inbound'] = portal['inbound']
             self.graph.nodes[i]['keys'] = portal['keys']
 
     def optimize(self, num_field_iterations=100, num_cpus=1):

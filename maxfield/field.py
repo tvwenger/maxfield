@@ -56,10 +56,11 @@ def can_add_outbound(graph, portal):
       can_add :: boolean
         True if we can add another outgoing link from portal
     """
-    max_out = _OUTGOING_LIMIT
     if graph.nodes[portal]['sbul']:
-        max_out = _OUTGOING_LIMIT_SBUL
-    return graph.out_degree(portal) < max_out
+        return graph.out_degree(portal) < _OUTGOING_LIMIT_SBUL
+    if graph.nodes[portal]['inbound']:
+        return graph.out_degree(portal) < 0
+    return graph.out_degree(portal) < _OUTGOING_LIMIT
 
 
 def add_link(graph, portal1, portal2, reversible=False):
