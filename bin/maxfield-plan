@@ -70,6 +70,8 @@ if __name__ == "__main__":
     parser.add_argument(
         '--skip_step_plots', action='store_true',
         help=('Skip generating step-by-step linking plots.'))
+    parser.add_argument('--skip_step_gif', action='store_true',
+        help=('Skip generating step-by-step linking GIF.'))
     parser.add_argument(
         '-r', '--res_colors', action='store_true',
         help='Use Resistance color scheme.')

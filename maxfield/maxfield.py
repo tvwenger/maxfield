@@ -164,7 +164,7 @@ def maxfield(filename, num_agents=1, num_field_iterations=1000,
              num_cpus=1, max_route_solutions=1000,
              max_route_runtime=60,
              outdir='.', skip_plots=False, skip_step_plots=False,
-             res_colors=False, google_api_key=None,
+             skip_step_gif=False, res_colors=False, google_api_key=None,
              google_api_secret=None, output_csv=False, verbose=False):
     """
     Given a portal list file, determine the optimal linking and
@@ -202,6 +202,8 @@ def maxfield(filename, num_agents=1, num_field_iterations=1000,
         If True, don't generate any figures
       skip_step_plots :: boolean
         If True, don't generate link-by-link figures
+      skip_step_gif :: boolean
+        If True, don't generate link-by-link GIF
       res_colors :: boolean
         If True, use resistance color scheme, otherwise enlightened
       google_api_key :: string
@@ -256,6 +258,8 @@ def maxfield(filename, num_agents=1, num_field_iterations=1000,
         results.link_map()
         if not skip_step_plots:
             results.step_plots()
+            if not skip_step_gif:
+                results.step_gif()
     end_time = time.time()
     if verbose:
         print("Total maxfield runtime: {0:.1f} seconds".
