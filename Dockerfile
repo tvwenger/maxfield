@@ -1,5 +1,5 @@
 # Use Python as the base image
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 # Set the working directory
 WORKDIR /app
@@ -7,8 +7,9 @@ WORKDIR /app
 # Copy the current directory contents into the container
 COPY . /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y gifsicle && apt-get clean
+# Install system dependencies, and patch OS packages to latest available
+# in this Debian release (reduces known CVEs in the base image)
+RUN apt-get update && apt-get upgrade -y && apt-get install -y gifsicle && apt-get clean
 
 # Install Python dependencies in compatible versions
 RUN pip install --no-cache-dir \

@@ -26,9 +26,6 @@ August 2020 - A complete re-write of original Ingress Maxfield.
 """
 
 import os
-import hashlib
-import hmac
-import base64
 import urllib.request
 import urllib.error
 from io import BytesIO
@@ -46,12 +43,98 @@ _AP_PER_PORTAL = 1750 # assuming capture and full resonator deployment
 _AP_PER_LINK = 313
 _AP_PER_FIELD = 1250
 
+# OpenStreetMap tile server (256x256 px tiles). No API key required.
+_OSM_TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+_OSM_TILE_SIZE = 256
+_OSM_USER_AGENT = "Ingress-Maxfield (https://github.com/tvwenger/maxfield)"
+
+def _latlon_to_pixel(lon, lat, zoom):
+    """
+    Convert longitude/latitude (degrees) to global slippy-map pixel
+    coordinates at a given zoom level (256px tiles).
+
+    Inputs:
+      lon, lat :: scalars
+        Longitude and latitude in degrees
+      zoom :: integer
+        The slippy-map zoom level
+
+    Returns: x, y
+      x, y :: scalars
+        The global pixel coordinates
+    """
+    siny = np.sin(np.deg2rad(lat))
+    siny = min(max(siny, -0.9999), 0.9999)
+    x = _OSM_TILE_SIZE * (0.5 + lon / 360.)
+    y = _OSM_TILE_SIZE * (0.5 - np.log((1. + siny) / (1. - siny)) / (4. * np.pi))
+    scale = 2 ** zoom
+    return x * scale, y * scale
+
+def _fetch_osm_background(center_lon, center_lat, zoom, size=640):
+    """
+    Fetch and stitch together OpenStreetMap tiles to build a
+    size x size pixel background image centered on the given
+    longitude/latitude at the given zoom level.
+
+    Inputs:
+      center_lon, center_lat :: scalars
+        The center longitude and latitude (degrees)
+      zoom :: integer
+        The slippy-map zoom level
+      size :: integer
+        The width/height of the returned image in pixels
+
+    Returns: image
+      image :: (size, size, N) array of scalars, or None
+        The stitched background image, or None if it could not be
+        fetched
+    """
+    px_center, py_center = _latlon_to_pixel(center_lon, center_lat, zoom)
+    px_min = px_center - size / 2.
+    py_min = py_center - size / 2.
+    num_tiles = 2 ** zoom
+    tile_x_min = int(np.floor(px_min / _OSM_TILE_SIZE))
+    tile_x_max = int(np.floor((px_min + size - 1) / _OSM_TILE_SIZE))
+    tile_y_min = int(np.floor(py_min / _OSM_TILE_SIZE))
+    tile_y_max = int(np.floor((py_min + size - 1) / _OSM_TILE_SIZE))
+    full_width = (tile_x_max - tile_x_min + 1) * _OSM_TILE_SIZE
+    full_height = (tile_y_max - tile_y_min + 1) * _OSM_TILE_SIZE
+    full_image = None
+    for tile_y in range(tile_y_min, tile_y_max + 1):
+        if tile_y < 0 or tile_y >= num_tiles:
+            continue
+        for tile_x in range(tile_x_min, tile_x_max + 1):
+            url = _OSM_TILE_URL.format(
+                z=zoom, x=tile_x % num_tiles, y=tile_y)
+            req = urllib.request.Request(
+                url, headers={'User-Agent': _OSM_USER_AGENT})
+            try:
+                tile_data = urllib.request.urlopen(req, timeout=10).read()
+            except OSError as err:
+                print("Unable to connect to OpenStreetMap tile server: {0}".
+                      format(err))
+                return None
+            tile_image = image.imread(BytesIO(tile_data))
+            if full_image is None:
+                full_image = np.zeros(
+                    (full_height, full_width, tile_image.shape[2]),
+                    dtype=tile_image.dtype)
+            row = (tile_y - tile_y_min) * _OSM_TILE_SIZE
+            col = (tile_x - tile_x_min) * _OSM_TILE_SIZE
+            full_image[row:row+_OSM_TILE_SIZE,
+                       col:col+_OSM_TILE_SIZE] = tile_image
+    if full_image is None:
+        return None
+    offset_x = int(round(px_min - tile_x_min * _OSM_TILE_SIZE))
+    offset_y = int(round(py_min - tile_y_min * _OSM_TILE_SIZE))
+    return full_image[offset_y:offset_y+size, offset_x:offset_x+size]
+
 class Results:
     """
     The Results object handles the saving of plan data and plots.
     """
     def __init__(self, plan, outdir='', res_colors=False,
-                 google_api_key=None, google_api_secret=None,
+                 skip_map_background=False,
                  output_csv=False, verbose=False):
         """
         Initialize a new Planner object.
@@ -65,12 +148,9 @@ class Results:
           res_colors :: boolean
             If True, use resistance color scheme, otherwise
             enlightened
-          google_api_key :: string
-            If not None, use this as an API key for google maps. If
-            None, do not use google maps.
-          google_api_secret :: string
-            If not None, use this as a signature secret for google 
-            maps. If None, do not use a google API signature.
+          skip_map_background :: boolean
+            If True, do not fetch an OpenStreetMap background for the
+            plots.
           output_csv :: boolean
             If True, also output machine-readable CSV files
           verbose :: boolean
@@ -81,8 +161,7 @@ class Results:
         """
         self.plan = plan
         self.outdir = outdir
-        self.google_api_key = google_api_key
-        self.google_api_secret = google_api_secret
+        self.skip_map_background = skip_map_background
         self.output_csv = output_csv
         self.verbose = verbose
         #
@@ -147,44 +226,15 @@ class Results:
                 self.va[i] = 'bottom'
                 self.agent_va[i] = 'top'
         #
-        # Set up google map if we're using it
+        # Set up OpenStreetMap background, if we're using it
         #
         self.image = None
-        if self.google_api_key is not None:
-            #
-            # Get url
-            #
-            url = ("/maps/api/staticmap?size=640x640&"
-                   "style=feature:poi%7Celement:labels.text%7C"
-                   "visibility:off&style=feature:poi.business%7C"
-                   "visibility:off&style=feature:road%7C"
-                   "element:labels.icon%7Cvisibility:off&"
-                   "style=feature:transit%7Cvisibility:off&"
-                   "center={0},{1}&zoom={2}&key={3}".
-                   format(self.plan.LL_center[1],
-                          self.plan.LL_center[0],
-                          self.plan.zoom, self.google_api_key))
-            #
-            # Sign URL
-            #
-            if self.google_api_secret is not None:
-                key = base64.urlsafe_b64decode(self.google_api_secret)
-                signature = hmac.new(key, url.encode('UTF-8'),
-                                     hashlib.sha1)
-                signature = base64.urlsafe_b64encode(
-                    signature.digest()).decode('UTF-8')
-                url += '&signature={0}'.format(signature)
-            url = "https://maps.googleapis.com"+url
-            #
-            # Fetch image
-            #
-            try:
-                im_data = urllib.request.urlopen(url).read()
-                im_data = BytesIO(im_data)
-                self.image = image.imread(im_data)
-            except urllib.error.URLError as err:
-                print("Unable to connect to Google Maps API: {0}".
-                      format(err))
+        if not self.skip_map_background:
+            self.image = _fetch_osm_background(
+                self.plan.LL_center[0], self.plan.LL_center[1],
+                self.plan.zoom)
+            if self.image is None and self.verbose:
+                print("Skipping map background.")
             self.extent = [0, 640, 0, 640]
 
     def key_prep(self):

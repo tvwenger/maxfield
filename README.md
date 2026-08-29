@@ -123,7 +123,7 @@ The `example` directory includes the Maxfield output for the portal
 list in `example/example_portals.txt`. These results were generated
 with the following command:
 
-	maxfield-plan example_portals.txt --num_agents 3 --num_cpus 0 --verbose --output_csv --google_api_key <REDACTED> --google_api_secret <REDACTED>
+	maxfield-plan example_portals.txt --num_agents 3 --num_cpus 0 --verbose --output_csv
 	
 Here was the output from this command:
 
@@ -191,8 +191,7 @@ usage: maxfield.py [-h] [--version] [-n NUM_AGENTS]
                    [--max_route_solutions MAX_ROUTE_SOLUTIONS]
                    [--max_route_runtime MAX_ROUTE_RUNTIME] [-o OUTDIR]
                    [--skip_plots] [--skip_step_plots] [-r]
-                   [--google_api_key GOOGLE_API_KEY]
-                   [--google_api_secret GOOGLE_API_SECRET] [--output_csv] [-v]
+                   [--skip_map_background] [--output_csv] [-v]
                    filename
 
 Ingress Maxfield: An Ingress Linking and Fielding Strategy Generator.
@@ -224,12 +223,9 @@ optional arguments:
   --skip_step_plots     Skip generating step-by-step linking plots. (default:
                         False)
   -r, --res_colors      Use Resistance color scheme. (default: False)
-  --google_api_key GOOGLE_API_KEY
-                        A Google Maps API key. If set, make plots on top of
-                        Google Maps background. (default: None)
-  --google_api_secret GOOGLE_API_SECRET
-                        A Google Maps API signature secret. If not set, do not
-                        use signature. (default: None)
+  --skip_map_background
+                        Skip fetching an OpenStreetMap background for the
+                        plots. (default: False)
   --output_csv          Output machine-readable CSV files. (default: False)
   -v, --verbose         Print information along the way. (default: False)
 ```
