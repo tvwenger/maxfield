@@ -5,3 +5,7 @@ tmp_*
 *.php
 *.pyc
 courtsquare/
+CLAUDE.md
+memory.md
+*.tar
+*.tar.gz

@@ -97,7 +97,7 @@ def web_mercator_proj(LL):
     """
     Convert positions on the surface of the Earth to (x,y) locations
     via the web mercator projection. Also return other useful things
-    for Google Maps.
+    for slippy-map tile backgrounds (e.g. OpenStreetMap).
 
     Inputs:
       LL :: (N,2) array of scalars
@@ -107,7 +107,7 @@ def web_mercator_proj(LL):
       xy :: (N,2) array of scalars
         The web mercator projection of N portals
       zoom :: integer
-        The zoom level for Google Maps
+        The slippy-map zoom level
       center :: [center_lon, center_lat]
         The center longitude and latitude (scalar degrees)
     """
@@ -126,8 +126,8 @@ def web_mercator_proj(LL):
     y = ymax - y
     #
     # Determine appropriate zoom level such that the map is smaller
-    # than 640 pixels on both sides. That is the maximum size allowed
-    # for free static maps API.
+    # than 640 pixels on both sides. That keeps the number of map
+    # tiles we need to fetch small.
     #
     for zoom in range(20, 0, -1):
         if np.max(x*2.**zoom) < 640. and np.max(y*2.**zoom) < 640.:

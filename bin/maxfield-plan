@@ -74,13 +74,9 @@ if __name__ == "__main__":
         '-r', '--res_colors', action='store_true',
         help='Use Resistance color scheme.')
     parser.add_argument(
-        '--google_api_key', type=str, default=None,
-        help=('A Google Maps API key. If set, make '
-              'plots on top of Google Maps background.'))
-    parser.add_argument(
-        '--google_api_secret', type=str, default=None,
-        help=('A Google Maps API signature secret. If '
-              'not set, do not use signature.'))
+        '--skip_map_background', action='store_true',
+        help=('Skip fetching an OpenStreetMap background '
+              'for the plots.'))
     parser.add_argument(
         '--output_csv', action='store_true',
         help='Output machine-readable CSV files.')
